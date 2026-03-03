@@ -75,27 +75,7 @@ const toolbox = {
         },
         {
           kind: 'block',
-          type: 'sound_wave',
-        },
-        {
-          kind: 'block',
-          type: 'sound_wave_dur',
-        },
-        {
-          kind: 'block',
-          type: 'sound_wave_envelope',
-        },
-        {
-          kind: 'block',
           type: 'pop',
-        },
-        {
-          kind: 'block',
-          type: 'sound_wave_vol',
-        },
-        {
-          kind: 'block',
-          type: 'poly_note',
         }
       ],
     },
@@ -127,6 +107,10 @@ const toolbox = {
         {
           kind: 'block',
           type: 'opt_kind'
+        },
+        {
+          kind: 'block',
+          type: 'opt_adsr'
         }
       ]
     }

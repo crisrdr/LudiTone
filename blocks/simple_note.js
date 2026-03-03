@@ -152,17 +152,19 @@ Blockly.JavaScript['simple_note'] = function (block) {
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Release) si hay algo de eso
-    if (options.attack !== undefined || options.release !== undefined) {
+    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) si hay algo de eso
+    if (options.attack !== undefined || options.release !== undefined || options.decay !== undefined || options.sustain !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005; // default attack in Tone.js
-        const r = options.release !== undefined ? options.release : 1;   // default release in Tone.js
-        code += `  synth` + num + `.set({envelope: {attack: ` + a + `, decay: 0.1, sustain: 0.3, release: ` + r + `}});\n`;
+        const d = options.decay !== undefined ? options.decay : 0.1;     // default decay
+        const s = options.sustain !== undefined ? options.sustain : 0.3; // default sustain
+        const r = options.release !== undefined ? options.release : 1;   // default release
+        code += `  synth` + num + `.set({envelope: {attack: ` + a + `, decay: ` + d + `, sustain: ` + s + `, release: ` + r + `}});\n`;
 
         // La duración real afecta también al decaimiento antes del release
         if (options.dur !== undefined) {
             dur = options.dur;
         } else {
-            dur = a + r;
+            dur = a + d + r; // Add decay for reasonable default duration calculation
         }
     } else {
         // 3. Configuramos la duración simple si no hay envelope pero sí dur

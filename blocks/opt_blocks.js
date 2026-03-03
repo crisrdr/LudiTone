@@ -103,3 +103,29 @@ Blockly.JavaScript['opt_kind'] = function (block) {
     var code = `kind: '${value}'`;
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
+
+Blockly.Blocks['opt_adsr'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("ADSR")
+            .appendField("A")
+            .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "attack")
+            .appendField("D")
+            .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "decay")
+            .appendField("S")
+            .appendField(new Blockly.FieldNumber(0.5, 0, 1, 0.01), "sustain")
+            .appendField("R")
+            .appendField(new Blockly.FieldNumber(1, 0.1, 10, 0.1), "release");
+        this.setOutput(true, "options");
+        this.setColour(210);
+    }
+};
+
+Blockly.JavaScript['opt_adsr'] = function (block) {
+    var a = block.getFieldValue('attack');
+    var d = block.getFieldValue('decay');
+    var s = block.getFieldValue('sustain');
+    var r = block.getFieldValue('release');
+    var code = `attack: ${a}, decay: ${d}, sustain: ${s}, release: ${r}`;
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
