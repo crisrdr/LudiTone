@@ -1,7 +1,7 @@
 Blockly.Blocks['opt_wave_shape'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("shape")
+            .appendField("wave")
             .appendField(new Blockly.FieldDropdown([
                 ["sine", "sine"],
                 ["square", "square"],
@@ -9,7 +9,7 @@ Blockly.Blocks['opt_wave_shape'] = {
                 ["sawtooth", "sawtooth"]
             ]), "shape");
         this.setOutput(true, "options");
-        this.setColour(210); // Blue hue
+        this.setColour(210);
         this.setTooltip("Select the wave shape");
     }
 };
@@ -66,5 +66,40 @@ Blockly.Blocks['opt_release'] = {
 Blockly.JavaScript['opt_release'] = function (block) {
     var value = block.getFieldValue('release');
     var code = `release: ${value}`;
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['opt_volume'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("volume")
+            .appendField(new Blockly.FieldNumber(1, 0, 2, 0.01), "vol");
+        this.setOutput(true, "options");
+        this.setColour(210);
+    }
+};
+
+Blockly.JavaScript['opt_volume'] = function (block) {
+    var value = block.getFieldValue('vol');
+    var code = `volume: ${value}`;
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['opt_kind'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("kind")
+            .appendField(new Blockly.FieldDropdown([
+                ["harmonic", "harm"],
+                ["inharmonic", "inharm"]
+            ]), "kind");
+        this.setOutput(true, "options");
+        this.setColour(210);
+    }
+};
+
+Blockly.JavaScript['opt_kind'] = function (block) {
+    var value = block.getFieldValue('kind');
+    var code = `kind: '${value}'`;
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };

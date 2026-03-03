@@ -75,6 +75,10 @@ const toolbox = {
         },
         {
           kind: 'block',
+          type: 'options'
+        },
+        {
+          kind: 'block',
           type: 'sound_wave',
         },
         {
@@ -106,10 +110,6 @@ const toolbox = {
       contents: [
         {
           kind: 'block',
-          type: 'options'
-        },
-        {
-          kind: 'block',
           type: 'opt_wave_shape'
         },
         {
@@ -123,6 +123,14 @@ const toolbox = {
         {
           kind: 'block',
           type: 'opt_release'
+        },
+        {
+          kind: 'block',
+          type: 'opt_volume'
+        },
+        {
+          kind: 'block',
+          type: 'opt_kind'
         }
       ]
     }
