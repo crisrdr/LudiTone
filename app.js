@@ -75,10 +75,6 @@ const toolbox = {
         },
         {
           kind: 'block',
-          type: 'options'
-        },
-        {
-          kind: 'block',
           type: 'sound_wave',
         },
         {

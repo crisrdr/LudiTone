@@ -16,7 +16,7 @@ Blockly.Blocks['opt_wave_shape'] = {
 
 Blockly.JavaScript['opt_wave_shape'] = function (block) {
     var value = block.getFieldValue('shape');
-    var code = `oscillator: {type: '${value}'}`;
+    var code = `oscillator: '${value}'`;
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 

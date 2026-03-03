@@ -1,30 +1,133 @@
 Blockly.Blocks['simple_note'] = {
     init: function () {
+        this.itemCount_ = 0; // Starts with 0 option slots
+        this.updateShape_();
         this.setPreviousStatement(true);
-        this.appendDummyInput()
-            .appendField("note")
-            .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
         this.setNextStatement(true, null);
-        this.appendValueInput("options")
-            .setCheck("options") // This enforces that only blocks with an output type "options" can connect here
-            .appendField("options"); // This adds the visible text "options" next to the hole
         this.setColour(20);
-    }
+        this.setMutator(new Blockly.Mutator(['options_item']));
+    },
+    mutationToDom: function () {
+        var container = Blockly.utils.xml.createElement('mutation');
+        container.setAttribute('items', this.itemCount_);
+        return container;
+    },
+    domToMutation: function (xmlElement) {
+        this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10);
+        this.updateShape_();
+    },
+    decompose: function (workspace) {
+        var containerBlock = workspace.newBlock('options_container');
+        containerBlock.initSvg();
+        var connection = containerBlock.getInput('STACK').connection;
+        for (var i = 0; i < this.itemCount_; i++) {
+            var itemBlock = workspace.newBlock('options_item');
+            itemBlock.initSvg();
+            connection.connect(itemBlock.previousConnection);
+            connection = itemBlock.nextConnection;
+        }
+        return containerBlock;
+    },
+    compose: function (containerBlock) {
+        var itemBlock = containerBlock.getInputTargetBlock('STACK');
+        var connections = [];
+        while (itemBlock && !itemBlock.isInsertionMarker()) {
+            connections.push(itemBlock.valueConnection_);
+            itemBlock = itemBlock.nextConnection &&
+                itemBlock.nextConnection.targetBlock();
+        }
+        for (var i = 0; i < this.itemCount_; i++) {
+            var connection = this.getInput('ADD' + i).connection.targetConnection;
+            if (connection && connections.indexOf(connection) == -1) {
+                connection.disconnect();
+            }
+        }
+        this.itemCount_ = connections.length;
+        this.updateShape_();
+        for (var i = 0; i < this.itemCount_; i++) {
+            Blockly.Mutator.reconnect(connections[i], this, 'ADD' + i);
+        }
+    },
+    saveConnections: function (containerBlock) {
+        var itemBlock = containerBlock.getInputTargetBlock('STACK');
+        var i = 0;
+        while (itemBlock) {
+            var input = this.getInput('ADD' + i);
+            itemBlock.valueConnection_ = input && input.connection.targetConnection;
+            i++;
+            itemBlock = itemBlock.nextConnection &&
+                itemBlock.nextConnection.targetBlock();
+        }
+    },
+    updateShape_: function () {
+        // Alwasy keep the base "note" field
+        if (!this.getInput('BASE')) {
+            this.appendDummyInput('BASE')
+                .appendField("note")
+                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
+        }
 
+        // Add options inputs
+        for (var i = 0; i < this.itemCount_; i++) {
+            if (!this.getInput('ADD' + i)) {
+                var input = this.appendValueInput('ADD' + i)
+                    .setCheck("options")
+                    .setAlign(Blockly.ALIGN_RIGHT)
+                    .appendField("option");
+            }
+        }
+
+        // Remove deleted inputs
+        while (this.getInput('ADD' + i)) {
+            this.removeInput('ADD' + i);
+            i++;
+        }
+    }
+};
+
+// Mutator Container Block
+Blockly.Blocks['options_container'] = {
+    init: function () {
+        this.setColour(120);
+        this.appendDummyInput()
+            .appendField('options');
+        this.appendStatementInput('STACK');
+        this.setTooltip('Add, remove, or reorder options.');
+        this.contextMenu = false;
+    }
+};
+
+// Mutator Item Block
+Blockly.Blocks['options_item'] = {
+    init: function () {
+        this.setColour(120);
+        this.appendDummyInput()
+            .appendField('option');
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip('Add a new option.');
+        this.contextMenu = false;
+    }
 };
 
 Blockly.JavaScript['simple_note'] = function (block) {
     const note = block.getFieldValue('note');
     let dur = 1;
     let waveShape = '';
-    let envelopeObj = '';
 
-    // Generamos el código a partir del bloque conectado a "options".
-    const optionsCode = Blockly.JavaScript.valueToCode(block, 'options', Blockly.JavaScript.ORDER_NONE);
+    // Recolectamos todas las opciones añadidas
+    var elements = new Array(block.itemCount_);
+    for (var i = 0; i < block.itemCount_; i++) {
+        elements[i] = Blockly.JavaScript.valueToCode(block, 'ADD' + i,
+            Blockly.JavaScript.ORDER_NONE) || 'null';
+    }
+
+    // Reconstruimos el string JSON gigante como si viniera de un solo bloque options
+    var optionsCode = '{' + elements.join(', ') + '}';
 
     // Inicializamos un objeto de opciones vacío por defecto
     let options = {};
-    if (optionsCode && optionsCode !== "''" && optionsCode !== "null") {
+    if (optionsCode && optionsCode !== "''" && optionsCode !== "null" && optionsCode !== "{}") {
         try {
             options = eval('(' + optionsCode + ')');
         } catch (e) {
@@ -36,7 +139,7 @@ Blockly.JavaScript['simple_note'] = function (block) {
     let code = ``;
 
     // Si la opción "kind" existe, usamos PolySynth en vez de Synth normal.
-    if (options.kind !== undefined) {
+    if (options.kind !== undefined && options.kind !== null) {
         isPoly = true;
         code += `const synth` + num + ` = new Tone.PolySynth().toDestination();\n`;
     } else {
@@ -45,7 +148,7 @@ Blockly.JavaScript['simple_note'] = function (block) {
 
     // 1. Configuramos el oscilador si está presente
     if (options.oscillator) {
-        waveShape = options.oscillator.type;
+        waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
