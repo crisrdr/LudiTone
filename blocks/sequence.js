@@ -15,10 +15,7 @@ Blockly.Blocks['sequence'] = {
 };
 
 Blockly.JavaScript['sequence'] = function (block) {
-    // Generate code for all the blocks enclosed in the sequence loop.
-    // They will be executed with the "isSequence = true" flag.
     let code = `
-  // --- Start Sequence ---
   var inSequence = true;
 `;
     
@@ -34,7 +31,6 @@ Blockly.JavaScript['sequence'] = function (block) {
     
     code += `
   inSequence = false;
-  // --- End Sequence ---
 `;
     return code;
 };

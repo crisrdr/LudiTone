@@ -74,7 +74,6 @@ Blockly.Blocks['semitone'] = {
             ["♭ (bemol)", "b"]
         ];
 
-        // Ensure BASE_DUMMY exists if we have no options
         if (this.itemCount_ === 0) {
             if (!this.getInput('BASE_DUMMY')) {
                 this.appendDummyInput('BASE_DUMMY')
