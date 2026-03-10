@@ -191,6 +191,12 @@ Blockly.JavaScript['semitone'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
+    code += `
+  if (typeof inChord !== 'undefined' && inChord) {
+      chordNotesObj.push('${note}');
+  } else {
+`;
+
     if (isPoly) {
         code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
         if (options.kind === 'harm') {
@@ -205,6 +211,8 @@ Blockly.JavaScript['semitone'] = function (block) {
     code += `  if (typeof inSequence !== 'undefined' && inSequence) {
     timeDur += ` + dur + `;
   }\n`;
+
+    code += `  }\n`;
 
     num++;
     return code;

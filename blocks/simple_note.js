@@ -180,6 +180,12 @@ Blockly.JavaScript['simple_note'] = function (block) {
     }
 
     // Finalmente hacemos que suene
+    code += `
+  if (typeof inChord !== 'undefined' && inChord) {
+      chordNotesObj.push('${note}');
+  } else {
+`;
+
     if (isPoly) {
         code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
         if (options.kind === 'harm') {
@@ -194,6 +200,8 @@ Blockly.JavaScript['simple_note'] = function (block) {
     code += `  if (typeof inSequence !== 'undefined' && inSequence) {
     timeDur += ` + dur + `;
   }\n`;
+
+    code += `  }\n`;
 
     num++;
     return code;

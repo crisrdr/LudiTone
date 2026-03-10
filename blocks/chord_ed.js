@@ -1,67 +1,41 @@
-// Mutator Container Block
-Blockly.Blocks['chord_mutator_container'] = {
+// Mutator Container Block for Options
+Blockly.Blocks['chord_ed_mutator_container'] = {
     init: function () {
         this.setColour(20);
         this.appendDummyInput()
             .appendField('chord setup');
-        this.appendStatementInput('NOTES')
-            .setCheck(null)
-            .appendField('notes');
         this.appendStatementInput('OPTIONS')
             .setCheck(null)
             .appendField('options');
-        this.setTooltip('Add notes or options.');
-        this.contextMenu = false;
-    }
-};
-
-// Mutator Item Block for Notes
-Blockly.Blocks['note_item'] = {
-    init: function () {
-        this.setColour(20);
-        this.appendDummyInput()
-            .appendField('note');
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
-        this.setTooltip('Add a note to the chord.');
+        this.setTooltip('Add options to the chord.');
         this.contextMenu = false;
     }
 };
 
 Blockly.Blocks['chord_ed'] = {
     init: function () {
-        this.noteCount_ = 0; // Starts with 0 additional notes
         this.optionCount_ = 0; // Starts with 0 option slots
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setMutator(new Blockly.Mutator(['note_item', 'options_item']));
+        this.setMutator(new Blockly.Mutator(['options_item']));
+        this.setTooltip('A chord wrapper that plays any notes placed inside it simultaneously.');
     },
     mutationToDom: function () {
         var container = Blockly.utils.xml.createElement('mutation');
-        container.setAttribute('notes', this.noteCount_);
         container.setAttribute('options', this.optionCount_);
         return container;
     },
     domToMutation: function (xmlElement) {
-        this.noteCount_ = parseInt(xmlElement.getAttribute('notes'), 10) || 0;
         this.optionCount_ = parseInt(xmlElement.getAttribute('options'), 10) || 0;
         this.updateShape_();
     },
     decompose: function (workspace) {
-        var containerBlock = workspace.newBlock('chord_mutator_container');
+        var containerBlock = workspace.newBlock('chord_ed_mutator_container');
         containerBlock.initSvg();
-        
-        var connection = containerBlock.getInput('NOTES').connection;
-        for (var i = 0; i < this.noteCount_; i++) {
-            var itemBlock = workspace.newBlock('note_item');
-            itemBlock.initSvg();
-            connection.connect(itemBlock.previousConnection);
-            connection = itemBlock.nextConnection;
-        }
 
-        connection = containerBlock.getInput('OPTIONS').connection;
+        var connection = containerBlock.getInput('OPTIONS').connection;
         for (var i = 0; i < this.optionCount_; i++) {
             var itemBlock = workspace.newBlock('options_item');
             itemBlock.initSvg();
@@ -72,17 +46,7 @@ Blockly.Blocks['chord_ed'] = {
         return containerBlock;
     },
     compose: function (containerBlock) {
-        var itemBlock = containerBlock.getInputTargetBlock('NOTES');
-        var noteConnections = [];
-        while (itemBlock && !itemBlock.isInsertionMarker()) {
-            if (itemBlock.type == 'note_item') {
-                noteConnections.push(itemBlock.valueConnection_);
-            }
-            itemBlock = itemBlock.nextConnection &&
-                itemBlock.nextConnection.targetBlock();
-        }
-
-        itemBlock = containerBlock.getInputTargetBlock('OPTIONS');
+        var itemBlock = containerBlock.getInputTargetBlock('OPTIONS');
         var optionConnections = [];
         while (itemBlock && !itemBlock.isInsertionMarker()) {
             if (itemBlock.type == 'options_item') {
@@ -99,7 +63,6 @@ Blockly.Blocks['chord_ed'] = {
             }
         }
 
-        this.noteCount_ = noteConnections.length;
         this.optionCount_ = optionConnections.length;
         this.updateShape_();
 
@@ -119,13 +82,6 @@ Blockly.Blocks['chord_ed'] = {
         }
     },
     updateShape_: function () {
-        const basicNotes = [["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]];
-
-        // Base input for the block title 
-        // If there are options, we should put the title "chord" on the FIRST option input.
-        // Otherwise, it gets its own dummy input.
-
-        // First, check if we need a standalone BASE dummy
         if (this.optionCount_ === 0) {
             if (!this.getInput('BASE_DUMMY')) {
                 this.appendDummyInput('BASE_DUMMY')
@@ -138,39 +94,6 @@ Blockly.Blocks['chord_ed'] = {
             }
         }
         
-        // It's easier to rip out all inputs and rebuild them if the structure changes,
-        // but rebuilding inputs loses connections. We must use carefully managed input additions.
-        // Let's modify the existing approach:
-        // 1. Header is 'BASE'
-        // 2. Options are 'OPT' + i
-        // 3. 'NOTE_BASE_1' and 'NOTE_BASE_2' for the default two notes.
-        // 4. 'NOTE' + i for extra notes.
-
-        // Actually, purely visual:
-        if (!this.getInput('NOTE_BASE_1')) {
-            this.appendDummyInput('NOTE_BASE_1')
-                .setAlign(Blockly.ALIGN_LEFT)
-                .appendField("note                 ")
-                .appendField(new Blockly.FieldDropdown(basicNotes), "note1");
-            this.moveInputBefore('NOTE_BASE_1', null); 
-        }
-        if (!this.getInput('NOTE_BASE_2')) {
-            this.appendDummyInput('NOTE_BASE_2')
-                .setAlign(Blockly.ALIGN_LEFT)
-                .appendField("note                 ")
-                .appendField(new Blockly.FieldDropdown(basicNotes), "note2");
-        }
-
-        // Add dynamically extra notes
-        for (var i = 0; i < this.noteCount_; i++) {
-            if (!this.getInput('NOTE' + i)) {
-                this.appendDummyInput('NOTE' + i)
-                    .setAlign(Blockly.ALIGN_LEFT)
-                    .appendField("note                 ")
-                    .appendField(new Blockly.FieldDropdown(basicNotes), "note" + (i + 3));
-            }
-        }
-
         // Add dynamically options
         for (var i = 0; i < this.optionCount_; i++) {
             if (!this.getInput('OPT' + i)) {
@@ -179,62 +102,29 @@ Blockly.Blocks['chord_ed'] = {
                     .setAlign(Blockly.ALIGN_RIGHT);
                 
                 if (i === 0) {
-                    input.appendField("chord", "CHORD_TITLE"); // Title stays on top left
+                    input.appendField("chord", "CHORD_TITLE"); 
                 }
                 
                 input.appendField("option");
             } else if (i === 0) {
-                // Ensure the 0th input has the CHORD_TITLE field if we transitioned from no options.
                 if (!this.getField("CHORD_TITLE")) {
                     this.getInput('OPT0').insertFieldAt(0, "chord", "CHORD_TITLE");
                 }
             }
         }
         
-        // Ensure OPT0 doesn't have CHORD_TITLE if it's somehow not the first one, but i is always 0.
-        // Also if we have no options, but had them before, the 'OPT' removal loop below handles it.
-
-        // Remove deleted inputs
-        var i_remove = this.noteCount_;
-        while (this.getInput('NOTE' + i_remove)) {
-            this.removeInput('NOTE' + i_remove);
-            i_remove++;
-        }
-
-        i_remove = this.optionCount_;
+        var i_remove = this.optionCount_;
         while (this.getInput('OPT' + i_remove)) {
             this.removeInput('OPT' + i_remove);
             i_remove++;
         }
 
-        // Now, strictly reorder inputs so they appear exactly as requested:
-        // 1. BASE_DUMMY (if no options)
-        // 2. OPTx (options)
-        // 3. NOTE_BASE_1
-        // 4. NOTE_BASE_2
-        // 5. NOTEx (extra notes)
-
-        var inputOrder = [];
-        if (this.optionCount_ === 0 && this.getInput('BASE_DUMMY')) {
-            inputOrder.push('BASE_DUMMY');
-        }
-        for (var i = 0; i < this.optionCount_; i++) {
-            if (this.getInput('OPT' + i)) inputOrder.push('OPT' + i);
-        }
-        inputOrder.push('NOTE_BASE_1');
-        inputOrder.push('NOTE_BASE_2');
-        for (var i = 0; i < this.noteCount_; i++) {
-            inputOrder.push('NOTE' + i);
-        }
-
-        // Move inputs to their correct positions
-        for (var i = 0; i < inputOrder.length - 1; i++) {
-            this.moveInputBefore(inputOrder[i], inputOrder[i+1]);
-        }
-        // The last one is just naturally at the end relative to the others.
-        // If we want to be safe, move it to the end by moving it before `null`
-        if (inputOrder.length > 0) {
-            this.moveInputBefore(inputOrder[inputOrder.length - 1], null);
+        // Always make sure the NOTES statement wrapper is at the bottom
+        if (!this.getInput('NOTES')) {
+            this.appendStatementInput('NOTES')
+                .setCheck(null);
+        } else {
+            this.moveInputBefore('NOTES', null);
         }
     }
 };
@@ -242,17 +132,6 @@ Blockly.Blocks['chord_ed'] = {
 Blockly.JavaScript['chord_ed'] = function (block) {
     let dur = 1;
     let waveShape = '';
-
-    let noteList = [];
-    noteList.push(block.getFieldValue('note1'));
-    noteList.push(block.getFieldValue('note2'));
-
-    for (var i = 0; i < block.noteCount_; i++) {
-        let n = block.getFieldValue('note' + (i + 3));
-        if (n) {
-            noteList.push(n);
-        }
-    }
 
     // Recolectamos todas las opciones añadidas
     var elements = [];
@@ -264,10 +143,8 @@ Blockly.JavaScript['chord_ed'] = function (block) {
         }
     }
 
-    // Reconstruimos el string JSON gigante como si viniera de un solo bloque options
     var optionsCode = '{' + elements.join(', ') + '}';
 
-    // Inicializamos un objeto de opciones vacío por defecto
     let options = {};
     if (optionsCode && optionsCode !== "''" && optionsCode !== "null" && optionsCode !== "{}") {
         try {
@@ -279,11 +156,24 @@ Blockly.JavaScript['chord_ed'] = function (block) {
 
     let code = ``;
 
-    code += `const synth` + num + ` = new Tone.PolySynth().toDestination();\n`;
+    let myNum = num;
+    num++; // Immediately increment so nested blocks use subsequent numbers.
+
+    code += `// --- Start Chord Wrapper ---\n`;
+    code += `const chordNotes_${myNum} = [];\n`;
+    code += `var inChord = true;\n`;
+    code += `var chordNotesObj = chordNotes_${myNum};\n`;
+    
+    // Convert enclosed notes. Since inChord = true is in generated code, they will push to array.
+    let notesCode = Blockly.JavaScript.statementToCode(block, 'NOTES');
+    code += notesCode;
+    
+    code += `// --- Execute PolySynth ---\n`;
+    code += `const synth${myNum} = new Tone.PolySynth().toDestination();\n`;
 
     if (options.oscillator) {
         waveShape = options.oscillator;
-        code += `  synth` + num + `.set({ oscillator: { type: '${waveShape}' } });\n`;
+        code += `  synth${myNum}.set({ oscillator: { type: '${waveShape}' } });\n`;
     }
 
     if (options.attack !== undefined || options.release !== undefined || options.decay !== undefined || options.sustain !== undefined) {
@@ -291,7 +181,7 @@ Blockly.JavaScript['chord_ed'] = function (block) {
         const d = options.decay !== undefined ? options.decay : 0.1;
         const s = options.sustain !== undefined ? options.sustain : 0.3;
         const r = options.release !== undefined ? options.release : 1;
-        code += `  synth` + num + `.set({ envelope: { attack: ` + a + `, decay: ` + d + `, sustain: ` + s + `, release: ` + r + ` } });\n`;
+        code += `  synth${myNum}.set({ envelope: { attack: ` + a + `, decay: ` + d + `, sustain: ` + s + `, release: ` + r + ` } });\n`;
 
         if (options.dur !== undefined) {
             dur = options.dur;
@@ -309,20 +199,19 @@ Blockly.JavaScript['chord_ed'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    let freqArray = noteList.map(n => `Tone.Frequency('${n}').toFrequency()`);
+    // Usar directamente el array recolectado
+    code += `  const freqs${myNum} = chordNotes_${myNum}.map(n => Tone.Frequency(n).toFrequency());\n`;
 
-    if (options.kind === 'inharm') {
-        // No debería alterar el acorde. posibilidad de bloqueo ?
-    }
-
-    code += `  const freqs${num} = [${freqArray.join(', ')}];\n`;
-
-    code += `  synth` + num + `.triggerAttackRelease(freqs${num}, ` + dur + `, now + timeDur${volumeParam});\n`;
+    code += `  if (freqs${myNum}.length > 0) {\n`;
+    code += `    synth${myNum}.triggerAttackRelease(freqs${myNum}, ` + dur + `, now + timeDur${volumeParam});\n`;
+    code += `  }\n`;
 
     code += `  if (typeof inSequence !== 'undefined' && inSequence) {
     timeDur += ` + dur + `;
   }\n`;
 
-    num++;
+    code += `  inChord = false;\n`;
+    code += `// --- End Chord Wrapper ---\n`;
+
     return code;
 }
