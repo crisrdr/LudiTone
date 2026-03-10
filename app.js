@@ -79,6 +79,10 @@ const toolbox = {
         },
         {
           kind: 'block',
+          type: 'chord_ed'
+        },
+        {
+          kind: 'block',
           type: 'pop',
         }
       ],
