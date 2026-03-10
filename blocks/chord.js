@@ -159,7 +159,12 @@ Blockly.JavaScript['chord'] = function (block) {
     }
 
     // Disparamos el acorde
-    code += `  synth` + num + `.triggerAttackRelease(freqs${num}, ` + dur + `, now + ` + timeDur + `${volumeParam});\n`;
+    code += `  synth` + num + `.triggerAttackRelease(freqs${num}, ` + dur + `, now + timeDur${volumeParam});\n`;
+
+    code += `  if (typeof inSequence !== 'undefined' && inSequence) {
+    timeDur += ` + dur + `;
+  }\n`;
+
     num++;
     return code;
 }

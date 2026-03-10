@@ -194,13 +194,17 @@ Blockly.JavaScript['semitone'] = function (block) {
     if (isPoly) {
         code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
         if (options.kind === 'harm') {
-            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4], ` + dur + `, now + ` + timeDur + `${volumeParam});\n`;
+            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4], ` + dur + `, now + timeDur${volumeParam});\n`;
         } else {
-            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93], ` + dur + `, now + ` + timeDur + `${volumeParam});\n`;
+            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93], ` + dur + `, now + timeDur${volumeParam});\n`;
         }
     } else {
-        code += `  synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, now + ` + timeDur + `${volumeParam});\n`;
+        code += `  synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, now + timeDur${volumeParam});\n`;
     }
+
+    code += `  if (typeof inSequence !== 'undefined' && inSequence) {
+    timeDur += ` + dur + `;
+  }\n`;
 
     num++;
     return code;

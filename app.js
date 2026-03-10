@@ -49,6 +49,10 @@ const toolbox = {
           "type": 'loop',
         },
         {
+          "kind": 'block',
+          "type": 'sequence',
+        },
+        {
           "kind": "block",
           "type": "math_number",
           "fields": {

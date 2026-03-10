@@ -1,0 +1,40 @@
+Blockly.Blocks['sequence'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("sequence")
+            .appendField("repeat")
+            .appendField(new Blockly.FieldNumber(1, 1, 100, 1), "TIMES")
+            .appendField("times");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(212);
+        this.setTooltip("Executes notes and chords sequentially, waiting for one to finish before starting the next.");
+    }
+};
+
+Blockly.JavaScript['sequence'] = function (block) {
+    // Generate code for all the blocks enclosed in the sequence loop.
+    // They will be executed with the "isSequence = true" flag.
+    let code = `
+  // --- Start Sequence ---
+  var inSequence = true;
+`;
+    
+    // Convert the statements inside
+    let branchCode = Blockly.JavaScript.statementToCode(block, 'DO');
+    
+    let times = block.getFieldValue('TIMES') || 1;
+    let loopVar = 'seq_i_' + Math.floor(Math.random() * 1000000);
+    
+    code += `  for (let ${loopVar} = 0; ${loopVar} < ${times}; ${loopVar}++) {\n`;
+    code += branchCode;
+    code += `  }\n`;
+    
+    code += `
+  inSequence = false;
+  // --- End Sequence ---
+`;
+    return code;
+};
