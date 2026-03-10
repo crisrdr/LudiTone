@@ -75,6 +75,10 @@ const toolbox = {
         },
         {
           kind: 'block',
+          type: 'semitone'
+        },
+        {
+          kind: 'block',
           type: 'chord'
         },
         {
