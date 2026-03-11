@@ -15,7 +15,7 @@ Blockly.Blocks['sequence'] = {
 };
 
 Blockly.JavaScript['sequence'] = function (block) {
-    let code = ` var inSequence = true; \n`;
+    let code = ``;
     
     // Convert the statements inside
     let branchCode = Blockly.JavaScript.statementToCode(block, 'DO');
@@ -29,6 +29,5 @@ Blockly.JavaScript['sequence'] = function (block) {
     code += branchCode;
     code += `  }\n`;
     
-    code += `  inSequence = false;`;
     return code;
 };

@@ -161,10 +161,12 @@ Blockly.JavaScript['chord_ed'] = function (block) {
 
     code += `// --- Start Chord Wrapper ---\n`;
     code += `const chordNotes_${myNum} = [];\n`;
-    code += `var inChord = true;\n`;
     code += `var chordNotesObj = chordNotes_${myNum};\n`;
     
-    // Convert enclosed notes. Since inChord = true is in generated code, they will push to array.
+    // Convert enclosed notes. We need to pass down context.
+    // However, since we're using block.getSurroundParent() in children, 
+    // the children already know they are inside a chord block!
+    // So we don't even need 'var inChord = true' anymore in the generated code.
     let notesCode = Blockly.JavaScript.statementToCode(block, 'NOTES');
     code += notesCode;
     
@@ -206,11 +208,22 @@ Blockly.JavaScript['chord_ed'] = function (block) {
     code += `    synth${myNum}.triggerAttackRelease(freqs${myNum}, ` + dur + `, now + timeDur${volumeParam});\n`;
     code += `  }\n`;
 
-    code += `  if (typeof inSequence !== 'undefined' && inSequence) {
-    timeDur += ` + dur + `;
-  }\n`;
+    // Check if we are inside a sequence block
+    let topBlock = block.getSurroundParent();
+    let isInsideSequence = false;
 
-    code += `  inChord = false;\n`;
+    while (topBlock) {
+        if (topBlock.type === 'sequence') {
+            isInsideSequence = true;
+            break;
+        }
+        topBlock = topBlock.getSurroundParent();
+    }
+
+    if (isInsideSequence) {
+        code += `  timeDur += ` + dur + `;\n`;
+    }
+
     code += `// --- End Chord Wrapper ---\n`;
 
     return code;

@@ -161,9 +161,21 @@ Blockly.JavaScript['chord'] = function (block) {
     // Disparamos el acorde
     code += `  synth` + num + `.triggerAttackRelease(freqs${num}, ` + dur + `, now + timeDur${volumeParam});\n`;
 
-    code += `  if (typeof inSequence !== 'undefined' && inSequence) {
-    timeDur += ` + dur + `;
-  }\n`;
+    // Check if we are inside a sequence block
+    let topBlock = block.getSurroundParent();
+    let isInsideSequence = false;
+
+    while (topBlock) {
+        if (topBlock.type === 'sequence') {
+            isInsideSequence = true;
+            break;
+        }
+        topBlock = topBlock.getSurroundParent();
+    }
+
+    if (isInsideSequence) {
+        code += `  timeDur += ` + dur + `;\n`;
+    }
 
     num++;
     return code;

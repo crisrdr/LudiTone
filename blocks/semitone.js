@@ -65,7 +65,9 @@ Blockly.Blocks['semitone'] = {
     updateShape_: function () {
         const basicNotes = [
             ["c4", "c4"], ["d4", "d4"], ["e4", "e4"], 
-            ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]
+            ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"],
+            ["c5", "c5"], ["d5", "d5"], ["e5", "e5"], 
+            ["f5", "f5"], ["g5", "g5"], ["a5", "a5"], ["b5", "b5"]
         ];
 
         const accidentals = [
@@ -190,28 +192,39 @@ Blockly.JavaScript['semitone'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    code += `
-  if (typeof inChord !== 'undefined' && inChord) {
-      chordNotesObj.push('${note}');
-  } else {
-`;
+    // Check if we are inside a chord block
+    let topBlock = block.getSurroundParent();
+    let isInsideChord = false;
+    let isInsideSequence = false;
 
-    if (isPoly) {
-        code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
-        if (options.kind === 'harm') {
-            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4], ` + dur + `, now + timeDur${volumeParam});\n`;
-        } else {
-            code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93], ` + dur + `, now + timeDur${volumeParam});\n`;
+    while (topBlock) {
+        if (topBlock.type === 'chord' || topBlock.type === 'chord_ed') {
+            isInsideChord = true;
         }
-    } else {
-        code += `  synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, now + timeDur${volumeParam});\n`;
+        if (topBlock.type === 'sequence') {
+            isInsideSequence = true;
+        }
+        topBlock = topBlock.getSurroundParent();
     }
 
-    code += `  if (typeof inSequence !== 'undefined' && inSequence) {
-    timeDur += ` + dur + `;
-  }\n`;
+    if (isInsideChord) {
+        code += `  chordNotesObj.push('${note}');\n`;
+    } else {
+        if (isPoly) {
+            code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
+            if (options.kind === 'harm') {
+                code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4], ` + dur + `, now + timeDur${volumeParam});\n`;
+            } else {
+                code += `  synth` + num + `.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93], ` + dur + `, now + timeDur${volumeParam});\n`;
+            }
+        } else {
+            code += `  synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, now + timeDur${volumeParam});\n`;
+        }
 
-    code += `  }\n`;
+        if (isInsideSequence) {
+            code += `  timeDur += ` + dur + `;\n`;
+        }
+    }
 
     num++;
     return code;
