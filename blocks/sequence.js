@@ -15,22 +15,20 @@ Blockly.Blocks['sequence'] = {
 };
 
 Blockly.JavaScript['sequence'] = function (block) {
-    let code = `
-  var inSequence = true;
-`;
+    let code = ` var inSequence = true; \n`;
     
     // Convert the statements inside
     let branchCode = Blockly.JavaScript.statementToCode(block, 'DO');
     
     let times = block.getFieldValue('TIMES') || 1;
-    let loopVar = 'seq_i_' + Math.floor(Math.random() * 1000000);
+    let myNum = seqNum;
+    seqNum++;
+    let loopVar = 'seq_i_' + myNum;
     
     code += `  for (let ${loopVar} = 0; ${loopVar} < ${times}; ${loopVar}++) {\n`;
     code += branchCode;
     code += `  }\n`;
     
-    code += `
-  inSequence = false;
-`;
+    code += `  inSequence = false;`;
     return code;
 };

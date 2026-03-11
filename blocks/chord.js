@@ -4,7 +4,7 @@ Blockly.Blocks['chord'] = {
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
-        this.setColour(20);
+        this.setColour(0);
         this.setMutator(new Blockly.Mutator(['options_item']));
     },
     mutationToDom: function () {

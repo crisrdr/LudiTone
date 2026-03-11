@@ -216,3 +216,5 @@ Blockly.JavaScript['semitone'] = function (block) {
     num++;
     return code;
 };
+
+const semitone_dur = '<block type="semitone"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="dur">1</field></shadow></value></block>';

@@ -4,6 +4,7 @@ const playBTN = document.getElementById("play-btn");
 const stopBTN = document.getElementById("stop-btn");
 let timeDur = 0; //it controls the duration of the notes
 let num = 0; //it controls the number of synths on a given play.
+let seqNum = 0; //it controls the sequence loop variables.
 
 // Generate JavaScript code and run it
 async function runCode() {
@@ -29,6 +30,7 @@ async function runCode() {
 playBTN.addEventListener("click", () => {
   timeDur = 0;
   num = 0;
+  seqNum = 0;
   runCode();
 })
 
@@ -65,6 +67,10 @@ const toolbox = {
           "fields": {
             "NUM": 1
           }
+        },
+        {
+          kind: 'block',
+          type: 'pop',
         }
       ],
     },
@@ -88,10 +94,6 @@ const toolbox = {
         {
           kind: 'block',
           type: 'chord_ed'
-        },
-        {
-          kind: 'block',
-          type: 'pop',
         }
       ],
     },
@@ -101,12 +103,27 @@ const toolbox = {
       colour: "120",
       contents: [
         {
-          kind: 'block',
-          type: 'opt_wave_shape'
+          kind: "category",
+          name: "duration",
+          colour: "120",
+          contents: [
+            {
+              kind: 'block',
+              type: 'opt_duration'
+            },
+            {
+              kind: 'block',
+              blockxml: simple_note_dur
+            },
+            {
+              kind: 'block',
+              blockxml: semitone_dur
+            }
+          ]
         },
         {
           kind: 'block',
-          type: 'opt_duration'
+          type: 'opt_wave_shape'
         },
         {
           kind: 'block',

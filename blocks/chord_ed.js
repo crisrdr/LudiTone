@@ -1,7 +1,7 @@
 // Mutator Container Block for Options
 Blockly.Blocks['chord_ed_mutator_container'] = {
     init: function () {
-        this.setColour(20);
+        this.setColour(0);
         this.appendDummyInput()
             .appendField('chord setup');
         this.appendStatementInput('OPTIONS')
@@ -18,7 +18,7 @@ Blockly.Blocks['chord_ed'] = {
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
-        this.setColour(20);
+        this.setColour(0);
         this.setMutator(new Blockly.Mutator(['options_item']));
         this.setTooltip('A chord wrapper that plays any notes placed inside it simultaneously.');
     },
