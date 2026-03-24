@@ -159,7 +159,7 @@ Blockly.JavaScript['chord'] = function (block) {
     }
 
     // Disparamos el acorde
-    code += `  synth` + num + `.triggerAttackRelease(freqs${num}, ` + dur + `, now + timeDur${volumeParam});\n`;
+    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
 
     // Check if we are inside a sequence block
     let topBlock = block.getSurroundParent();

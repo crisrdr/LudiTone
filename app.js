@@ -9,25 +9,25 @@ let seqNum = 0; //it controls the sequence loop variables.
 // Generate JavaScript code and run it
 async function runCode() {
 
-  await Tone.Transport.start();
-
   // convert workspace to text code
   Blockly.JavaScript.addReservedWords('code');
   const code = Blockly.JavaScript.workspaceToCode(workspace);
 
-  // test adding Tone synth trigger
-  wrapCode = `const now = Tone.now();` + code
+  wrapCode = code;
 
   console.log(wrapCode);
   // evaluate code
   try {
     eval(wrapCode);
+    await Tone.Transport.start();
   } catch (e) {
     alert(e);
   }
 }
 
 playBTN.addEventListener("click", () => {
+  Tone.Transport.stop();
+  Tone.Transport.cancel(0);
   timeDur = 0;
   num = 0;
   seqNum = 0;
@@ -36,6 +36,7 @@ playBTN.addEventListener("click", () => {
 
 stopBTN.addEventListener("click", () => {
   Tone.Transport.stop();
+  Tone.Transport.cancel(0);
 })
 
 const toolbox = {

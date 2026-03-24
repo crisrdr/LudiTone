@@ -12,7 +12,7 @@ Blockly.JavaScript['pop'] = function (block) {
     const note = block.getFieldValue('note');
     const dur = 1;
     const code = `const synth` + num + ` = new Tone.MembraneSynth().toDestination();
-  synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, now + ` + timeDur + `);`;
+  Tone.Transport.schedule((time) => { synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, time); }, ` + timeDur + `);`;
     num++;
     return code;
 };

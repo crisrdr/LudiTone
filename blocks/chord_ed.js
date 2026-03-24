@@ -205,7 +205,7 @@ Blockly.JavaScript['chord_ed'] = function (block) {
     code += `  const freqs${myNum} = chordNotes_${myNum}.map(n => Tone.Frequency(n).toFrequency());\n`;
 
     code += `  if (freqs${myNum}.length > 0) {\n`;
-    code += `    synth${myNum}.triggerAttackRelease(freqs${myNum}, ` + dur + `, now + timeDur${volumeParam});\n`;
+    code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     code += `  }\n`;
 
     // Check if we are inside a sequence block
