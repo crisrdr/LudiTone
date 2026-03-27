@@ -86,6 +86,10 @@ const toolbox = {
         },
         {
           kind: 'block',
+          type: 'simple_note2'
+        },
+        {
+          kind: 'block',
           type: 'semitone'
         },
         {
@@ -145,6 +149,41 @@ const toolbox = {
         {
           kind: 'block',
           type: 'opt_adsr'
+        }
+      ]
+    },
+    {
+      kind: "category",
+      name: "options2",
+      colour: "160",
+      contents: [
+        {
+          kind: 'block',
+          type: 'opt2_duration'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_wave_shape'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_attack'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_release'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_volume'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_kind'
+        },
+        {
+          kind: 'block',
+          type: 'opt2_adsr'
         }
       ]
     }
