@@ -81,24 +81,50 @@ const toolbox = {
       colour: "20",
       contents: [
         {
-          kind: 'block',
-          type: 'simple_note'
+          kind: "category",
+          name: "mutator",
+          colour: "20",
+          contents: [
+            {
+              kind: 'block',
+              type: 'simple_note'
+            },
+            {
+              kind: 'block',
+              type: 'semitone'
+            },
+            {
+              kind: 'block',
+              type: 'chord'
+            },
+            {
+              kind: 'block',
+              type: 'chord_ed'
+            }
+          ]
         },
         {
-          kind: 'block',
-          type: 'simple_note2'
-        },
-        {
-          kind: 'block',
-          type: 'semitone'
-        },
-        {
-          kind: 'block',
-          type: 'chord'
-        },
-        {
-          kind: 'block',
-          type: 'chord_ed'
+          kind: "category",
+          name: "statement",
+          colour: "20",
+          contents: [
+            {
+              kind: 'block',
+              type: 'simple_note2'
+            },
+            {
+              kind: 'block',
+              type: 'semitone2'
+            },
+            {
+              kind: 'block',
+              type: 'chord2'
+            },
+            {
+              kind: 'block',
+              type: 'chord_ed2'
+            }
+          ]
         }
       ],
     },
