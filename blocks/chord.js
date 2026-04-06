@@ -114,7 +114,7 @@ Blockly.JavaScript['chord'] = function (block) {
     let code = ``;
 
     // Chord is inherently polyphonic
-    code += `const synth` + num + ` = new Tone.PolySynth().toDestination();\n`;
+    code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
     // 1. Configuramos el oscilador
     if (options.oscillator) {

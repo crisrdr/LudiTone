@@ -159,9 +159,9 @@ Blockly.JavaScript['semitone'] = function (block) {
 
     if (options.kind !== undefined && options.kind !== null) {
         isPoly = true;
-        code += `const synth` + num + ` = new Tone.PolySynth().toDestination();\n`;
+        code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
     } else {
-        code += `const synth` + num + ` = new Tone.Synth().toDestination();\n`;
+        code += `const synth` + num + ` = new Tone.Synth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
     }
 
     if (options.oscillator) {

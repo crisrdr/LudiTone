@@ -11,7 +11,7 @@ Blockly.Blocks['pop'] = {
 Blockly.JavaScript['pop'] = function (block) {
     const note = block.getFieldValue('note');
     const dur = 1;
-    const code = `const synth` + num + ` = new Tone.MembraneSynth().toDestination();
+    const code = `const synth` + num + ` = new Tone.MembraneSynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);
   Tone.Transport.schedule((time) => { synth` + num + `.triggerAttackRelease('${note}', ` + dur + `, time); }, ` + timeDur + `);`;
     num++;
     return code;

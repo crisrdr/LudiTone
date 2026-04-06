@@ -171,7 +171,7 @@ Blockly.JavaScript['chord_ed'] = function (block) {
     code += notesCode;
     
     code += `// --- Execute PolySynth ---\n`;
-    code += `const synth${myNum} = new Tone.PolySynth().toDestination();\n`;
+    code += `const synth${myNum} = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
     if (options.oscillator) {
         waveShape = options.oscillator;
