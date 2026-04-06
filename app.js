@@ -13,11 +13,12 @@ async function runCode() {
   Blockly.JavaScript.addReservedWords('code');
   const code = Blockly.JavaScript.workspaceToCode(workspace);
 
-  wrapCode = code;
+  wrapCode = "let current_dest = Tone.Destination;\n" + code;
 
   console.log(wrapCode);
   // evaluate code
   try {
+    await Tone.start(); // Hacemos doble check al contexto de audio con un gesto
     eval(wrapCode);
     await Tone.Transport.start();
   } catch (e) {
@@ -210,6 +211,17 @@ const toolbox = {
         {
           kind: 'block',
           type: 'opt2_adsr'
+        }
+      ]
+    },
+    {
+      kind: "category",
+      name: "effects",
+      colour: "290",
+      contents: [
+        {
+          kind: 'block',
+          type: 'effect'
         }
       ]
     }
