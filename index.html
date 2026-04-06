@@ -34,13 +34,38 @@
     <script defer src="blocks/chord_ed2.js"></script>
     <script defer src="blocks/effect.js"></script>
     <script defer src="app.js"></script>
+    <link rel="stylesheet" href="styles/menu.css">
 </head>
 
 <body>
-    <button id="play-btn">Play</button><button id="stop-btn">Stop</button>
+    <div class="controls">
+        <button id="play-btn">Play</button>
+        <button id="stop-btn">Stop</button>
+        <button id="btn-menu">Volver al Menú</button>
+    </div>
+    
     <div id="blocklyDiv" style="height: calc(100vh - 50px); width: 100vw; position: absolute; left: 0;"></div>
 
-
+    <div id="startup-menu">
+        <h1>Aprende Música</h1>
+        <div class="cards-container">
+            <div class="mode-card" id="btn-basic">
+                <h2>Básico</h2>
+                <p>Aprende lo fundamental jugando con notas sueltas y bucles.</p>
+            </div>
+            <div class="mode-card" id="btn-intermediate">
+                <h2>Intermedio</h2>
+                <p>Empieza a manejar secuencias, acordes y duraciones variadas.</p>
+            </div>
+            <div class="mode-card" id="btn-advanced">
+                <h2>Avanzado</h2>
+                <p>Configura editores de acordes y procesa todo por efectos especiales.</p>
+            </div>
+            <div class="mode-card" id="btn-free">
+                <h2>Libre</h2>
+                <p>Todas las herramientas desbloqueadas para exprimir la plataforma al máximo.</p>
+            </div>
+        </div>
+    </div>
 </body>
-
 </html>
