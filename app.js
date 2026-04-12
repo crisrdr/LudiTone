@@ -163,7 +163,12 @@ const toolboxAdvanced = {
     {
       kind: "category", name: "effects", colour: "290",
       contents: [
-        { kind: 'block', type: 'effect' }
+        { kind: 'block', type: 'effect_reverb' },
+        { kind: 'block', type: 'effect_delay' },
+        { kind: 'block', type: 'effect_distortion' },
+        { kind: 'block', type: 'effect_chorus' },
+        { kind: 'block', type: 'effect_bitcrusher' },
+        { kind: 'block', type: 'effect_pitchshift' }
       ]
     }
   ]
@@ -349,10 +354,12 @@ const toolboxFree = {
       name: "effects",
       colour: "290",
       contents: [
-        {
-          kind: 'block',
-          type: 'effect'
-        }
+        { kind: 'block', type: 'effect_reverb' },
+        { kind: 'block', type: 'effect_delay' },
+        { kind: 'block', type: 'effect_distortion' },
+        { kind: 'block', type: 'effect_chorus' },
+        { kind: 'block', type: 'effect_bitcrusher' },
+        { kind: 'block', type: 'effect_pitchshift' }
       ]
     }
   ],
