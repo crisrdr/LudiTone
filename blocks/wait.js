@@ -10,7 +10,7 @@ Blockly.Blocks['wait'] = {
 
 Blockly.JavaScript['wait'] = function (block) {
     const wait = block.getFieldValue('wait');
-    timeDur = timeDur + wait;
-    const code = ``;
+    console.log("Wait block evaluated at code generation. Runtime addition will be: ", wait);
+    const code = `  timeDur += ${wait};\n`;
     return code;
 };
