@@ -2,7 +2,22 @@ Blockly.Blocks['effect_delay'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("add Delay");
+            .appendField("Delay");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Delay Time")
+            .appendField(new Blockly.FieldTextInput("8n"), "DELAY_TIME");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Feedback")
+            .appendField(new Blockly.FieldNumber(0.4, 0, 1), "FEEDBACK");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Wet")
+            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
@@ -15,12 +30,17 @@ Blockly.Blocks['effect_delay'] = {
 };
 
 Blockly.JavaScript['effect_delay'] = function (block) {
+    let delayTime = block.getFieldValue('DELAY_TIME');
+    let feedback = block.getFieldValue('FEEDBACK');
+    let wet = block.getFieldValue('WET');
+
     let code = ``;
 
     let myNum = num;
     num++; // Increment global counter to ensure unique IDs
 
-    let effectOptions = '{delayTime: "8n", feedback: 0.4, wet: 0.5}';
+    // Delay time is often a string like "8n", so we keep it quoted
+    let effectOptions = `{delayTime: "${delayTime}", feedback: ${feedback}, wet: ${wet}}`;
 
     code += `// --- Start Effect Wrapper ---\n`;
 

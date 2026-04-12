@@ -163,12 +163,60 @@ const toolboxAdvanced = {
     {
       kind: "category", name: "effects", colour: "290",
       contents: [
-        { kind: 'block', type: 'effect_reverb' },
-        { kind: 'block', type: 'effect_delay' },
-        { kind: 'block', type: 'effect_distortion' },
-        { kind: 'block', type: 'effect_chorus' },
-        { kind: 'block', type: 'effect_bitcrusher' },
-        { kind: 'block', type: 'effect_pitchshift' }
+        {
+          kind: "category", name: "Reverb", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_reverb' },
+            { kind: 'block', type: 'effect_jcreverb' },
+            { kind: 'block', type: 'effect_freeverb' }
+          ]
+        },
+        {
+          kind: "category", name: "Delay & Echo", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_delay' },
+            { kind: 'block', type: 'effect_pingpongdelay' }
+          ]
+        },
+        {
+          kind: "category", name: "Modulation", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_chorus' },
+            { kind: 'block', type: 'effect_phaser' },
+            { kind: 'block', type: 'effect_tremolo' },
+            { kind: 'block', type: 'effect_vibrato' }
+          ]
+        },
+        {
+          kind: "category", name: "Distortion", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_distortion' },
+            { kind: 'block', type: 'effect_bitcrusher' },
+            { kind: 'block', type: 'effect_chebyshev' }
+          ]
+        },
+        {
+          kind: "category", name: "Pitch", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_pitchshift' },
+            { kind: 'block', type: 'effect_frequencyshifter' }
+          ]
+        },
+        {
+          kind: "category", name: "Filters", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_autofilter' },
+            { kind: 'block', type: 'effect_autowah' }
+          ]
+        },
+        {
+          kind: "category", name: "Stereo", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_autopanner' },
+            { kind: 'block', type: 'effect_stereowidener' },
+            { kind: 'block', type: 'effect_midsideeffect' }
+          ]
+        }
       ]
     }
   ]
@@ -354,12 +402,60 @@ const toolboxFree = {
       name: "effects",
       colour: "290",
       contents: [
-        { kind: 'block', type: 'effect_reverb' },
-        { kind: 'block', type: 'effect_delay' },
-        { kind: 'block', type: 'effect_distortion' },
-        { kind: 'block', type: 'effect_chorus' },
-        { kind: 'block', type: 'effect_bitcrusher' },
-        { kind: 'block', type: 'effect_pitchshift' }
+        {
+          kind: "category", name: "Reverb", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_reverb' },
+            { kind: 'block', type: 'effect_jcreverb' },
+            { kind: 'block', type: 'effect_freeverb' }
+          ]
+        },
+        {
+          kind: "category", name: "Delay & Echo", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_delay' },
+            { kind: 'block', type: 'effect_pingpongdelay' }
+          ]
+        },
+        {
+          kind: "category", name: "Modulation", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_chorus' },
+            { kind: 'block', type: 'effect_phaser' },
+            { kind: 'block', type: 'effect_tremolo' },
+            { kind: 'block', type: 'effect_vibrato' }
+          ]
+        },
+        {
+          kind: "category", name: "Distortion", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_distortion' },
+            { kind: 'block', type: 'effect_bitcrusher' },
+            { kind: 'block', type: 'effect_chebyshev' }
+          ]
+        },
+        {
+          kind: "category", name: "Pitch", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_pitchshift' },
+            { kind: 'block', type: 'effect_frequencyshifter' }
+          ]
+        },
+        {
+          kind: "category", name: "Filters", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_autofilter' },
+            { kind: 'block', type: 'effect_autowah' }
+          ]
+        },
+        {
+          kind: "category", name: "Stereo", colour: "290",
+          contents: [
+            { kind: 'block', type: 'effect_autopanner' },
+            { kind: 'block', type: 'effect_stereowidener' },
+            { kind: 'block', type: 'effect_midsideeffect' }
+          ]
+        }
       ]
     }
   ],

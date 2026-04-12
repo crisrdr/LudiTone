@@ -20,11 +20,11 @@ Blockly.JavaScript['loop'] = function (block) {
     
     var code = `
   var loop_${loopId} = new Tone.Loop(function(time) {
-      let now = time; // Shadow global 'now' inside the loop callback
-      let timeDur = 0; // Local timeDur for relative scheduling within this iteration
+    //  let now = time; // Shadow global 'now' inside the loop callback
+    //  let timeDur = 0; // Local timeDur for relative scheduling within this iteration
       
 ${statement_input}
-  }, "${times}").start(now + timeDur);
+  }, "${times}").start(time + timeDur);
   // loop infinito, en caso de que queramos que dure un numero finito de veces
   // loop_${loopId}.iterations = 4;
 `;

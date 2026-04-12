@@ -2,7 +2,17 @@ Blockly.Blocks['effect_pitchshift'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("add PitchShift");
+            .appendField("PitchShift");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Pitch (semitones)")
+            .appendField(new Blockly.FieldNumber(5, -36, 36), "PITCH");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Wet")
+            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
@@ -15,12 +25,15 @@ Blockly.Blocks['effect_pitchshift'] = {
 };
 
 Blockly.JavaScript['effect_pitchshift'] = function (block) {
+    let pitch = block.getFieldValue('PITCH');
+    let wet = block.getFieldValue('WET');
+
     let code = ``;
 
     let myNum = num;
     num++; // Increment global counter to ensure unique IDs
 
-    let effectOptions = '{pitch: 5}';
+    let effectOptions = `{pitch: ${pitch}, wet: ${wet}}`;
 
     code += `// --- Start Effect Wrapper ---\n`;
 

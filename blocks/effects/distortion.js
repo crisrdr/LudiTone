@@ -2,7 +2,17 @@ Blockly.Blocks['effect_distortion'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("add Distortion");
+            .appendField("Distortion");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Distortion")
+            .appendField(new Blockly.FieldNumber(0.8, 0, 1), "DISTORTION");
+            
+        this.appendDummyInput()
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Wet")
+            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
@@ -15,12 +25,15 @@ Blockly.Blocks['effect_distortion'] = {
 };
 
 Blockly.JavaScript['effect_distortion'] = function (block) {
+    let distortion = block.getFieldValue('DISTORTION');
+    let wet = block.getFieldValue('WET');
+
     let code = ``;
 
     let myNum = num;
     num++; // Increment global counter to ensure unique IDs
 
-    let effectOptions = '{distortion: 0.8, wet: 0.5}';
+    let effectOptions = `{distortion: ${distortion}, wet: ${wet}}`;
 
     code += `// --- Start Effect Wrapper ---\n`;
 

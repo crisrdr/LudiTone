@@ -1,28 +1,23 @@
-Blockly.Blocks['effect_chorus'] = {
+Blockly.Blocks['effect_tremolo'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("Chorus");
+            .appendField("Tremolo (LFO Volume)");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frequency")
-            .appendField(new Blockly.FieldNumber(1.5, 0), "FREQUENCY");
-            
-        this.appendDummyInput()
-            .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Delay Time")
-            .appendField(new Blockly.FieldNumber(3.5, 0), "DELAY_TIME");
+            .appendField("LFO Frequency")
+            .appendField(new Blockly.FieldNumber(9, 0), "FREQUENCY");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Depth")
-            .appendField(new Blockly.FieldNumber(0.7, 0, 1), "DEPTH");
+            .appendField(new Blockly.FieldNumber(0.75, 0, 1), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Wet")
-            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
@@ -30,13 +25,12 @@ Blockly.Blocks['effect_chorus'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies a Chorus effect to all notes placed inside.');
+        this.setTooltip('Applies a Tremolo (LFO modulated amplitude) to notes.');
     }
 };
 
-Blockly.JavaScript['effect_chorus'] = function (block) {
+Blockly.JavaScript['effect_tremolo'] = function (block) {
     let frequency = block.getFieldValue('FREQUENCY');
-    let delayTime = block.getFieldValue('DELAY_TIME');
     let depth = block.getFieldValue('DEPTH');
     let wet = block.getFieldValue('WET');
 
@@ -45,13 +39,13 @@ Blockly.JavaScript['effect_chorus'] = function (block) {
     let myNum = num;
     num++; // Increment global counter to ensure unique IDs
 
-    let effectOptions = `{frequency: ${frequency}, delayTime: ${delayTime}, depth: ${depth}, wet: ${wet}}`;
+    let effectOptions = `{frequency: ${frequency}, depth: ${depth}, wet: ${wet}}`;
 
     code += `// --- Start Effect Wrapper ---\n`;
 
     code += `var prev_dest_${myNum} = typeof current_dest !== 'undefined' ? current_dest : Tone.Destination;\n`;
 
-    code += `const effect_${myNum} = new Tone.Chorus(${effectOptions}).connect(prev_dest_${myNum});\n`;
+    code += `const effect_${myNum} = new Tone.Tremolo(${effectOptions}).connect(prev_dest_${myNum});\n`;
     code += `if (typeof effect_${myNum}.start === 'function') effect_${myNum}.start();\n`;
     
     code += `current_dest = effect_${myNum};\n`;

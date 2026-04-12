@@ -1,10 +1,8 @@
-Blockly.Blocks['effect_reverb'] = {
+Blockly.Blocks['effect_chebyshev'] = {
     init: function () {
-        this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Reverb");
+        this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Chebyshev (Distortion)");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Decay").appendField(new Blockly.FieldNumber(1.5, 0.1, 10), "DECAY");
-        this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Pre Delay").appendField(new Blockly.FieldNumber(0.01, 0, 1), "PREDELAY");
+            .appendField("Order").appendField(new Blockly.FieldNumber(50, 1, 100), "ORDER");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
@@ -14,15 +12,14 @@ Blockly.Blocks['effect_reverb'] = {
     }
 };
 
-Blockly.JavaScript['effect_reverb'] = function (block) {
-    let decay = block.getFieldValue('DECAY');
-    let predelay = block.getFieldValue('PREDELAY');
+Blockly.JavaScript['effect_chebyshev'] = function (block) {
+    let order = block.getFieldValue('ORDER');
     let wet = block.getFieldValue('WET');
     let myNum = num++; // unique ID
 
-    let effectOptions = `{decay: ${decay}, preDelay: ${predelay}, wet: ${wet}}`;
+    let effectOptions = `{order: ${order}, wet: ${wet}}`;
     let code = `var prev_dest_${myNum} = typeof current_dest !== 'undefined' ? current_dest : Tone.Destination;\n`;
-    code += `const effect_${myNum} = new Tone.Reverb(${effectOptions}).connect(prev_dest_${myNum});\n`;
+    code += `const effect_${myNum} = new Tone.Chebyshev(${effectOptions}).connect(prev_dest_${myNum});\n`;
     code += `if (typeof effect_${myNum}.start === 'function') effect_${myNum}.start();\n`;
     code += `current_dest = effect_${myNum};\n`;
     code += Blockly.JavaScript.statementToCode(block, 'STATEMENTS');
