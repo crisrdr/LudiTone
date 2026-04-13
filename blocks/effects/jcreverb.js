@@ -6,7 +6,7 @@ Blockly.Blocks['effect_jcreverb'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Room Size")
-            .appendField(new Blockly.FieldNumber(0.8, 0, 1), "ROOM_SIZE");
+            .appendField(new Blockly.FieldNumber(0.8, 0, 0.9), "ROOM_SIZE");
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Wet")
