@@ -2,7 +2,7 @@ Blockly.Blocks['wait'] = {
     init: function () {
         this.setPreviousStatement(true);
         this.appendDummyInput()
-            .appendField("esperar")
+            .appendField("wait")
             .appendField(new Blockly.FieldNumber(1, 0, 10, 0.1), "wait");
         this.setNextStatement(true, null);
     }
