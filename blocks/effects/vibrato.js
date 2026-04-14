@@ -2,11 +2,11 @@ Blockly.Blocks['effect_vibrato'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Vibrato");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frequency").appendField(new Blockly.FieldNumber(5, 0), "FREQUENCY");
+            .appendField("Frecuencia").appendField(new Blockly.FieldNumber(5, 0), "FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Depth").appendField(new Blockly.FieldNumber(0.1, 0, 1), "DEPTH");
+            .appendField("Profundidad").appendField(new Blockly.FieldNumber(0.1, 0, 1), "DEPTH");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

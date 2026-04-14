@@ -4,13 +4,13 @@ Blockly.Blocks['effect_autowah'] = {
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Base Freq").appendField(new Blockly.FieldNumber(100, 0), "BASE_FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Octaves").appendField(new Blockly.FieldNumber(6, 1), "OCTAVES");
+            .appendField("Octavas").appendField(new Blockly.FieldNumber(6, 1), "OCTAVES");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Sensitivity").appendField(new Blockly.FieldNumber(0, -40, 40), "SENSITIVITY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Q").appendField(new Blockly.FieldNumber(2, 0), "Q");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

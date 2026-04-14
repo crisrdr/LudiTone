@@ -2,7 +2,7 @@ Blockly.Blocks['effect_midsideeffect'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("MidSideEffect (Base)");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

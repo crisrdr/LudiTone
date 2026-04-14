@@ -1,10 +1,10 @@
 Blockly.Blocks['sequence'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("sequence")
-            .appendField("repeat")
+            .appendField("secuencia")
+            .appendField("repetir")
             .appendField(new Blockly.FieldNumber(1, 1, 100, 1), "TIMES")
-            .appendField("times");
+            .appendField("veces");
         this.appendStatementInput("DO")
             .setCheck(null);
         this.setPreviousStatement(true, null);

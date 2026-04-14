@@ -63,7 +63,7 @@ Blockly.Blocks['simple_note'] = {
         // Alwasy keep the base "note" field
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
-                .appendField("note")
+                .appendField("nota")
                 .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
         }
 
@@ -73,7 +73,7 @@ Blockly.Blocks['simple_note'] = {
                 var input = this.appendValueInput('ADD' + i)
                     .setCheck("options")
                     .setAlign(Blockly.ALIGN_RIGHT)
-                    .appendField("option");
+                    .appendField("opción");
             }
         }
 
@@ -90,7 +90,7 @@ Blockly.Blocks['options_container'] = {
     init: function () {
         this.setColour(120);
         this.appendDummyInput()
-            .appendField('options');
+            .appendField('opciones');
         this.appendStatementInput('STACK');
         this.setTooltip('Add, remove, or reorder options.');
         this.contextMenu = false;
@@ -102,7 +102,7 @@ Blockly.Blocks['options_item'] = {
     init: function () {
         this.setColour(120);
         this.appendDummyInput()
-            .appendField('option');
+            .appendField('opción');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('Add a new option.');

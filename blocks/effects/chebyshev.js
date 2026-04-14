@@ -4,7 +4,7 @@ Blockly.Blocks['effect_chebyshev'] = {
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Order").appendField(new Blockly.FieldNumber(50, 1, 100), "ORDER");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

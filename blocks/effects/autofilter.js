@@ -11,12 +11,12 @@ Blockly.Blocks['effect_autofilter'] = {
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Depth")
+            .appendField("Profundidad")
             .appendField(new Blockly.FieldNumber(1, 0, 1), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet")
+            .appendField("Nivel de efecto (Wet)")
             .appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')

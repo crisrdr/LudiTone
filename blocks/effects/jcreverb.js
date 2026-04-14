@@ -5,11 +5,11 @@ Blockly.Blocks['effect_jcreverb'] = {
             .appendField("JCReverb");
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Room Size")
+            .appendField("Tamaño de sala")
             .appendField(new Blockly.FieldNumber(0.8, 0, 0.9), "ROOM_SIZE");
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet")
+            .appendField("Nivel de efecto (Wet)")
             .appendField(new Blockly.FieldNumber(0.6, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

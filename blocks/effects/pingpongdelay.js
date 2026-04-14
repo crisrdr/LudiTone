@@ -2,11 +2,11 @@ Blockly.Blocks['effect_pingpongdelay'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("PingPongDelay");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Delay Time").appendField(new Blockly.FieldTextInput("8n"), "DELAY_TIME");
+            .appendField("Tiempo de retardo").appendField(new Blockly.FieldTextInput("8n"), "DELAY_TIME");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Feedback").appendField(new Blockly.FieldNumber(0.2, 0, 1), "FEEDBACK");
+            .appendField("Retroalimentación").appendField(new Blockly.FieldNumber(0.2, 0, 1), "FEEDBACK");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

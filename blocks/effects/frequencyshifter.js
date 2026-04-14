@@ -2,9 +2,9 @@ Blockly.Blocks['effect_frequencyshifter'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("FrequencyShifter");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frequency").appendField(new Blockly.FieldNumber(0, -20000, 20000), "FREQUENCY");
+            .appendField("Frecuencia").appendField(new Blockly.FieldNumber(0, -20000, 20000), "FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

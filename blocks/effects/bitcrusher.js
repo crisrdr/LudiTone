@@ -11,7 +11,7 @@ Blockly.Blocks['effect_bitcrusher'] = {
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet")
+            .appendField("Nivel de efecto (Wet)")
             .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')

@@ -1,7 +1,7 @@
 Blockly.Blocks['opt2_wave_shape'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("wave")
+            .appendField("onda")
             .appendField(new Blockly.FieldDropdown([
                 ["sine", "sine"],
                 ["square", "square"],
@@ -24,7 +24,7 @@ Blockly.JavaScript['opt2_wave_shape'] = function (block) {
 Blockly.Blocks['opt2_duration'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("duration")
+            .appendField("duración")
             .appendField(new Blockly.FieldNumber(1, 0.1, 10, 0.1), "dur");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
@@ -42,7 +42,7 @@ Blockly.JavaScript['opt2_duration'] = function (block) {
 Blockly.Blocks['opt2_attack'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("attack")
+            .appendField("ataque")
             .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "attack");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
@@ -59,7 +59,7 @@ Blockly.JavaScript['opt2_attack'] = function (block) {
 Blockly.Blocks['opt2_release'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("release")
+            .appendField("liberación")
             .appendField(new Blockly.FieldNumber(1, 0.1, 10, 0.1), "release");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
@@ -76,7 +76,7 @@ Blockly.JavaScript['opt2_release'] = function (block) {
 Blockly.Blocks['opt2_volume'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("volume")
+            .appendField("volumen")
             .appendField(new Blockly.FieldNumber(1, 0, 2, 0.01), "vol");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
@@ -93,7 +93,7 @@ Blockly.JavaScript['opt2_volume'] = function (block) {
 Blockly.Blocks['opt2_kind'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("kind")
+            .appendField("tipo")
             .appendField(new Blockly.FieldDropdown([
                 ["harmonic", "harm"],
                 ["inharmonic", "inharm"]

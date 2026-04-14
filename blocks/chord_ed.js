@@ -3,10 +3,10 @@ Blockly.Blocks['chord_ed_mutator_container'] = {
     init: function () {
         this.setColour(0);
         this.appendDummyInput()
-            .appendField('chord setup');
+            .appendField('configurar acorde');
         this.appendStatementInput('OPTIONS')
             .setCheck(null)
-            .appendField('options');
+            .appendField('opciones');
         this.setTooltip('Add options to the chord.');
         this.contextMenu = false;
     }
@@ -86,7 +86,7 @@ Blockly.Blocks['chord_ed'] = {
             if (!this.getInput('BASE_DUMMY')) {
                 this.appendDummyInput('BASE_DUMMY')
                     .setAlign(Blockly.ALIGN_LEFT)
-                    .appendField("chord");
+                    .appendField("acorde");
             }
         } else {
             if (this.getInput('BASE_DUMMY')) {
@@ -105,7 +105,7 @@ Blockly.Blocks['chord_ed'] = {
                     input.appendField("chord", "CHORD_TITLE"); 
                 }
                 
-                input.appendField("option");
+                input.appendField("opción");
             } else if (i === 0) {
                 if (!this.getField("CHORD_TITLE")) {
                     this.getInput('OPT0').insertFieldAt(0, "chord", "CHORD_TITLE");

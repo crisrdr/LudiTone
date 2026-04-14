@@ -2,13 +2,13 @@ Blockly.Blocks['loop'] = {
     init: function () {
         this.setPreviousStatement(true);
         this.appendDummyInput()
-            .appendField('repeat this')
-            .appendField('at')
-            .appendField(new Blockly.FieldDropdown([["slow", "2n"], ["medium", "4n"], ["fast", "8n"]]), "times");
+            .appendField('repetir esto')
+            .appendField('a velocidad')
+            .appendField(new Blockly.FieldDropdown([["lento", "2n"], ["medio", "4n"], ["rápido", "8n"]]), "times");
         this.appendStatementInput('DO')
-            .appendField('do');
+            .appendField('hacer');
         this.appendDummyInput()
-            .appendField('end');
+            .appendField('fin');
     }
 };
 

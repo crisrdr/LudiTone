@@ -15,13 +15,13 @@ Blockly.Blocks['semitone2'] = {
 
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("semitone")
+            .appendField("semitono")
             .appendField(new Blockly.FieldDropdown(basicNotes), "note")
             .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
             
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
-            .appendField("options");
+            .appendField("opciones");
             
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

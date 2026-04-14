@@ -6,22 +6,22 @@ Blockly.Blocks['effect_chorus'] = {
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frequency")
+            .appendField("Frecuencia")
             .appendField(new Blockly.FieldNumber(1.5, 0), "FREQUENCY");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Delay Time")
+            .appendField("Tiempo de retardo")
             .appendField(new Blockly.FieldNumber(3.5, 0), "DELAY_TIME");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Depth")
+            .appendField("Profundidad")
             .appendField(new Blockly.FieldNumber(0.7, 0, 1), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet")
+            .appendField("Nivel de efecto (Wet)")
             .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
 
         this.appendStatementInput('STATEMENTS')

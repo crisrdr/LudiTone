@@ -1,11 +1,11 @@
 Blockly.Blocks['simple_note2'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("note")
+            .appendField("nota")
             .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
-            .appendField("options");
+            .appendField("opciones");
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);

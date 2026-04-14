@@ -2,11 +2,11 @@ Blockly.Blocks['effect_freeverb'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Freeverb");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Room Size").appendField(new Blockly.FieldNumber(0.7, 0, 1), "ROOM_SIZE");
+            .appendField("Tamaño de sala").appendField(new Blockly.FieldNumber(0.7, 0, 1), "ROOM_SIZE");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Dampening").appendField(new Blockly.FieldNumber(3000, 0), "DAMPENING");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

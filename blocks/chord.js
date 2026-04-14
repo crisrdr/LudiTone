@@ -63,10 +63,10 @@ Blockly.Blocks['chord'] = {
         // Always keep the base fields
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
-                .appendField("chord")
+                .appendField("acorde")
                 .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note")
-                .appendField("type")
-                .appendField(new Blockly.FieldDropdown([["major", "major"], ["minor", "minor"]]), "chord_type");
+                .appendField("tipo")
+                .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
         }
 
         // Add options inputs
@@ -75,7 +75,7 @@ Blockly.Blocks['chord'] = {
                 var input = this.appendValueInput('ADD' + i)
                     .setCheck("options")
                     .setAlign(Blockly.ALIGN_RIGHT)
-                    .appendField("option");
+                    .appendField("opción");
             }
         }
 

@@ -80,7 +80,7 @@ Blockly.Blocks['semitone'] = {
             if (!this.getInput('BASE_DUMMY')) {
                 this.appendDummyInput('BASE_DUMMY')
                     .setAlign(Blockly.ALIGN_LEFT)
-                    .appendField("semitone")
+                    .appendField("semitono")
                     .appendField(new Blockly.FieldDropdown(basicNotes), "note")
                     .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
             }
@@ -103,7 +103,7 @@ Blockly.Blocks['semitone'] = {
                          .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
                 }
                 
-                input.appendField("option");
+                input.appendField("opción");
             } else if (i === 0) {
                 if (!this.getField("BASE_TITLE")) {
                     this.getInput('ADD0').insertFieldAt(0, "semitone", "BASE_TITLE");

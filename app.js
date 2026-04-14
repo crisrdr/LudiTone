@@ -45,7 +45,7 @@ const toolboxBasic = {
   kind: 'categoryToolbox',
   contents: [
     {
-      kind: "category", name: "control", colour: "212",
+      kind: "category", name: "Control", colour: "212",
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'math_number', fields: { NUM: 1 } },
@@ -54,7 +54,7 @@ const toolboxBasic = {
       ]
     },
     {
-      kind: "category", name: "notes", colour: "20",
+      kind: "category", name: "Notas", colour: "20",
       contents: [
         { kind: 'block', type: 'simple_note' },
         { kind: 'block', type: 'simple_note2' }
@@ -67,7 +67,7 @@ const toolboxIntermediate = {
   kind: 'categoryToolbox',
   contents: [
     {
-      kind: "category", name: "control", colour: "212",
+      kind: "category", name: "Control", colour: "212",
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
@@ -77,14 +77,14 @@ const toolboxIntermediate = {
       ]
     },
     {
-      kind: "category", name: "notes", colour: "20",
+      kind: "category", name: "Notas", colour: "20",
       contents: [
-        { kind: 'category', name: 'mutator', colour: '20', contents: [
+        { kind: 'category', name: 'Puzzle', colour: '20', contents: [
             { kind: 'block', type: 'simple_note' },
             { kind: 'block', type: 'semitone' },
             { kind: 'block', type: 'chord' }
         ]},
-        { kind: 'category', name: 'statement', colour: '20', contents: [
+        { kind: 'category', name: 'Anidado', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' },
             { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }
@@ -92,9 +92,9 @@ const toolboxIntermediate = {
       ]
     },
     {
-      kind: "category", name: "options", colour: "120",
+      kind: "category", name: "Opciones puzzle", colour: "120",
       contents: [
-        { kind: 'category', name: 'duration', colour: '120', contents: [
+        { kind: 'category', name: 'Duración', colour: '120', contents: [
             { kind: 'block', type: 'opt_duration' },
             { kind: 'block', blockxml: simple_note_dur },
             { kind: 'block', blockxml: semitone_dur }
@@ -103,7 +103,7 @@ const toolboxIntermediate = {
       ]
     },
     {
-      kind: "category", name: "options2", colour: "160",
+      kind: "category", name: "Opciones caja", colour: "160",
       contents: [
         { kind: 'block', type: 'opt2_duration' },
         { kind: 'block', type: 'opt2_wave_shape' }
@@ -116,7 +116,7 @@ const toolboxAdvanced = {
   kind: 'categoryToolbox',
   contents: [
     {
-      kind: "category", name: "control", colour: "212",
+      kind: "category", name: "Control", colour: "212",
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
@@ -126,22 +126,22 @@ const toolboxAdvanced = {
       ]
     },
     {
-      kind: "category", name: "notes", colour: "20",
+      kind: "category", name: "Notas", colour: "20",
       contents: [
-        { kind: 'category', name: 'mutator', colour: '20', contents: [
+        { kind: 'category', name: 'Mutador', colour: '20', contents: [
             { kind: 'block', type: 'simple_note' }, { kind: 'block', type: 'semitone' },
             { kind: 'block', type: 'chord' }, { kind: 'block', type: 'chord_ed' }
         ]},
-        { kind: 'category', name: 'statement', colour: '20', contents: [
+        { kind: 'category', name: 'Anidado', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' }, { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }, { kind: 'block', type: 'chord_ed2' }
         ]}
       ]
     },
     {
-      kind: "category", name: "options", colour: "120",
+      kind: "category", name: "Opciones puzzle", colour: "120",
       contents: [
-        { kind: 'category', name: 'duration', colour: '120', contents: [
+        { kind: 'category', name: 'Duración', colour: '120', contents: [
             { kind: 'block', type: 'opt_duration' },
             { kind: 'block', blockxml: simple_note_dur },
             { kind: 'block', blockxml: semitone_dur }
@@ -152,7 +152,7 @@ const toolboxAdvanced = {
       ]
     },
     {
-      kind: "category", name: "options2", colour: "160",
+      kind: "category", name: "Opciones caja", colour: "160",
       contents: [
         { kind: 'block', type: 'opt2_duration' }, { kind: 'block', type: 'opt2_wave_shape' },
         { kind: 'block', type: 'opt2_attack' }, { kind: 'block', type: 'opt2_release' },
@@ -161,10 +161,10 @@ const toolboxAdvanced = {
       ]
     },
     {
-      kind: "category", name: "effects", colour: "290",
+      kind: "category", name: "Efectos", colour: "290",
       contents: [
         {
-          kind: "category", name: "Reverb", colour: "290",
+          kind: "category", name: "Reverberación", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_reverb' },
             { kind: 'block', type: 'effect_jcreverb' },
@@ -172,14 +172,14 @@ const toolboxAdvanced = {
           ]
         },
         {
-          kind: "category", name: "Delay & Echo", colour: "290",
+          kind: "category", name: "Retardo y Eco", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_delay' },
             { kind: 'block', type: 'effect_pingpongdelay' }
           ]
         },
         {
-          kind: "category", name: "Modulation", colour: "290",
+          kind: "category", name: "Modulación", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_chorus' },
             { kind: 'block', type: 'effect_phaser' },
@@ -188,7 +188,7 @@ const toolboxAdvanced = {
           ]
         },
         {
-          kind: "category", name: "Distortion", colour: "290",
+          kind: "category", name: "Distorsión", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_distortion' },
             { kind: 'block', type: 'effect_bitcrusher' },
@@ -196,21 +196,21 @@ const toolboxAdvanced = {
           ]
         },
         {
-          kind: "category", name: "Pitch", colour: "290",
+          kind: "category", name: "Tono", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_pitchshift' },
             { kind: 'block', type: 'effect_frequencyshifter' }
           ]
         },
         {
-          kind: "category", name: "Filters", colour: "290",
+          kind: "category", name: "Filtros", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
         {
-          kind: "category", name: "Stereo", colour: "290",
+          kind: "category", name: "Estéreo", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autopanner' },
             { kind: 'block', type: 'effect_stereowidener' },
@@ -228,7 +228,7 @@ const toolboxFree = {
   contents: [
     {
       kind: "category",
-      name: "control",
+      name: "Control",
       colour: "212",
       contents: [
         {
@@ -261,7 +261,7 @@ const toolboxFree = {
     },
     {
       kind: "category",
-      name: "notes",
+      name: "Notas",
       colour: "20",
       contents: [
         {
@@ -314,7 +314,7 @@ const toolboxFree = {
     },
     {
       kind: "category",
-      name: "options",
+      name: "Opciones puzzle",
       colour: "120",
       contents: [
         {
@@ -364,7 +364,7 @@ const toolboxFree = {
     },
     {
       kind: "category",
-      name: "options2",
+      name: "Opciones caja",
       colour: "160",
       contents: [
         {
@@ -399,11 +399,11 @@ const toolboxFree = {
     },
     {
       kind: "category",
-      name: "effects",
+      name: "Efectos",
       colour: "290",
       contents: [
         {
-          kind: "category", name: "Reverb", colour: "290",
+          kind: "category", name: "Reverberación", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_reverb' },
             { kind: 'block', type: 'effect_jcreverb' },
@@ -411,14 +411,14 @@ const toolboxFree = {
           ]
         },
         {
-          kind: "category", name: "Delay & Echo", colour: "290",
+          kind: "category", name: "Retardo y Eco", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_delay' },
             { kind: 'block', type: 'effect_pingpongdelay' }
           ]
         },
         {
-          kind: "category", name: "Modulation", colour: "290",
+          kind: "category", name: "Modulación", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_chorus' },
             { kind: 'block', type: 'effect_phaser' },
@@ -427,7 +427,7 @@ const toolboxFree = {
           ]
         },
         {
-          kind: "category", name: "Distortion", colour: "290",
+          kind: "category", name: "Distorsión", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_distortion' },
             { kind: 'block', type: 'effect_bitcrusher' },
@@ -435,21 +435,21 @@ const toolboxFree = {
           ]
         },
         {
-          kind: "category", name: "Pitch", colour: "290",
+          kind: "category", name: "Tono", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_pitchshift' },
             { kind: 'block', type: 'effect_frequencyshifter' }
           ]
         },
         {
-          kind: "category", name: "Filters", colour: "290",
+          kind: "category", name: "Filtros", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
         {
-          kind: "category", name: "Stereo", colour: "290",
+          kind: "category", name: "Estéreo", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autopanner' },
             { kind: 'block', type: 'effect_stereowidener' },

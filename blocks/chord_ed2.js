@@ -2,11 +2,11 @@ Blockly.Blocks['chord_ed2'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("chord");
+            .appendField("acorde");
             
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
-            .appendField("options");
+            .appendField("opciones");
 
         this.appendStatementInput('NOTES')
             .setCheck(null);

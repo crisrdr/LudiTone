@@ -2,13 +2,13 @@ Blockly.Blocks['effect_phaser'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Phaser");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frequency").appendField(new Blockly.FieldNumber(0.5, 0), "FREQUENCY");
+            .appendField("Frecuencia").appendField(new Blockly.FieldNumber(0.5, 0), "FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Octaves").appendField(new Blockly.FieldNumber(3, 1), "OCTAVES");
+            .appendField("Octavas").appendField(new Blockly.FieldNumber(3, 1), "OCTAVES");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Base Freq").appendField(new Blockly.FieldNumber(350, 0), "BASE_FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Wet").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
