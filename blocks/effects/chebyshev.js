@@ -2,9 +2,12 @@ Blockly.Blocks['effect_chebyshev'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Chebyshev (Distortion)");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Order").appendField(new Blockly.FieldNumber(50, 1, 100), "ORDER");
+            .appendField("Order").appendField(((function(f){ f.setTooltip(`Orden de distorsión (1 a 100):
+Más alto = saturación más sucia.`); return f; })(new Blockly.FieldNumber(50, 1, 100))), "ORDER");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

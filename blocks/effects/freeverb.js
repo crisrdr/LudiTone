@@ -2,11 +2,16 @@ Blockly.Blocks['effect_freeverb'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Freeverb");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Tamaño de sala").appendField(new Blockly.FieldNumber(0.7, 0, 1), "ROOM_SIZE");
+            .appendField("Tamaño de sala").appendField(((function(f){ f.setTooltip(`Tamaño de sala (0 a 1):
+0 = Habitación pequeña
+1 = Catedral inmensa`); return f; })(new Blockly.FieldNumber(0.7, 0, 1))), "ROOM_SIZE");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Dampening").appendField(new Blockly.FieldNumber(3000, 0), "DAMPENING");
+            .appendField("Dampening").appendField(((function(f){ f.setTooltip(`Amortiguación (Hz):
+Controla qué tan rápido se apagan las frecuencias agudas.`); return f; })(new Blockly.FieldNumber(3000, 0))), "DAMPENING");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

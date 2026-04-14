@@ -7,12 +7,17 @@ Blockly.Blocks['effect_bitcrusher'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Bits")
-            .appendField(new Blockly.FieldNumber(4, 1, 16), "BITS");
+            .appendField(((function(f){ f.setTooltip(`Calidad de audio (1 a 16):
+1 a 4 = Muy robotizado/roto
+8 = Como una GameBoy
+16 = Calidad de CD normal`); return f; })(new Blockly.FieldNumber(4, 1, 16))), "BITS");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

@@ -2,22 +2,31 @@ Blockly.Blocks['effect_autofilter'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("AutoFilter (LFO Filter)");
+            .appendField("Filtro de Pasa Baja");
             
+        let freqField = new Blockly.FieldTextInput("4n");
+        freqField.setTooltip(`Valores rápidos: 16n, 8n
+Valores lentos: 4n, 2n, 1m
+O números (ej: 5)`);
+        
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("LFO Frequency")
-            .appendField(new Blockly.FieldTextInput("4n"), "FREQUENCY");
+            .appendField("Frecuencia")
+            .appendField(freqField, "FREQUENCY");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Profundidad")
-            .appendField(new Blockly.FieldNumber(1, 0, 1), "DEPTH");
+            .appendField(((function(f){ f.setTooltip(`Profundidad (0 a 1):
+0 = Efecto sutil
+1 = Efecto muy extremo`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

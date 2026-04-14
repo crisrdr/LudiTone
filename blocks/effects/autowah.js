@@ -2,15 +2,21 @@ Blockly.Blocks['effect_autowah'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("AutoWah");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Base Freq").appendField(new Blockly.FieldNumber(100, 0), "BASE_FREQUENCY");
+            .appendField("Base Freq").appendField(((function(f){ f.setTooltip(`Frecuencia Base (Hercios):
+Frecuencia (ej. 350) desde donde arranca la modulación.`); return f; })(new Blockly.FieldNumber(100, 0))), "BASE_FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Octavas").appendField(new Blockly.FieldNumber(6, 1), "OCTAVES");
+            .appendField("Octavas").appendField(((function(f){ f.setTooltip(`Octavas:
+Número de octavas por las que se desplaza el filtro.`); return f; })(new Blockly.FieldNumber(6, 1))), "OCTAVES");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Sensitivity").appendField(new Blockly.FieldNumber(0, -40, 40), "SENSITIVITY");
+            .appendField("Sensitivity").appendField(((function(f){ f.setTooltip(`Sensibilidad (-40 a 40):
+Cómo reacciona al volumen. Valores altos producen una reacción exagerada.`); return f; })(new Blockly.FieldNumber(0, -40, 40))), "SENSITIVITY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Q").appendField(new Blockly.FieldNumber(2, 0), "Q");
+            .appendField("Q").appendField(((function(f){ f.setTooltip(`Resonancia (Q):
+Más alto = pico de frecuencia más acentuado y 'chirriante'.`); return f; })(new Blockly.FieldNumber(2, 0))), "Q");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

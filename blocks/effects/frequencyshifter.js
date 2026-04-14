@@ -2,9 +2,12 @@ Blockly.Blocks['effect_frequencyshifter'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("FrequencyShifter");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Frecuencia").appendField(new Blockly.FieldNumber(0, -20000, 20000), "FREQUENCY");
+            .appendField("Frecuencia").appendField(((function(f){ f.setTooltip(`Frecuencia:
+Controla la velocidad, o sobre qué tono base empieza a girar el efecto.`); return f; })(new Blockly.FieldNumber(0, -20000, 20000))), "FREQUENCY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);

@@ -4,20 +4,30 @@ Blockly.Blocks['effect_tremolo'] = {
             .setAlign(Blockly.ALIGN_LEFT)
             .appendField("Tremolo (LFO Volume)");
             
+        let freqField = new Blockly.FieldNumber(9, 0);
+        freqField.setTooltip(`Hercios (Hz):
+1-5 = Lento y relajado
+6-8 = Ritmo tartamudo
+10+ = Zumbido rápido`);
+            
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Frecuencia")
-            .appendField(new Blockly.FieldNumber(9, 0), "FREQUENCY");
+            .appendField(freqField, "FREQUENCY");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Profundidad")
-            .appendField(new Blockly.FieldNumber(0.75, 0, 1), "DEPTH");
+            .appendField(((function(f){ f.setTooltip(`Profundidad (0 a 1):
+0 = Efecto sutil
+1 = Efecto muy extremo`); return f; })(new Blockly.FieldNumber(0.75, 0, 1))), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(1, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

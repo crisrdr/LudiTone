@@ -6,11 +6,15 @@ Blockly.Blocks['effect_jcreverb'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Tamaño de sala")
-            .appendField(new Blockly.FieldNumber(0.8, 0, 0.9), "ROOM_SIZE");
+            .appendField(((function(f){ f.setTooltip(`Tamaño de sala (0 a 1):
+0 = Habitación pequeña
+1 = Catedral inmensa`); return f; })(new Blockly.FieldNumber(0.8, 0, 0.9))), "ROOM_SIZE");
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(0.6, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.6, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
         this.setPreviousStatement(true);

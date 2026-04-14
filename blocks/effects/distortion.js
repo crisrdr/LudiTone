@@ -7,12 +7,16 @@ Blockly.Blocks['effect_distortion'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Distortion")
-            .appendField(new Blockly.FieldNumber(0.8, 0, 1), "DISTORTION");
+            .appendField(((function(f){ f.setTooltip(`Intensidad de Distorsión (0 a 1):
+0 = Limpio
+1 = Muy saturado y eléctrico`); return f; })(new Blockly.FieldNumber(0.8, 0, 1))), "DISTORTION");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

@@ -7,22 +7,28 @@ Blockly.Blocks['effect_chorus'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Frecuencia")
-            .appendField(new Blockly.FieldNumber(1.5, 0), "FREQUENCY");
+            .appendField(((function(f){ f.setTooltip(`Frecuencia:
+Controla la velocidad, o sobre qué tono base empieza a girar el efecto.`); return f; })(new Blockly.FieldNumber(1.5, 0))), "FREQUENCY");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Tiempo de retardo")
-            .appendField(new Blockly.FieldNumber(3.5, 0), "DELAY_TIME");
+            .appendField(((function(f){ f.setTooltip(`Tiempo de eco:
+Admite tempos como '4n', '8n' o valores numéricos.`); return f; })(new Blockly.FieldNumber(3.5, 0))), "DELAY_TIME");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Profundidad")
-            .appendField(new Blockly.FieldNumber(0.7, 0, 1), "DEPTH");
+            .appendField(((function(f){ f.setTooltip(`Profundidad (0 a 1):
+0 = Efecto sutil
+1 = Efecto muy extremo`); return f; })(new Blockly.FieldNumber(0.7, 0, 1))), "DEPTH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);

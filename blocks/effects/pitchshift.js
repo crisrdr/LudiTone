@@ -7,12 +7,16 @@ Blockly.Blocks['effect_pitchshift'] = {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Pitch (semitones)")
-            .appendField(new Blockly.FieldNumber(5, -36, 36), "PITCH");
+            .appendField(((function(f){ f.setTooltip(`Tono (Semitonos, -36 a 36):
+12 = Sube una octava entera
+-12 = Baja una octava entera`); return f; })(new Blockly.FieldNumber(5, -36, 36))), "PITCH");
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Nivel de efecto (Wet)")
-            .appendField(new Blockly.FieldNumber(0.5, 0, 1), "WET");
+            .appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
+0 = Señal limpia original
+1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
             .setCheck(null);
