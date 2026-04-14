@@ -2,6 +2,7 @@
 
 const playBTN = document.getElementById("play-btn");
 const stopBTN = document.getElementById("stop-btn");
+const clearBTN = document.getElementById("clear-btn");
 let timeDur = 0; //it controls the duration of the notes
 let num = 0; //it controls the number of synths on a given play.
 let seqNum = 0; //it controls the sequence loop variables.
@@ -494,10 +495,15 @@ const workspace = Blockly.inject('blocklyDiv', {
   trashcan: true
 });
 
-
+// --- VARIABLES GLOBALES SEMÁFORO ---
+let currentLevel = null;
+let isLoadingLevel = false;
 
 // Nivel selector logic
 function selectLevel(levelName) {
+  isLoadingLevel = true;
+  currentLevel = levelName;
+  
   let selectedToolbox = toolboxFree;
   switch(levelName) {
     case 'basic': selectedToolbox = toolboxBasic; break;
@@ -505,13 +511,51 @@ function selectLevel(levelName) {
     case 'advanced': selectedToolbox = toolboxAdvanced; break;
     case 'free': selectedToolbox = toolboxFree; break;
   }
+  
+  workspace.clear();
   workspace.updateToolbox(selectedToolbox);
+  
+  // 1. Cargar bloques guardados para ESTE nivel específico
+  const savedXml = localStorage.getItem('blocklyMusicParams_' + currentLevel);
+  if (savedXml) {
+    try {
+      const xml = Blockly.Xml.textToDom(savedXml);
+      Blockly.Xml.domToWorkspace(xml, workspace);
+    } catch (e) {
+      console.warn("No se pudo cargar el espacio de trabajo guardado:", e);
+    }
+  }
+  
+  isLoadingLevel = false;
+
   document.getElementById('startup-menu').style.opacity = '0';
   document.getElementById('startup-menu').style.pointerEvents = 'none';
   setTimeout(() => {
     document.getElementById('startup-menu').style.display = 'none';
   }, 400); // Wait for transition
 }
+
+// 2. Guardar bloques automáticamente ante cualquier cambio estructural
+workspace.addChangeListener((e) => {
+  if (isLoadingLevel || !currentLevel) return; // Evitar sobreescribir al cambiar de interfaz
+  
+  if (e.type !== Blockly.Events.UI && e.type !== Blockly.Events.THEME_CHANGE) {
+    const xml = Blockly.Xml.workspaceToDom(workspace);
+    const xmlText = Blockly.Xml.domToText(xml);
+    localStorage.setItem('blocklyMusicParams_' + currentLevel, xmlText);
+  }
+});
+
+// 3. Evento para limpiar el área del nivel actual
+clearBTN.addEventListener('click', () => {
+  if (!currentLevel) return;
+  if (window.confirm("¿Estás seguro de que quieres borrar todos los bloques de este nivel? Esta acción no se puede deshacer.")) {
+    isLoadingLevel = true;
+    workspace.clear();
+    localStorage.removeItem('blocklyMusicParams_' + currentLevel);
+    isLoadingLevel = false;
+  }
+});
 
 document.getElementById('btn-basic').addEventListener('click', () => selectLevel('basic'));
 document.getElementById('btn-intermediate').addEventListener('click', () => selectLevel('intermediate'));
