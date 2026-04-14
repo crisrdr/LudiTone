@@ -49,7 +49,6 @@ const toolboxBasic = {
       kind: "category", name: "Control", colour: "212",
       contents: [
         { kind: 'block', type: 'loop' },
-        { kind: 'block', type: 'math_number', fields: { NUM: 1 } },
         { kind: 'block', type: 'wait', fields: { NUM: 1 } },
         { kind: 'block', type: 'pop' }
       ]
@@ -72,7 +71,6 @@ const toolboxIntermediate = {
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
-        { kind: 'block', type: 'math_number', fields: { NUM: 1 } },
         { kind: 'block', type: 'wait', fields: { NUM: 1 } },
         { kind: 'block', type: 'pop' }
       ]
@@ -126,7 +124,6 @@ const toolboxAdvanced = {
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
-        { kind: 'block', type: 'math_number', fields: { NUM: 1 } },
         { kind: 'block', type: 'wait', fields: { NUM: 1 } },
         { kind: 'block', type: 'pop' }
       ]
@@ -249,13 +246,6 @@ const toolboxFree = {
         {
           "kind": 'block',
           "type": 'sequence',
-        },
-        {
-          "kind": "block",
-          "type": "math_number",
-          "fields": {
-            "NUM": 1
-          }
         },
         {
           "kind": "block",
