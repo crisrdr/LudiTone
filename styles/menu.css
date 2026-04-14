@@ -42,6 +42,7 @@
 
         #clear-btn {
             background-color: #2336c8;
+            margin-left: auto;
         }
 
         #clear-btn:hover {
