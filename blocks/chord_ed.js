@@ -7,7 +7,7 @@ Blockly.Blocks['chord_ed_mutator_container'] = {
         this.appendStatementInput('OPTIONS')
             .setCheck(null)
             .appendField('opciones');
-        this.setTooltip('Añade opciones al acorde.');
+        this.setTooltip('Añade diferentes ajustes musicales al acorde completo.');
         this.contextMenu = false;
     }
 };
@@ -20,7 +20,7 @@ Blockly.Blocks['chord_ed'] = {
         this.setNextStatement(true, null);
         this.setColour(0);
         this.setMutator(new Blockly.Mutator(['options_item']));
-        this.setTooltip('Un contenedor de acorde que reproduce simultáneamente las notas de su interior.');
+        this.setTooltip('Agrupa varias notas para forzar que suenen juntas al mismo tiempo (creando un acorde).');
     },
     mutationToDom: function () {
         var container = Blockly.utils.xml.createElement('mutation');

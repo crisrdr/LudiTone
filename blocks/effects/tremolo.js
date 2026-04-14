@@ -6,7 +6,7 @@ Blockly.Blocks['effect_tremolo'] = {
             
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("LFO Frequency")
+            .appendField("Frecuencia")
             .appendField(new Blockly.FieldNumber(9, 0), "FREQUENCY");
             
         this.appendDummyInput()
@@ -25,7 +25,7 @@ Blockly.Blocks['effect_tremolo'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Aplica un Tremolo (amplitud modulada LFO) a las notas de su interior.');
+        this.setTooltip('Actúa como un filtro de volumen, haciendo que el sonido tiemble.');
     }
 };
 

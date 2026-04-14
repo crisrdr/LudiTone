@@ -14,7 +14,7 @@ Blockly.Blocks['chord_ed2'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(0);
-        this.setTooltip('Un contenedor de acorde que reproduce simultáneamente las notas de su interior.');
+        this.setTooltip('Agrupa varias notas para forzar que suenen juntas al mismo tiempo (creando un acorde).');
     }
 };
 

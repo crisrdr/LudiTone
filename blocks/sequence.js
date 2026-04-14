@@ -10,7 +10,7 @@ Blockly.Blocks['sequence'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(212);
-        this.setTooltip("Ejecuta notas y acordes secuencialmente, esperando a que uno termine antes de empezar el siguiente.");
+        this.setTooltip("Actúa como un hilo musical: hace sonar las notas una tras otra en orden.");
     }
 };
 

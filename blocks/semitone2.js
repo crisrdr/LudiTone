@@ -26,7 +26,7 @@ Blockly.Blocks['semitone2'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setTooltip("Bloque de semitono con sección anidada para opciones.");
+        this.setTooltip("Reproduce una nota usando semitonos. Puedes encajarle opciones en su parte interior.");
     }
 };
 

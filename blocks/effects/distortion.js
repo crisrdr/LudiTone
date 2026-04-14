@@ -20,7 +20,7 @@ Blockly.Blocks['effect_distortion'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Aplica un efecto de Distorsión a las notas de su interior.');
+        this.setTooltip('Ensucia y desgarra el sonido, dándole la agresividad típica de una guitarra eléctrica.');
     }
 };
 

@@ -25,7 +25,7 @@ Blockly.Blocks['effect_delay'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Aplica un efecto Delay a las notas de su interior.');
+        this.setTooltip('Añade un efecto de eco, repitiendo el sonido gradualmente hasta que se desvanece.');
     }
 };
 

@@ -20,7 +20,7 @@ Blockly.Blocks['effect_pitchshift'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Aplica un efecto PitchShift a las notas de su interior.');
+        this.setTooltip('Altera el tono del sonido que reproduce.');
     }
 };
 

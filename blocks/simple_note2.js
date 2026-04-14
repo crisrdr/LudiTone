@@ -9,7 +9,7 @@ Blockly.Blocks['simple_note2'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setTooltip("Bloque de nota con sección anidada para opciones.");
+        this.setTooltip("Reproduce una nota. Puedes encajarle opciones adicionales en su parte inferior.");
     }
 };
 
