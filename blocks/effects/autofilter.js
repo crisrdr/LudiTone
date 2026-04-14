@@ -25,7 +25,7 @@ Blockly.Blocks['effect_autofilter'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies an AutoFilter (LFO modulated filter) to notes.');
+        this.setTooltip('Aplica un AutoFilter (filtro modulado LFO) a las notas en su interior.');
     }
 };
 

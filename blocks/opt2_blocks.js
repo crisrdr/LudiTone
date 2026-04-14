@@ -11,7 +11,7 @@ Blockly.Blocks['opt2_wave_shape'] = {
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);
-        this.setTooltip("Select the wave shape");
+        this.setTooltip("Selecciona la forma de onda");
     }
 };
 
@@ -29,7 +29,7 @@ Blockly.Blocks['opt2_duration'] = {
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);
-        this.setTooltip("Set the duration of the note");
+        this.setTooltip("Establece la duración de la nota");
     }
 };
 

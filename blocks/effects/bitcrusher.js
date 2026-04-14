@@ -20,7 +20,7 @@ Blockly.Blocks['effect_bitcrusher'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies a BitCrusher effect to all notes placed inside.');
+        this.setTooltip('Aplica un efecto BitCrusher a todas las notas en su interior.');
     }
 };
 

@@ -20,7 +20,7 @@ Blockly.Blocks['effect_distortion'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies a Distortion effect to all notes placed inside.');
+        this.setTooltip('Aplica un efecto de Distorsión a las notas de su interior.');
     }
 };
 

@@ -92,7 +92,7 @@ Blockly.Blocks['options_container'] = {
         this.appendDummyInput()
             .appendField('opciones');
         this.appendStatementInput('STACK');
-        this.setTooltip('Add, remove, or reorder options.');
+        this.setTooltip('Añade, elimina o reordena opciones.');
         this.contextMenu = false;
     }
 };
@@ -105,7 +105,7 @@ Blockly.Blocks['options_item'] = {
             .appendField('opción');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('Add a new option.');
+        this.setTooltip('Añade una opción nueva.');
         this.contextMenu = false;
     }
 };

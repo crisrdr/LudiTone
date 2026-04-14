@@ -25,7 +25,7 @@ Blockly.Blocks['effect_tremolo'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies a Tremolo (LFO modulated amplitude) to notes.');
+        this.setTooltip('Aplica un Tremolo (amplitud modulada LFO) a las notas de su interior.');
     }
 };
 

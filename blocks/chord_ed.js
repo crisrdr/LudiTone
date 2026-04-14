@@ -7,7 +7,7 @@ Blockly.Blocks['chord_ed_mutator_container'] = {
         this.appendStatementInput('OPTIONS')
             .setCheck(null)
             .appendField('opciones');
-        this.setTooltip('Add options to the chord.');
+        this.setTooltip('Añade opciones al acorde.');
         this.contextMenu = false;
     }
 };
@@ -20,7 +20,7 @@ Blockly.Blocks['chord_ed'] = {
         this.setNextStatement(true, null);
         this.setColour(0);
         this.setMutator(new Blockly.Mutator(['options_item']));
-        this.setTooltip('A chord wrapper that plays any notes placed inside it simultaneously.');
+        this.setTooltip('Un contenedor de acorde que reproduce simultáneamente las notas de su interior.');
     },
     mutationToDom: function () {
         var container = Blockly.utils.xml.createElement('mutation');

@@ -30,7 +30,7 @@ Blockly.Blocks['effect_chorus'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
-        this.setTooltip('Applies a Chorus effect to all notes placed inside.');
+        this.setTooltip('Aplica un efecto Chorus a las notas de su interior.');
     }
 };
 

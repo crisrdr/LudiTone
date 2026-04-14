@@ -13,7 +13,7 @@ Blockly.Blocks['chord2'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(0);
-        this.setTooltip("A chord block with a statement section for options.");
+        this.setTooltip("Bloque de acorde con sección anidada para opciones.");
     }
 };
 
