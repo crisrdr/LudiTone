@@ -92,21 +92,26 @@ const toolboxIntermediate = {
       ]
     },
     {
-      kind: "category", name: "Opciones puzzle", colour: "120",
+      kind: "category", name: "Opciones", colour: "120",
       contents: [
-        { kind: 'category', name: 'Duración', colour: '120', contents: [
-            { kind: 'block', type: 'opt_duration' },
-            { kind: 'block', blockxml: simple_note_dur },
-            { kind: 'block', blockxml: semitone_dur }
-        ]},
-        { kind: 'block', type: 'opt_wave_shape' }
-      ]
-    },
-    {
-      kind: "category", name: "Opciones caja", colour: "160",
-      contents: [
-        { kind: 'block', type: 'opt2_duration' },
-        { kind: 'block', type: 'opt2_wave_shape' }
+        {
+          kind: "category", name: "Opciones puzzle", colour: "120",
+          contents: [
+            { kind: 'category', name: 'Duración', colour: '120', contents: [
+                { kind: 'block', type: 'opt_duration' },
+                { kind: 'block', blockxml: simple_note_dur },
+                { kind: 'block', blockxml: semitone_dur }
+            ]},
+            { kind: 'block', type: 'opt_wave_shape' }
+          ]
+        },
+        {
+          kind: "category", name: "Opciones caja", colour: "160",
+          contents: [
+            { kind: 'block', type: 'opt2_duration' },
+            { kind: 'block', type: 'opt2_wave_shape' }
+          ]
+        }
       ]
     }
   ]
@@ -139,25 +144,30 @@ const toolboxAdvanced = {
       ]
     },
     {
-      kind: "category", name: "Opciones puzzle", colour: "120",
+      kind: "category", name: "Opciones", colour: "120",
       contents: [
-        { kind: 'category', name: 'Duración', colour: '120', contents: [
-            { kind: 'block', type: 'opt_duration' },
-            { kind: 'block', blockxml: simple_note_dur },
-            { kind: 'block', blockxml: semitone_dur }
-        ]},
-        { kind: 'block', type: 'opt_wave_shape' }, { kind: 'block', type: 'opt_attack' },
-        { kind: 'block', type: 'opt_release' }, { kind: 'block', type: 'opt_volume' },
-        { kind: 'block', type: 'opt_kind' }, { kind: 'block', type: 'opt_adsr' }
-      ]
-    },
-    {
-      kind: "category", name: "Opciones caja", colour: "160",
-      contents: [
-        { kind: 'block', type: 'opt2_duration' }, { kind: 'block', type: 'opt2_wave_shape' },
-        { kind: 'block', type: 'opt2_attack' }, { kind: 'block', type: 'opt2_release' },
-        { kind: 'block', type: 'opt2_volume' }, { kind: 'block', type: 'opt2_kind' },
-        { kind: 'block', type: 'opt2_adsr' }
+        {
+          kind: "category", name: "Opciones puzzle", colour: "120",
+          contents: [
+            { kind: 'category', name: 'Duración', colour: '120', contents: [
+                { kind: 'block', type: 'opt_duration' },
+                { kind: 'block', blockxml: simple_note_dur },
+                { kind: 'block', blockxml: semitone_dur }
+            ]},
+            { kind: 'block', type: 'opt_wave_shape' }, { kind: 'block', type: 'opt_attack' },
+            { kind: 'block', type: 'opt_release' }, { kind: 'block', type: 'opt_volume' },
+            { kind: 'block', type: 'opt_kind' }, { kind: 'block', type: 'opt_adsr' }
+          ]
+        },
+        {
+          kind: "category", name: "Opciones caja", colour: "160",
+          contents: [
+            { kind: 'block', type: 'opt2_duration' }, { kind: 'block', type: 'opt2_wave_shape' },
+            { kind: 'block', type: 'opt2_attack' }, { kind: 'block', type: 'opt2_release' },
+            { kind: 'block', type: 'opt2_volume' }, { kind: 'block', type: 'opt2_kind' },
+            { kind: 'block', type: 'opt2_adsr' }
+          ]
+        }
       ]
     },
     {
@@ -266,7 +276,7 @@ const toolboxFree = {
       contents: [
         {
           kind: "category",
-          name: "mutator",
+          name: "Notas Puzzle",
           colour: "20",
           contents: [
             {
@@ -289,7 +299,7 @@ const toolboxFree = {
         },
         {
           kind: "category",
-          name: "statement",
+          name: "Notas Cajón",
           colour: "20",
           contents: [
             {
@@ -314,86 +324,93 @@ const toolboxFree = {
     },
     {
       kind: "category",
-      name: "Opciones puzzle",
+      name: "Opciones",
       colour: "120",
       contents: [
         {
           kind: "category",
-          name: "duration",
+          name: "Opciones Puzzle",
           colour: "120",
           contents: [
             {
-              kind: 'block',
-              type: 'opt_duration'
+              kind: "category",
+              name: "duration",
+              colour: "120",
+              contents: [
+                {
+                  kind: 'block',
+                  type: 'opt_duration'
+                },
+                {
+                  kind: 'block',
+                  blockxml: simple_note_dur
+                },
+                {
+                  kind: 'block',
+                  blockxml: semitone_dur
+                }
+              ]
             },
             {
               kind: 'block',
-              blockxml: simple_note_dur
+              type: 'opt_wave_shape'
             },
             {
               kind: 'block',
-              blockxml: semitone_dur
+              type: 'opt_attack'
+            },
+            {
+              kind: 'block',
+              type: 'opt_release'
+            },
+            {
+              kind: 'block',
+              type: 'opt_volume'
+            },
+            {
+              kind: 'block',
+              type: 'opt_kind'
+            },
+            {
+              kind: 'block',
+              type: 'opt_adsr'
             }
           ]
         },
         {
-          kind: 'block',
-          type: 'opt_wave_shape'
-        },
-        {
-          kind: 'block',
-          type: 'opt_attack'
-        },
-        {
-          kind: 'block',
-          type: 'opt_release'
-        },
-        {
-          kind: 'block',
-          type: 'opt_volume'
-        },
-        {
-          kind: 'block',
-          type: 'opt_kind'
-        },
-        {
-          kind: 'block',
-          type: 'opt_adsr'
-        }
-      ]
-    },
-    {
-      kind: "category",
-      name: "Opciones caja",
-      colour: "160",
-      contents: [
-        {
-          kind: 'block',
-          type: 'opt2_duration'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_wave_shape'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_attack'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_release'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_volume'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_kind'
-        },
-        {
-          kind: 'block',
-          type: 'opt2_adsr'
+          kind: "category",
+          name: "Opciones Caja",
+          colour: "160",
+          contents: [
+            {
+              kind: 'block',
+              type: 'opt2_duration'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_wave_shape'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_attack'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_release'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_volume'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_kind'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_adsr'
+            }
+          ]
         }
       ]
     },
