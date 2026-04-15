@@ -44,15 +44,103 @@ stopBTN.addEventListener("click", () => {
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
 let customUserBlocks = JSON.parse(localStorage.getItem('blocklyMusicCustomBlocks') || '[]');
 
+function removeCustomBlock(id) {
+    customUserBlocks = customUserBlocks.filter(b => b.id !== id);
+    localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
+    // Actualizar toolbox
+    let baseToolbox = toolboxFree;
+    switch (currentLevel) {
+        case 'basic': baseToolbox = toolboxBasic; break;
+        case 'intermediate': baseToolbox = toolboxIntermediate; break;
+        case 'advanced': baseToolbox = toolboxAdvanced; break;
+    }
+    workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
+    colorizeBubbles();
+}
+
 function registerCustomBlockDef(blockData) {
-    // 1. Definimos el bloque visualmente
+    // 1. Definimos el bloque visualmente, incluyendo menú contextual
     Blockly.Blocks[blockData.id] = {
         init: function() {
             this.appendDummyInput().appendField(blockData.name);
             this.setPreviousStatement(true, null);
             this.setNextStatement(true, null);
             this.setColour(blockData.color || 290);
-            this.setTooltip("Bloque creado por el usuario");
+            this.setTooltip("Bloque personalizado — Clic derecho para opciones");
+        },
+        customContextMenu: function(options) {
+            const thisBlock = this;
+            const inFlyout = thisBlock.isInFlyout;
+
+            if (inFlyout) {
+                // -- MENÚ LATERAL: Editar nombre/color y Eliminar --
+
+                options.push({
+                    text: '✏️ Editar bloque',
+                    enabled: true,
+                    callback: function() {
+                        openModalForEdit(blockData);
+                    }
+                });
+
+                options.push({
+                    text: '🗑️ Eliminar del menú',
+                    enabled: true,
+                    callback: function() {
+                        if (window.confirm("¿Eliminar \"" + blockData.name + "\" de Mis Bloques?\nEsta acción no se puede deshacer.")) {
+                            removeCustomBlock(blockData.id);
+                        }
+                    }
+                });
+
+            } else {
+                // -- ÁREA DE TRABAJO: Desempaquetar para editar internamente --
+
+                options.push({
+                    text: '📦 Editar internamente (desempaquetar)',
+                    enabled: true,
+                    callback: function() {
+                        try {
+                            const xmlDom = Blockly.Xml.textToDom(blockData.xml);
+                            const blockXmlNode = xmlDom.firstElementChild;
+                            if (!blockXmlNode) return;
+
+                            const xy = thisBlock.getRelativeToSurfaceXY();
+                            const prevConn = thisBlock.previousConnection && thisBlock.previousConnection.targetConnection;
+                            const nextConn = thisBlock.nextConnection && thisBlock.nextConnection.targetConnection;
+
+                            if (prevConn) thisBlock.previousConnection.disconnect();
+                            if (nextConn) thisBlock.nextConnection.disconnect();
+
+                            const newBlock = Blockly.Xml.domToBlock(blockXmlNode, workspace);
+                            newBlock.moveTo(xy);
+
+                            if (prevConn && newBlock.previousConnection) {
+                                prevConn.connect(newBlock.previousConnection);
+                            }
+
+                            if (nextConn && newBlock.nextConnection) {
+                                let lastBlock = newBlock;
+                                while (lastBlock.getNextBlock()) lastBlock = lastBlock.getNextBlock();
+                                if (lastBlock.nextConnection) lastBlock.nextConnection.connect(nextConn);
+                            }
+
+                            thisBlock.dispose(false);
+
+                            const keep = window.confirm(
+                                "¿Conservar \"" + blockData.name + "\" en el menú para seguir usándolo?\n" +
+                                "· Aceptar → Se mantiene en \"Mis Bloques\"\n" +
+                                "· Cancelar → Se elimina del menú (sobreescribir)"
+                            );
+                            if (!keep) removeCustomBlock(blockData.id);
+
+                        } catch(e) {
+                            console.error("Error al desempaquetar bloque:", e);
+                            alert("No se pudo desempaquetar el bloque. Revisa la consola.");
+                        }
+                    }
+                });
+            }
         }
     };
     
@@ -62,7 +150,6 @@ function registerCustomBlockDef(blockData) {
         try {
             const xmlDom = Blockly.Xml.textToDom(blockData.xml);
             Blockly.Xml.domToWorkspace(xmlDom, headless);
-            // workspaceToCode generará respetando las variables globales (num, timeDur)
             const code = Blockly.JavaScript.workspaceToCode(headless);
             return code;
         } catch (e) {
@@ -646,6 +733,7 @@ clearBTN.addEventListener('click', () => {
 
 // Modal elements
 const modal = document.getElementById('custom-block-modal');
+const modalTitle = modal.querySelector('h2');
 const nameInput = document.getElementById('block-name-input');
 const colorInput = document.getElementById('block-color-input');
 const hexDisplay = document.getElementById('color-hex-display');
@@ -653,11 +741,23 @@ const btnCancel = document.getElementById('cancel-block-btn');
 const btnSave = document.getElementById('save-block-btn');
 
 let pendingBlockSelection = null;
+let pendingEditBlockId = null; // null = crear modo, string = editar modo
 
 // Synchronize color input and text display
 colorInput.addEventListener('input', (e) => {
     hexDisplay.textContent = e.target.value;
 });
+
+// Función para abrir el modal en modo EDITAR
+function openModalForEdit(blockData) {
+    pendingEditBlockId = blockData.id;
+    pendingBlockSelection = null;
+    nameInput.value = blockData.name;
+    colorInput.value = blockData.color || '#8b5cf6';
+    hexDisplay.textContent = blockData.color || '#8b5cf6';
+    modalTitle.textContent = 'Editar Bloque';
+    modal.style.display = 'flex';
+}
 
 // 4. Crear macro de bloque del usuario
 document.getElementById('create-block-btn').addEventListener('click', () => {
@@ -666,43 +766,22 @@ document.getElementById('create-block-btn').addEventListener('click', () => {
     alert("Por favor, selecciona primero el bloque superior del conjunto que quieres guardar.");
     return;
   }
-  
-  // Store the selection and show modal
+  pendingEditBlockId = null;
   pendingBlockSelection = selected;
-  nameInput.value = ''; // clean previous name
+  nameInput.value = '';
+  colorInput.value = '#8b5cf6';
+  hexDisplay.textContent = '#8b5cf6';
+  modalTitle.textContent = 'Crear Nuevo Bloque';
   modal.style.display = 'flex';
 });
 
 btnCancel.addEventListener('click', () => {
     modal.style.display = 'none';
     pendingBlockSelection = null;
+    pendingEditBlockId = null;
 });
 
-btnSave.addEventListener('click', () => {
-  let blockName = nameInput.value;
-  if (!blockName || blockName.trim() === "") {
-      alert("Por favor, introduce un nombre para el bloque.");
-      return;
-  }
-  
-  // Extraer el XML
-  let dom = Blockly.Xml.blockToDom(pendingBlockSelection);
-  let container = document.createElement('xml');
-  container.appendChild(dom);
-  let xmlText = Blockly.Xml.domToText(container);
-  
-  // Registrar bloque
-  let id = "custom_" + Date.now();
-  
-  // Use the HEX color picked directly
-  let blockData = { id, name: blockName, color: colorInput.value, xml: xmlText };
-  
-  customUserBlocks.push(blockData);
-  localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
-  
-  registerCustomBlockDef(blockData);
-  
-  // Actualizar la caja de herramientas de forma dinámica sin limpiar el área actual.
+function refreshToolboxAfterUpdate() {
   let baseToolbox = toolboxFree;
   switch (currentLevel) {
     case 'basic': baseToolbox = toolboxBasic; break;
@@ -711,7 +790,6 @@ btnSave.addEventListener('click', () => {
   }
   workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
   colorizeBubbles();
-  
   if (currentLevel === 'basic') {
     setTimeout(() => {
       const toolbox = workspace.getToolbox();
@@ -722,9 +800,50 @@ btnSave.addEventListener('click', () => {
       }
     }, 50);
   }
-  
+}
+
+btnSave.addEventListener('click', () => {
+  let blockName = nameInput.value;
+  if (!blockName || blockName.trim() === "") {
+      alert("Por favor, introduce un nombre para el bloque.");
+      return;
+  }
+
+  if (pendingEditBlockId) {
+    // --- MODO EDITAR: actualizar nombre y color del bloque existente ---
+    const idx = customUserBlocks.findIndex(b => b.id === pendingEditBlockId);
+    if (idx !== -1) {
+      customUserBlocks[idx].name = blockName;
+      customUserBlocks[idx].color = colorInput.value;
+      localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
+      // Re-registrar el bloque con los nuevos metadatos
+      registerCustomBlockDef(customUserBlocks[idx]);
+      // Forzar actualización visual de los bloques en el workspace con ese id
+      workspace.getAllBlocks(false).forEach(b => {
+        if (b.type === pendingEditBlockId) {
+          b.setColour(colorInput.value);
+          b.getField('').setValue(blockName); // actualiza el label si es posible
+        }
+      });
+      refreshToolboxAfterUpdate();
+    }
+  } else {
+    // --- MODO CREAR: crear nuevo bloque ---
+    let dom = Blockly.Xml.blockToDom(pendingBlockSelection);
+    let container = document.createElement('xml');
+    container.appendChild(dom);
+    let xmlText = Blockly.Xml.domToText(container);
+    let id = "custom_" + Date.now();
+    let blockData = { id, name: blockName, color: colorInput.value, xml: xmlText };
+    customUserBlocks.push(blockData);
+    localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
+    registerCustomBlockDef(blockData);
+    refreshToolboxAfterUpdate();
+  }
+
   modal.style.display = 'none';
   pendingBlockSelection = null;
+  pendingEditBlockId = null;
 });
 
 document.getElementById('btn-basic').addEventListener('click', () => selectLevel('basic'));
