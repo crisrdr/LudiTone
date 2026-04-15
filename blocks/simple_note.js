@@ -219,4 +219,4 @@ Blockly.JavaScript['simple_note'] = function (block) {
 }
 
 const simple_note_dur = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="duración">1</field></shadow></value></block>';
-const simple_note_vol = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="volumen">1</field></shadow></value></block>';
+const simple_note_vol = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="volúmen">1</field></shadow></value></block>';
