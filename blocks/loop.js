@@ -1,6 +1,7 @@
 Blockly.Blocks['loop'] = {
     init: function () {
         this.setPreviousStatement(true);
+        this.setNextStatement(true);
         this.appendDummyInput()
             .appendField('repetir esto')
             .appendField('a velocidad')
@@ -9,25 +10,37 @@ Blockly.Blocks['loop'] = {
             .appendField('hacer');
         this.appendDummyInput()
             .appendField('fin');
+        this.setColour(120);
+        this.setTooltip("Repite los bloques internos indefinidamente al ritmo elegido.");
     }
 };
 
 Blockly.JavaScript['loop'] = function (block) {
     const times = block.getFieldValue('times');
-    const statement_input = Blockly.JavaScript.statementToCode(block, 'DO');
-    
     let loopId = num++;
-    
+
+    // Generar código interno con timeDur renombrado a loopTimeDur
+    let innerCode = Blockly.JavaScript.statementToCode(block, 'DO');
+
+    // Renombrar timeDur -> loopTimeDur para no afectar al scope global
+    innerCode = innerCode.replace(/\btimeDur\b/g, 'loopTimeDur');
+
+    // Transformar: Tone.Transport.schedule((time) => { BODY }, loopTimeDur);
+    // En:          (function(time) { BODY })(loopCallbackTime + loopTimeDur);
+    // Esto es necesario porque dentro del callback de scheduleRepeat,
+    // los sonidos deben dispararse usando el tiempo absoluto del callback (loopCallbackTime),
+    // no programarse de nuevo en el Transport desde tiempo 0.
+    innerCode = innerCode.replace(
+        /Tone\.Transport\.schedule\s*\(\s*\(time\)\s*=>\s*\{([\s\S]*?)\}\s*,\s*loopTimeDur\s*\)\s*;/g,
+        (match, body) => `(function(time) {${body}})(loopCallbackTime + loopTimeDur);`
+    );
+
     var code = `
-  var loop_${loopId} = new Tone.Loop(function(time) {
-    //  let now = time; // Shadow global 'now' inside the loop callback
-    //  let timeDur = 0; // Local timeDur for relative scheduling within this iteration
-      
-${statement_input}
-  }, "${times}").start(time + timeDur);
-  // loop infinito, en caso de que queramos que dure un numero finito de veces
-  // loop_${loopId}.iterations = 4;
+  Tone.Transport.scheduleRepeat(function(loopCallbackTime) {
+    var loopTimeDur = 0;
+${innerCode}
+  }, "${times}", timeDur);
 `;
-    
+
     return code;
 };
