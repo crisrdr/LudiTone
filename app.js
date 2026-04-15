@@ -46,18 +46,14 @@ const toolboxBasic = {
   kind: 'categoryToolbox',
   contents: [
     {
-      kind: "category", name: "Control", colour: "212",
+      kind: "category",
+      name: "",
+      colour: "0",
       contents: [
-        { kind: 'block', type: 'loop' },
-        { kind: 'block', type: 'wait', fields: { NUM: 1 } },
-        { kind: 'block', type: 'pop' }
-      ]
-    },
-    {
-      kind: "category", name: "Notas", colour: "20",
-      contents: [
+        { kind: 'block', type: 'pop' },
         { kind: 'block', type: 'simple_note' },
-        { kind: 'block', type: 'simple_note2' }
+        { kind: 'block', blockxml: simple_note_dur },
+        { kind: 'block', blockxml: simple_note_vol }
       ]
     }
   ]
@@ -78,16 +74,20 @@ const toolboxIntermediate = {
     {
       kind: "category", name: "Notas", colour: "20",
       contents: [
-        { kind: 'category', name: 'Puzzle', colour: '20', contents: [
+        {
+          kind: 'category', name: 'Puzzle', colour: '20', contents: [
             { kind: 'block', type: 'simple_note' },
             { kind: 'block', type: 'semitone' },
             { kind: 'block', type: 'chord' }
-        ]},
-        { kind: 'category', name: 'Anidado', colour: '20', contents: [
+          ]
+        },
+        {
+          kind: 'category', name: 'Anidado', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' },
             { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }
-        ]}
+          ]
+        }
       ]
     },
     {
@@ -96,11 +96,13 @@ const toolboxIntermediate = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            { kind: 'category', name: 'Duración', colour: '120', contents: [
+            {
+              kind: 'category', name: 'Duración', colour: '120', contents: [
                 { kind: 'block', type: 'opt_duration' },
                 { kind: 'block', blockxml: simple_note_dur },
                 { kind: 'block', blockxml: semitone_dur }
-            ]},
+              ]
+            },
             { kind: 'block', type: 'opt_wave_shape' }
           ]
         },
@@ -131,14 +133,18 @@ const toolboxAdvanced = {
     {
       kind: "category", name: "Notas", colour: "20",
       contents: [
-        { kind: 'category', name: 'Mutador', colour: '20', contents: [
+        {
+          kind: 'category', name: 'Mutador', colour: '20', contents: [
             { kind: 'block', type: 'simple_note' }, { kind: 'block', type: 'semitone' },
             { kind: 'block', type: 'chord' }, { kind: 'block', type: 'chord_ed' }
-        ]},
-        { kind: 'category', name: 'Anidado', colour: '20', contents: [
+          ]
+        },
+        {
+          kind: 'category', name: 'Anidado', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' }, { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }, { kind: 'block', type: 'chord_ed2' }
-        ]}
+          ]
+        }
       ]
     },
     {
@@ -147,11 +153,13 @@ const toolboxAdvanced = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            { kind: 'category', name: 'Duración', colour: '120', contents: [
+            {
+              kind: 'category', name: 'Duración', colour: '120', contents: [
                 { kind: 'block', type: 'opt_duration' },
                 { kind: 'block', blockxml: simple_note_dur },
                 { kind: 'block', blockxml: semitone_dur }
-            ]},
+              ]
+            },
             { kind: 'block', type: 'opt_wave_shape' }, { kind: 'block', type: 'opt_attack' },
             { kind: 'block', type: 'opt_release' }, { kind: 'block', type: 'opt_volume' },
             { kind: 'block', type: 'opt_kind' }, { kind: 'block', type: 'opt_adsr' }
@@ -325,7 +333,7 @@ const toolboxFree = {
           contents: [
             {
               kind: "category",
-              name: "duration",
+              name: "duración",
               colour: "120",
               contents: [
                 {
@@ -493,18 +501,35 @@ let isLoadingLevel = false;
 function selectLevel(levelName) {
   isLoadingLevel = true;
   currentLevel = levelName;
-  
+
   let selectedToolbox = toolboxFree;
-  switch(levelName) {
+  switch (levelName) {
     case 'basic': selectedToolbox = toolboxBasic; break;
     case 'intermediate': selectedToolbox = toolboxIntermediate; break;
     case 'advanced': selectedToolbox = toolboxAdvanced; break;
     case 'free': selectedToolbox = toolboxFree; break;
   }
-  
+
   workspace.clear();
   workspace.updateToolbox(selectedToolbox);
-  
+
+  if (levelName === 'basic') {
+    document.body.classList.add('basic-mode');
+    setTimeout(() => {
+      const toolbox = workspace.getToolbox();
+      if (toolbox && typeof toolbox.selectItemByPosition === 'function') {
+        toolbox.selectItemByPosition(0);
+        // Evitar que se cierre al hacer click en el fondo (en algunas versiones de Blockly funciona)
+        const flyout = toolbox.getFlyout();
+        if (flyout) {
+          flyout.autoClose = false;
+        }
+      }
+    }, 50);
+  } else {
+    document.body.classList.remove('basic-mode');
+  }
+
   // 1. Cargar bloques guardados para ESTE nivel específico
   const savedXml = localStorage.getItem('blocklyMusicParams_' + currentLevel);
   if (savedXml) {
@@ -515,7 +540,7 @@ function selectLevel(levelName) {
       console.warn("No se pudo cargar el espacio de trabajo guardado:", e);
     }
   }
-  
+
   isLoadingLevel = false;
 
   document.getElementById('startup-menu').style.opacity = '0';
@@ -528,7 +553,7 @@ function selectLevel(levelName) {
 // 2. Guardar bloques automáticamente ante cualquier cambio estructural
 workspace.addChangeListener((e) => {
   if (isLoadingLevel || !currentLevel) return; // Evitar sobreescribir al cambiar de interfaz
-  
+
   if (e.type !== Blockly.Events.UI && e.type !== Blockly.Events.THEME_CHANGE) {
     const xml = Blockly.Xml.workspaceToDom(workspace);
     const xmlText = Blockly.Xml.domToText(xml);
@@ -553,10 +578,10 @@ document.getElementById('btn-advanced').addEventListener('click', () => selectLe
 document.getElementById('btn-free').addEventListener('click', () => selectLevel('free'));
 
 document.getElementById('btn-menu').addEventListener('click', () => {
-    document.getElementById('startup-menu').style.display = 'flex';
-    // Small timeout to allow display:flex to apply before animating opacity
-    setTimeout(() => {
-        document.getElementById('startup-menu').style.opacity = '1';
-        document.getElementById('startup-menu').style.pointerEvents = 'all';
-    }, 10);
+  document.getElementById('startup-menu').style.display = 'flex';
+  // Small timeout to allow display:flex to apply before animating opacity
+  setTimeout(() => {
+    document.getElementById('startup-menu').style.opacity = '1';
+    document.getElementById('startup-menu').style.pointerEvents = 'all';
+  }, 10);
 });

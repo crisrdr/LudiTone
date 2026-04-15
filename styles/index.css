@@ -73,3 +73,4 @@ h1 {
   margin: 1em 0;
   float: right;
 }
+body.basic-mode .blocklyToolboxDiv { display: none !important; }
