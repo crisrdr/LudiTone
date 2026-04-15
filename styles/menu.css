@@ -41,17 +41,16 @@
         }
 
         #clear-btn {
-            background-color: #2336c8;
+            background-color: #696969;
             margin-left: auto;
         }
 
         #clear-btn:hover {
-            background-color: #2336c8;
+            background-color: #525252;
         }
 
         #btn-menu {
             background-color: #343a40;
-            margin-left: auto;
         }
 
         #btn-menu:hover {
