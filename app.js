@@ -553,6 +553,18 @@ const workspace = Blockly.inject('blocklyDiv', {
 let currentLevel = null;
 let isLoadingLevel = false;
 
+function colorizeBubbles() {
+    setTimeout(() => {
+        document.querySelectorAll('.blocklyTreeRow').forEach(row => {
+            const labelNode = row.querySelector('.blocklyTreeLabel');
+            if (labelNode) {
+                const text = labelNode.innerText.trim();
+                row.setAttribute('data-category', text);
+            }
+        });
+    }, 100);
+}
+
 // Nivel selector logic
 function selectLevel(levelName) {
   isLoadingLevel = true;
@@ -571,6 +583,7 @@ function selectLevel(levelName) {
 
   workspace.clear();
   workspace.updateToolbox(dynamicToolbox);
+  colorizeBubbles();
 
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
@@ -697,6 +710,7 @@ btnSave.addEventListener('click', () => {
     case 'advanced': baseToolbox = toolboxAdvanced; break;
   }
   workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
+  colorizeBubbles();
   
   if (currentLevel === 'basic') {
     setTimeout(() => {

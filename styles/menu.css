@@ -198,3 +198,78 @@
 
 .btn-primary { background: #28a745; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); }
 .btn-primary:hover { background: #218838; transform: translateY(-2px); }
+
+/* CUSTOM BLOCKLY TOOLBOX STYLES (BUBBLE CONCEPT) */
+.blocklyToolboxDiv {
+    background-color: #f0f4f8 !important; /* Fondo suave para que resalten las burbujas */
+    padding: 10px 5px !important;
+    border-right: none !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.blocklyTreeRow {
+    background: white !important;
+    border-radius: 20px !important;
+    margin-bottom: 12px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    height: auto !important;
+    min-height: 35px !important;
+}
+
+.blocklyTreeRow:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important;
+    background: #f8fbff !important;
+}
+
+/* Estado Seleccionado */
+.blocklyTreeSelected {
+    background: #eef4ff !important;
+    border: 1px solid rgba(42, 82, 152, 0.3) !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05), 0 4px 10px rgba(0,0,0,0.1) !important;
+}
+
+.blocklyTreeLabel {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #444 !important;
+}
+
+/* Ocultamos algunas líneas por defecto del árbol si usa el viejo estilo */
+.blocklyTreeSeparator {
+    display: none !important;
+}
+
+/* Redondear también el menú desplegable interno (Flyout) */
+.blocklyFlyoutBackground {
+    fill: #ffffff !important;
+    fill-opacity: 0.95 !important;
+}
+
+/* COLORES POR CATEGORÍA EN LAS BURBUJAS */
+.blocklyTreeRow[data-category="Control"] { background-color: rgba(33, 150, 243, 0.5) !important; border-color: rgba(33, 150, 243, 0.8) !important; }
+.blocklyTreeRow[data-category="Control"]:hover { background-color: rgba(33, 150, 243, 0.25) !important; }
+
+.blocklyTreeRow[data-category="Notas"] { background-color: rgba(233, 30, 99, 0.5) !important; border-color: rgba(233, 30, 99, 0.8) !important; }
+.blocklyTreeRow[data-category="Notas"]:hover { background-color: rgba(233, 30, 99, 0.25) !important; }
+
+.blocklyTreeRow[data-category="Opciones"] { background-color: rgba(76, 175, 80, 0.5) !important; border-color: rgba(76, 175, 80, 0.8) !important; }
+.blocklyTreeRow[data-category="Opciones"]:hover { background-color: rgba(76, 175, 80, 0.25) !important; }
+
+.blocklyTreeRow[data-category="Efectos"] { background-color: rgba(156, 39, 176, 0.5) !important; border-color: rgba(156, 39, 176, 0.8) !important; }
+.blocklyTreeRow[data-category="Efectos"]:hover { background-color: rgba(156, 39, 176, 0.25) !important; }
+
+.blocklyTreeRow[data-category="Mis Bloques"] { 
+    margin-top: 30px !important; /* SEPARACIÓN FÍSICA */
+    background-color: rgba(255, 235, 59, 0.5) !important; 
+    border-color: rgba(255, 235, 59, 0.8) !important; 
+}
+.blocklyTreeRow[data-category="Mis Bloques"]:hover { background-color: rgba(255, 235, 59, 0.35) !important; }
