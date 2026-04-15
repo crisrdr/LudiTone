@@ -90,7 +90,7 @@ function applyCustomBlocksTo(toolboxDef, isBasicMode) {
         newToolbox.contents.push({
             kind: 'category',
             name: 'Mis Bloques',
-            colour: '290',
+            colour: '60',
             contents: blocksNodes
         });
     }
