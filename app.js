@@ -41,6 +41,62 @@ stopBTN.addEventListener("click", () => {
   Tone.Transport.cancel(0);
 })
 
+// --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
+let customUserBlocks = JSON.parse(localStorage.getItem('blocklyMusicCustomBlocks') || '[]');
+
+function registerCustomBlockDef(blockData) {
+    // 1. Definimos el bloque visualmente
+    Blockly.Blocks[blockData.id] = {
+        init: function() {
+            this.appendDummyInput().appendField(blockData.name);
+            this.setPreviousStatement(true, null);
+            this.setNextStatement(true, null);
+            this.setColour(blockData.color || 290);
+            this.setTooltip("Bloque creado por el usuario");
+        }
+    };
+    
+    // 2. Definimos su generador en JavaScript
+    Blockly.JavaScript[blockData.id] = function(block) {
+        const headless = new Blockly.Workspace();
+        try {
+            const xmlDom = Blockly.Xml.textToDom(blockData.xml);
+            Blockly.Xml.domToWorkspace(xmlDom, headless);
+            // workspaceToCode generará respetando las variables globales (num, timeDur)
+            const code = Blockly.JavaScript.workspaceToCode(headless);
+            return code;
+        } catch (e) {
+            console.error("Error ejecutando macro", e);
+            return "";
+        } finally {
+            headless.dispose();
+        }
+    };
+}
+
+// Registramos en cuanto arranque el script
+customUserBlocks.forEach(registerCustomBlockDef);
+
+function applyCustomBlocksTo(toolboxDef, isBasicMode) {
+    if (customUserBlocks.length === 0) return toolboxDef;
+    
+    // Clonación profunda
+    let newToolbox = JSON.parse(JSON.stringify(toolboxDef));
+    let blocksNodes = customUserBlocks.map(b => ({ kind: 'block', type: b.id }));
+    
+    if (isBasicMode) {
+        newToolbox.contents[0].contents.push(...blocksNodes);
+    } else {
+        newToolbox.contents.push({
+            kind: 'category',
+            name: 'Mis Bloques',
+            colour: '290',
+            contents: blocksNodes
+        });
+    }
+    return newToolbox;
+}
+
 
 const toolboxBasic = {
   kind: 'categoryToolbox',
@@ -510,8 +566,11 @@ function selectLevel(levelName) {
     case 'free': selectedToolbox = toolboxFree; break;
   }
 
+  // Si estamos cambiando a otro nivel completo, aquí inyectamos los custom blocks
+  const dynamicToolbox = applyCustomBlocksTo(selectedToolbox, levelName === 'basic');
+
   workspace.clear();
-  workspace.updateToolbox(selectedToolbox);
+  workspace.updateToolbox(dynamicToolbox);
 
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
@@ -570,6 +629,88 @@ clearBTN.addEventListener('click', () => {
     localStorage.removeItem('blocklyMusicParams_' + currentLevel);
     isLoadingLevel = false;
   }
+});
+
+// Modal elements
+const modal = document.getElementById('custom-block-modal');
+const nameInput = document.getElementById('block-name-input');
+const colorInput = document.getElementById('block-color-input');
+const hexDisplay = document.getElementById('color-hex-display');
+const btnCancel = document.getElementById('cancel-block-btn');
+const btnSave = document.getElementById('save-block-btn');
+
+let pendingBlockSelection = null;
+
+// Synchronize color input and text display
+colorInput.addEventListener('input', (e) => {
+    hexDisplay.textContent = e.target.value;
+});
+
+// 4. Crear macro de bloque del usuario
+document.getElementById('create-block-btn').addEventListener('click', () => {
+  let selected = Blockly.selected;
+  if (!selected) {
+    alert("Por favor, selecciona primero el bloque superior del conjunto que quieres guardar.");
+    return;
+  }
+  
+  // Store the selection and show modal
+  pendingBlockSelection = selected;
+  nameInput.value = ''; // clean previous name
+  modal.style.display = 'flex';
+});
+
+btnCancel.addEventListener('click', () => {
+    modal.style.display = 'none';
+    pendingBlockSelection = null;
+});
+
+btnSave.addEventListener('click', () => {
+  let blockName = nameInput.value;
+  if (!blockName || blockName.trim() === "") {
+      alert("Por favor, introduce un nombre para el bloque.");
+      return;
+  }
+  
+  // Extraer el XML
+  let dom = Blockly.Xml.blockToDom(pendingBlockSelection);
+  let container = document.createElement('xml');
+  container.appendChild(dom);
+  let xmlText = Blockly.Xml.domToText(container);
+  
+  // Registrar bloque
+  let id = "custom_" + Date.now();
+  
+  // Use the HEX color picked directly
+  let blockData = { id, name: blockName, color: colorInput.value, xml: xmlText };
+  
+  customUserBlocks.push(blockData);
+  localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
+  
+  registerCustomBlockDef(blockData);
+  
+  // Actualizar la caja de herramientas de forma dinámica sin limpiar el área actual.
+  let baseToolbox = toolboxFree;
+  switch (currentLevel) {
+    case 'basic': baseToolbox = toolboxBasic; break;
+    case 'intermediate': baseToolbox = toolboxIntermediate; break;
+    case 'advanced': baseToolbox = toolboxAdvanced; break;
+  }
+  workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
+  
+  if (currentLevel === 'basic') {
+    setTimeout(() => {
+      const toolbox = workspace.getToolbox();
+      if (toolbox && typeof toolbox.selectItemByPosition === 'function') {
+        toolbox.selectItemByPosition(0);
+        const flyout = toolbox.getFlyout();
+        if (flyout) flyout.autoClose = false;
+      }
+    }, 50);
+  }
+  
+  modal.style.display = 'none';
+  pendingBlockSelection = null;
 });
 
 document.getElementById('btn-basic').addEventListener('click', () => selectLevel('basic'));
