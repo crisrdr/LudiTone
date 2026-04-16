@@ -200,7 +200,7 @@
 
 /* CUSTOM BLOCKLY TOOLBOX STYLES (BUBBLE CONCEPT) */
 .blocklyToolboxDiv {
-    background-color: #f0f4f8 !important; /* Fondo suave para que resalten las burbujas */
+    background-color: #b9cadb !important; /* Fondo suave para que resalten las burbujas */
     padding: 10px 5px !important;
     border-right: none !important;
     box-shadow: 2px 0 10px rgba(0,0,0,0.05);
@@ -249,26 +249,26 @@
 
 /* Redondear también el menú desplegable interno (Flyout) */
 .blocklyFlyoutBackground {
-    fill: #ffffff !important;
+    fill: #b9cadb !important;
     fill-opacity: 0.95 !important;
 }
 
 /* COLORES POR CATEGORÍA EN LAS BURBUJAS */
-.blocklyTreeRow[data-category="Control"] { background-color: rgba(33, 150, 243, 0.5) !important; border-color: rgba(33, 150, 243, 0.8) !important; }
-.blocklyTreeRow[data-category="Control"]:hover { background-color: rgba(33, 150, 243, 0.25) !important; }
+.blocklyTreeRow[data-category="Control"] { background-color: rgb(137, 202, 255) !important; border-color: rgb(0, 140, 255) !important; }
+.blocklyTreeRow[data-category="Control"]:hover { background-color: rgba(0, 140, 255, 0.25) !important; }
 
-.blocklyTreeRow[data-category="Notas"] { background-color: rgba(233, 30, 99, 0.5) !important; border-color: rgba(233, 30, 99, 0.8) !important; }
-.blocklyTreeRow[data-category="Notas"]:hover { background-color: rgba(233, 30, 99, 0.25) !important; }
+.blocklyTreeRow[data-category="Efectos"] { background-color: rgb(255, 126, 165) !important; border-color: rgb(255, 0, 76) !important; }
+.blocklyTreeRow[data-category="Efectos"]:hover { background-color: rgba(255, 0, 76, 0.25) !important; }
 
-.blocklyTreeRow[data-category="Opciones"] { background-color: rgba(76, 175, 80, 0.5) !important; border-color: rgba(76, 175, 80, 0.8) !important; }
-.blocklyTreeRow[data-category="Opciones"]:hover { background-color: rgba(76, 175, 80, 0.25) !important; }
-
-.blocklyTreeRow[data-category="Efectos"] { background-color: rgba(156, 39, 176, 0.5) !important; border-color: rgba(156, 39, 176, 0.8) !important; }
-.blocklyTreeRow[data-category="Efectos"]:hover { background-color: rgba(156, 39, 176, 0.25) !important; }
+.blocklyTreeRow[data-category="Notas"] { background-color: rgb(152, 255, 118) !important; border-color: rgb(0, 255, 8) !important; }
+.blocklyTreeRow[data-category="Notas"]:hover { background-color: rgba(0, 255, 8, 0.25) !important; }
 
 .blocklyTreeRow[data-category="Mis Bloques"] { 
-    margin-top: 30px !important; /* SEPARACIÓN FÍSICA */
+    margin-top: 30px !important; /* SEPARACIÓN FÍSICA */ background-color: rgb(235, 124, 255) !important; border-color: rgb(217, 0, 255) !important; }
+.blocklyTreeRow[data-category="Mis Bloques"]:hover { background-color: rgba(217, 0, 255, 0.25) !important; }
+
+.blocklyTreeRow[data-category="Opciones"] { 
     background-color: rgba(255, 235, 59, 0.5) !important; 
     border-color: rgba(255, 235, 59, 0.8) !important; 
 }
-.blocklyTreeRow[data-category="Mis Bloques"]:hover { background-color: rgba(255, 235, 59, 0.35) !important; }
+.blocklyTreeRow[data-category="Opciones"]:hover { background-color: rgba(255, 235, 59, 0.35) !important; }
