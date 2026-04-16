@@ -365,6 +365,7 @@ const toolboxAdvanced = {
           kind: "category", name: "Filtros", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
+            { kind: 'block', type: 'effect_lowpassfilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
@@ -604,6 +605,7 @@ const toolboxFree = {
           kind: "category", name: "Filtros", colour: "290",
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
+            { kind: 'block', type: 'effect_lowpassfilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
