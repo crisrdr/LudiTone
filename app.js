@@ -366,6 +366,7 @@ const toolboxAdvanced = {
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
             { kind: 'block', type: 'effect_lowpassfilter' },
+            { kind: 'block', type: 'effect_highpassfilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
@@ -606,6 +607,7 @@ const toolboxFree = {
           contents: [
             { kind: 'block', type: 'effect_autofilter' },
             { kind: 'block', type: 'effect_lowpassfilter' },
+            { kind: 'block', type: 'effect_highpassfilter' },
             { kind: 'block', type: 'effect_autowah' }
           ]
         },
