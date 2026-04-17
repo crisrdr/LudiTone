@@ -2,30 +2,26 @@ Blockly.Blocks['effect_pingpongdelay'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("PingPongDelay");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Tiempo de retardo").appendField(((function(f){ f.setTooltip(`Tiempo de eco:
-Admite tempos como '4n', '8n' o valores numéricos.`); return f; })(new Blockly.FieldTextInput("8n"))), "DELAY_TIME");
+            .appendField("Tiempo de retardo (s)").appendField(((function(f){ f.setTooltip(`Tiempo de retardo (segundos):\nCada eco rebota de canal en canal con este intervalo.`); return f; })(new Blockly.FieldNumber(0.25, 0))), "DELAY_TIME");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Retroalimentación").appendField(((function(f){ f.setTooltip(`Retroalimentación (0 a 1):
-0 = Un solo eco
-1 = El eco se repite infinitamente`); return f; })(new Blockly.FieldNumber(0.2, 0, 1))), "FEEDBACK");
+            .appendField("Retardo máximo (s)").appendField(((function(f){ f.setTooltip(`Retardo máximo (segundos):\nLímite superior que puede alcanzar el retardo.`); return f; })(new Blockly.FieldNumber(1, 0))), "MAX_DELAY_TIME");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
-0 = Señal limpia original
-1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(0.5, 0, 1))), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):\n0 = Señal limpia original\n1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(290);
+        this.setTooltip('Eco que rebota entre los canales izquierdo y derecho.');
     }
 };
 
 Blockly.JavaScript['effect_pingpongdelay'] = function (block) {
-    let delayTime = block.getFieldValue('DELAY_TIME');
-    let feedback = block.getFieldValue('FEEDBACK');
-    let wet = block.getFieldValue('WET');
-    let myNum = num++; // unique ID
+    let delayTime    = block.getFieldValue('DELAY_TIME');
+    let maxDelayTime = block.getFieldValue('MAX_DELAY_TIME');
+    let wet          = block.getFieldValue('WET');
+    let myNum = num++;
 
-    let effectOptions = `{delayTime: "${delayTime}", feedback: ${feedback}, wet: ${wet}}`;
+    let effectOptions = `{delayTime: ${delayTime}, maxDelayTime: ${maxDelayTime}, wet: ${wet}}`;
     let code = `var prev_dest_${myNum} = typeof current_dest !== 'undefined' ? current_dest : Tone.Destination;\n`;
     code += `const effect_${myNum} = new Tone.PingPongDelay(${effectOptions}).connect(prev_dest_${myNum});\n`;
     code += `if (typeof effect_${myNum}.start === 'function') effect_${myNum}.start();\n`;
