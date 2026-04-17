@@ -2,7 +2,7 @@ Blockly.Blocks['effect_autofilter'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("Filtro de Pasa Baja");
+            .appendField("Filtro Automático");
 
         let freqField = new Blockly.FieldTextInput("4n");
         freqField.setTooltip(`Valores rápidos: 16n, 8n

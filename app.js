@@ -384,8 +384,7 @@ const toolboxAdvanced = {
         {
           kind: "category", name: "Tono", colour: "290",
           contents: [
-            { kind: 'block', type: 'effect_pitchshift' },
-            { kind: 'block', type: 'effect_frequencyshifter' }
+            { kind: 'block', type: 'effect_pitchshift' }
           ]
         },
         {
@@ -625,8 +624,7 @@ const toolboxFree = {
         {
           kind: "category", name: "Tono", colour: "290",
           contents: [
-            { kind: 'block', type: 'effect_pitchshift' },
-            { kind: 'block', type: 'effect_frequencyshifter' }
+            { kind: 'block', type: 'effect_pitchshift' }
           ]
         },
         {
