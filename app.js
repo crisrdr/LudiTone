@@ -7,6 +7,24 @@ let timeDur = 0; //it controls the duration of the notes
 let num = 0; //it controls the number of synths on a given play.
 let seqNum = 0; //it controls the sequence loop variables.
 
+// Registry of all active synths/effects — populated at runtime by generated code
+let activeSynths = [];
+
+// Stops the transport and immediately silences every active synth/effect
+function stopAll() {
+  Tone.Transport.stop();
+  Tone.Transport.cancel(0);
+  activeSynths.forEach(node => {
+    try {
+      if (typeof node.releaseAll === 'function') node.releaseAll(0);
+      if (typeof node.triggerRelease === 'function') node.triggerRelease(0);
+      node.disconnect();
+      node.dispose();
+    } catch (e) { /* already disposed */ }
+  });
+  activeSynths = [];
+}
+
 // Generate JavaScript code and run it
 async function runCode() {
 
@@ -14,7 +32,18 @@ async function runCode() {
   Blockly.JavaScript.addReservedWords('code');
   const code = Blockly.JavaScript.workspaceToCode(workspace);
 
-  wrapCode = "let current_dest = Tone.Destination;\n" + code;
+  // Prepend helpers so generated code can self-register synths/effects
+  const preamble =
+    'let current_dest = Tone.Destination;\n' +
+    'function _reg(node){ activeSynths.push(node); return node; }\n';
+
+  // Wrap every `new Tone.XxxSynth/Effect(...)` so it auto-registers
+  const instrumentedCode = code.replace(
+    /new\s+(Tone\.(?:[A-Za-z]+Synth|AutoFilter|Reverb|Freeverb|JCReverb|Delay|PingPongDelay|Chorus|Phaser|Tremolo|Vibrato|Distortion|BitCrusher|Chebyshev|PitchShift|FrequencyShifter|AutoPanner|StereoWidener|MidSideEffect|AutoWah)[^)]*\))/g,
+    '_reg(new $1)'
+  );
+
+  wrapCode = preamble + instrumentedCode;
 
   console.log(wrapCode);
   // evaluate code
@@ -28,8 +57,7 @@ async function runCode() {
 }
 
 playBTN.addEventListener("click", () => {
-  Tone.Transport.stop();
-  Tone.Transport.cancel(0);
+  stopAll();
   timeDur = 0;
   num = 0;
   seqNum = 0;
@@ -37,8 +65,7 @@ playBTN.addEventListener("click", () => {
 })
 
 stopBTN.addEventListener("click", () => {
-  Tone.Transport.stop();
-  Tone.Transport.cancel(0);
+  stopAll();
 })
 
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
