@@ -63,7 +63,7 @@ Blockly.Blocks['simple_note'] = {
         // Alwasy keep the base "note" field
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
-                .appendField("nota")
+                .appendField(Blockly.Msg['SIMPLE_NOTE_LABEL'] || "nota", "NOTE_LABEL")
                 .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
         }
 
@@ -218,5 +218,5 @@ Blockly.JavaScript['simple_note'] = function (block) {
     return code;
 }
 
-const simple_note_dur = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="duración">1</field></shadow></value></block>';
-const simple_note_vol = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="volúmen">1</field></shadow></value></block>';
+const simple_note_dur = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="dur">1</field></shadow></value></block>';
+const simple_note_vol = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="vol">1</field></shadow></value></block>';

@@ -72,143 +72,140 @@ stopBTN.addEventListener("click", () => {
 let customUserBlocks = JSON.parse(localStorage.getItem('blocklyMusicCustomBlocks') || '[]');
 
 function removeCustomBlock(id) {
-    customUserBlocks = customUserBlocks.filter(b => b.id !== id);
-    localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
-    // Actualizar toolbox
-    let baseToolbox = toolboxFree;
-    switch (currentLevel) {
-        case 'basic': baseToolbox = toolboxBasic; break;
-        case 'intermediate': baseToolbox = toolboxIntermediate; break;
-        case 'advanced': baseToolbox = toolboxAdvanced; break;
-    }
-    workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
-    colorizeBubbles();
+  customUserBlocks = customUserBlocks.filter(b => b.id !== id);
+  localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
+  // Actualizar toolbox
+  let baseToolbox = toolboxFree;
+  switch (currentLevel) {
+    case 'basic': baseToolbox = toolboxBasic; break;
+    case 'intermediate': baseToolbox = toolboxIntermediate; break;
+    case 'advanced': baseToolbox = toolboxAdvanced; break;
+  }
+  const dynamicToolbox = (currentLevel === 'free')? applyCustomBlocksTo(baseToolbox) : baseToolbox;
+  workspace.updateToolbox(dynamicToolbox);
+  colorizeBubbles();
 }
 
 function registerCustomBlockDef(blockData) {
-    // 1. Definimos el bloque visualmente, incluyendo menú contextual
-    Blockly.Blocks[blockData.id] = {
-        init: function() {
-            this.appendDummyInput().appendField(blockData.name);
-            this.setPreviousStatement(true, null);
-            this.setNextStatement(true, null);
-            this.setColour(blockData.color || 290);
-            this.setTooltip("Bloque personalizado — Clic derecho para opciones");
-        },
-        customContextMenu: function(options) {
-            const thisBlock = this;
-            const inFlyout = thisBlock.isInFlyout;
+  // 1. Definimos el bloque visualmente, incluyendo menú contextual
+  Blockly.Blocks[blockData.id] = {
+    init: function () {
+      this.appendDummyInput().appendField(blockData.name);
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(blockData.color || 290);
+      this.setTooltip("Bloque personalizado — Clic derecho para opciones");
+    },
+    customContextMenu: function (options) {
+      const thisBlock = this;
+      const inFlyout = thisBlock.isInFlyout;
 
-            if (inFlyout) {
-                // -- MENÚ LATERAL: Editar nombre/color y Eliminar --
+      if (inFlyout) {
+        // -- MENÚ LATERAL: Editar nombre/color y Eliminar --
 
-                options.push({
-                    text: '✏️ Editar bloque',
-                    enabled: true,
-                    callback: function() {
-                        openModalForEdit(blockData);
-                    }
-                });
+        options.push({
+          text: '✏️ Editar bloque',
+          enabled: true,
+          callback: function () {
+            openModalForEdit(blockData);
+          }
+        });
 
-                options.push({
-                    text: '🗑️ Eliminar del menú',
-                    enabled: true,
-                    callback: function() {
-                        if (window.confirm("¿Eliminar \"" + blockData.name + "\" de Mis Bloques?\nEsta acción no se puede deshacer.")) {
-                            removeCustomBlock(blockData.id);
-                        }
-                    }
-                });
-
-            } else {
-                // -- ÁREA DE TRABAJO: Desempaquetar para editar internamente --
-
-                options.push({
-                    text: '📦 Editar internamente (desempaquetar)',
-                    enabled: true,
-                    callback: function() {
-                        try {
-                            const xmlDom = Blockly.Xml.textToDom(blockData.xml);
-                            const blockXmlNode = xmlDom.firstElementChild;
-                            if (!blockXmlNode) return;
-
-                            const xy = thisBlock.getRelativeToSurfaceXY();
-                            const prevConn = thisBlock.previousConnection && thisBlock.previousConnection.targetConnection;
-                            const nextConn = thisBlock.nextConnection && thisBlock.nextConnection.targetConnection;
-
-                            if (prevConn) thisBlock.previousConnection.disconnect();
-                            if (nextConn) thisBlock.nextConnection.disconnect();
-
-                            const newBlock = Blockly.Xml.domToBlock(blockXmlNode, workspace);
-                            newBlock.moveTo(xy);
-
-                            if (prevConn && newBlock.previousConnection) {
-                                prevConn.connect(newBlock.previousConnection);
-                            }
-
-                            if (nextConn && newBlock.nextConnection) {
-                                let lastBlock = newBlock;
-                                while (lastBlock.getNextBlock()) lastBlock = lastBlock.getNextBlock();
-                                if (lastBlock.nextConnection) lastBlock.nextConnection.connect(nextConn);
-                            }
-
-                            thisBlock.dispose(false);
-
-                            const keep = window.confirm(
-                                "¿Conservar \"" + blockData.name + "\" en el menú para seguir usándolo?\n" +
-                                "· Aceptar → Se mantiene en \"Mis Bloques\"\n" +
-                                "· Cancelar → Se elimina del menú (sobreescribir)"
-                            );
-                            if (!keep) removeCustomBlock(blockData.id);
-
-                        } catch(e) {
-                            console.error("Error al desempaquetar bloque:", e);
-                            alert("No se pudo desempaquetar el bloque. Revisa la consola.");
-                        }
-                    }
-                });
+        options.push({
+          text: '🗑️ Eliminar del menú',
+          enabled: true,
+          callback: function () {
+            if (window.confirm("¿Eliminar \"" + blockData.name + "\" de Mis Bloques?\nEsta acción no se puede deshacer.")) {
+              removeCustomBlock(blockData.id);
             }
-        }
-    };
-    
-    // 2. Definimos su generador en JavaScript
-    Blockly.JavaScript[blockData.id] = function(block) {
-        const headless = new Blockly.Workspace();
-        try {
-            const xmlDom = Blockly.Xml.textToDom(blockData.xml);
-            Blockly.Xml.domToWorkspace(xmlDom, headless);
-            const code = Blockly.JavaScript.workspaceToCode(headless);
-            return code;
-        } catch (e) {
-            console.error("Error ejecutando macro", e);
-            return "";
-        } finally {
-            headless.dispose();
-        }
-    };
+          }
+        });
+
+      } else {
+        // -- ÁREA DE TRABAJO: Desempaquetar para editar internamente --
+
+        options.push({
+          text: '📦 Editar internamente (desempaquetar)',
+          enabled: true,
+          callback: function () {
+            try {
+              const xmlDom = Blockly.Xml.textToDom(blockData.xml);
+              const blockXmlNode = xmlDom.firstElementChild;
+              if (!blockXmlNode) return;
+
+              const xy = thisBlock.getRelativeToSurfaceXY();
+              const prevConn = thisBlock.previousConnection && thisBlock.previousConnection.targetConnection;
+              const nextConn = thisBlock.nextConnection && thisBlock.nextConnection.targetConnection;
+
+              if (prevConn) thisBlock.previousConnection.disconnect();
+              if (nextConn) thisBlock.nextConnection.disconnect();
+
+              const newBlock = Blockly.Xml.domToBlock(blockXmlNode, workspace);
+              newBlock.moveTo(xy);
+
+              if (prevConn && newBlock.previousConnection) {
+                prevConn.connect(newBlock.previousConnection);
+              }
+
+              if (nextConn && newBlock.nextConnection) {
+                let lastBlock = newBlock;
+                while (lastBlock.getNextBlock()) lastBlock = lastBlock.getNextBlock();
+                if (lastBlock.nextConnection) lastBlock.nextConnection.connect(nextConn);
+              }
+
+              thisBlock.dispose(false);
+
+              const keep = window.confirm(
+                "¿Conservar \"" + blockData.name + "\" en el menú para seguir usándolo?\n" +
+                "· Aceptar → Se mantiene en \"Mis Bloques\"\n" +
+                "· Cancelar → Se elimina del menú (sobreescribir)"
+              );
+              if (!keep) removeCustomBlock(blockData.id);
+
+            } catch (e) {
+              console.error("Error al desempaquetar bloque:", e);
+              alert("No se pudo desempaquetar el bloque. Revisa la consola.");
+            }
+          }
+        });
+      }
+    }
+  };
+
+  // 2. Definimos su generador en JavaScript
+  Blockly.JavaScript[blockData.id] = function (block) {
+    const headless = new Blockly.Workspace();
+    try {
+      const xmlDom = Blockly.Xml.textToDom(blockData.xml);
+      Blockly.Xml.domToWorkspace(xmlDom, headless);
+      const code = Blockly.JavaScript.workspaceToCode(headless);
+      return code;
+    } catch (e) {
+      console.error("Error ejecutando macro", e);
+      return "";
+    } finally {
+      headless.dispose();
+    }
+  };
 }
 
 // Registramos en cuanto arranque el script
 customUserBlocks.forEach(registerCustomBlockDef);
 
-function applyCustomBlocksTo(toolboxDef, isBasicMode) {
-    if (customUserBlocks.length === 0) return toolboxDef;
-    
-    // Clonación profunda
-    let newToolbox = JSON.parse(JSON.stringify(toolboxDef));
-    let blocksNodes = customUserBlocks.map(b => ({ kind: 'block', type: b.id }));
-    
-    if (isBasicMode) {
-        newToolbox.contents[0].contents.push(...blocksNodes);
-    } else {
-        newToolbox.contents.push({
-            kind: 'category',
-            name: 'Mis Bloques',
-            colour: '60',
-            contents: blocksNodes
-        });
-    }
-    return newToolbox;
+function applyCustomBlocksTo(toolboxDef) {
+  if (customUserBlocks.length === 0) return toolboxDef;
+
+  // Clonación profunda
+  let newToolbox = JSON.parse(JSON.stringify(toolboxDef));
+  let blocksNodes = customUserBlocks.map(b => ({ kind: 'block', type: b.id }));
+
+  newToolbox.contents.push({
+    kind: 'category',
+    name: 'Mis Bloques',
+    colour: '60',
+    contents: blocksNodes
+  });
+  return newToolbox;
 }
 
 
@@ -220,10 +217,11 @@ const toolboxBasic = {
       name: "",
       colour: "0",
       contents: [
-        { kind: 'block', type: 'pop' },
         { kind: 'block', type: 'simple_note' },
+        { kind: 'block', blockxml: simple_note_vol },
         { kind: 'block', blockxml: simple_note_dur },
-        { kind: 'block', blockxml: simple_note_vol }
+        { kind: 'block', type: 'opt_volume' },
+        { kind: 'block', type: 'opt_duration' }
       ]
     }
   ]
@@ -237,8 +235,7 @@ const toolboxIntermediate = {
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
-        { kind: 'block', type: 'wait', fields: { NUM: 1 } },
-        { kind: 'block', type: 'pop' }
+        { kind: 'block', type: 'wait', fields: { NUM: 1 } }
       ]
     },
     {
@@ -252,7 +249,7 @@ const toolboxIntermediate = {
           ]
         },
         {
-          kind: 'category', name: 'Anidado', colour: '20', contents: [
+          kind: 'category', name: 'Caja', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' },
             { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }
@@ -266,13 +263,8 @@ const toolboxIntermediate = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            {
-              kind: 'category', name: 'Duración', colour: '120', contents: [
-                { kind: 'block', type: 'opt_duration' },
-                { kind: 'block', blockxml: simple_note_dur },
-                { kind: 'block', blockxml: semitone_dur }
-              ]
-            },
+            { kind: 'block', type: 'opt_duration' },
+            { kind: 'block', type: 'opt_volume' },
             { kind: 'block', type: 'opt_wave_shape' }
           ]
         },
@@ -280,6 +272,7 @@ const toolboxIntermediate = {
           kind: "category", name: "Opciones caja", colour: "160",
           contents: [
             { kind: 'block', type: 'opt2_duration' },
+            { kind: 'block', type: 'opt2_volume' },
             { kind: 'block', type: 'opt2_wave_shape' }
           ]
         }
@@ -296,21 +289,20 @@ const toolboxAdvanced = {
       contents: [
         { kind: 'block', type: 'loop' },
         { kind: 'block', type: 'sequence' },
-        { kind: 'block', type: 'wait', fields: { NUM: 1 } },
-        { kind: 'block', type: 'pop' }
+        { kind: 'block', type: 'wait', fields: { NUM: 1 } }
       ]
     },
     {
       kind: "category", name: "Notas", colour: "20",
       contents: [
         {
-          kind: 'category', name: 'Mutador', colour: '20', contents: [
+          kind: 'category', name: 'Puzzle', colour: '20', contents: [
             { kind: 'block', type: 'simple_note' }, { kind: 'block', type: 'semitone' },
             { kind: 'block', type: 'chord' }, { kind: 'block', type: 'chord_ed' }
           ]
         },
         {
-          kind: 'category', name: 'Anidado', colour: '20', contents: [
+          kind: 'category', name: 'Caja', colour: '20', contents: [
             { kind: 'block', type: 'simple_note2' }, { kind: 'block', type: 'semitone2' },
             { kind: 'block', type: 'chord2' }, { kind: 'block', type: 'chord_ed2' }
           ]
@@ -323,24 +315,24 @@ const toolboxAdvanced = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            {
-              kind: 'category', name: 'Duración', colour: '120', contents: [
-                { kind: 'block', type: 'opt_duration' },
-                { kind: 'block', blockxml: simple_note_dur },
-                { kind: 'block', blockxml: semitone_dur }
-              ]
-            },
-            { kind: 'block', type: 'opt_wave_shape' }, { kind: 'block', type: 'opt_attack' },
-            { kind: 'block', type: 'opt_release' }, { kind: 'block', type: 'opt_volume' },
-            { kind: 'block', type: 'opt_kind' }, { kind: 'block', type: 'opt_adsr' }
+            { kind: 'block', type: 'opt_duration' },
+            { kind: 'block', type: 'opt_volume' },
+            { kind: 'block', type: 'opt_wave_shape' },
+            { kind: 'block', type: 'opt_kind' },
+            { kind: 'block', type: 'opt_attack' },
+            { kind: 'block', type: 'opt_release' },
+            { kind: 'block', type: 'opt_adsr' }
           ]
         },
         {
           kind: "category", name: "Opciones caja", colour: "160",
           contents: [
-            { kind: 'block', type: 'opt2_duration' }, { kind: 'block', type: 'opt2_wave_shape' },
-            { kind: 'block', type: 'opt2_attack' }, { kind: 'block', type: 'opt2_release' },
-            { kind: 'block', type: 'opt2_volume' }, { kind: 'block', type: 'opt2_kind' },
+            { kind: 'block', type: 'opt2_duration' },
+            { kind: 'block', type: 'opt2_volume' },
+            { kind: 'block', type: 'opt2_wave_shape' },
+            { kind: 'block', type: 'opt2_kind' },
+            { kind: 'block', type: 'opt2_attack' },
+            { kind: 'block', type: 'opt2_release' },
             { kind: 'block', type: 'opt2_adsr' }
           ]
         }
@@ -503,23 +495,16 @@ const toolboxFree = {
           colour: "120",
           contents: [
             {
-              kind: "category",
-              name: "duración",
-              colour: "120",
-              contents: [
-                {
-                  kind: 'block',
-                  type: 'opt_duration'
-                },
-                {
-                  kind: 'block',
-                  blockxml: simple_note_dur
-                },
-                {
-                  kind: 'block',
-                  blockxml: semitone_dur
-                }
-              ]
+              kind: 'block',
+              type: 'opt_duration'
+            },
+            {
+              kind: 'block',
+              blockxml: simple_note_dur
+            },
+            {
+              kind: 'block',
+              blockxml: semitone_dur
             },
             {
               kind: 'block',
@@ -670,15 +655,15 @@ let currentLevel = null;
 let isLoadingLevel = false;
 
 function colorizeBubbles() {
-    setTimeout(() => {
-        document.querySelectorAll('.blocklyTreeRow').forEach(row => {
-            const labelNode = row.querySelector('.blocklyTreeLabel');
-            if (labelNode) {
-                const text = labelNode.innerText.trim();
-                row.setAttribute('data-category', text);
-            }
-        });
-    }, 100);
+  setTimeout(() => {
+    document.querySelectorAll('.blocklyTreeRow').forEach(row => {
+      const labelNode = row.querySelector('.blocklyTreeLabel');
+      if (labelNode) {
+        const text = labelNode.innerText.trim();
+        row.setAttribute('data-category', text);
+      }
+    });
+  }, 100);
 }
 
 // Nivel selector logic
@@ -694,28 +679,30 @@ function selectLevel(levelName) {
     case 'free': selectedToolbox = toolboxFree; break;
   }
 
-  // Si estamos cambiando a otro nivel completo, aquí inyectamos los custom blocks
-  const dynamicToolbox = applyCustomBlocksTo(selectedToolbox, levelName === 'basic');
+  // Si estamos en modo libre, inyectamos los custom blocks
+  const dynamicToolbox = (levelName === 'free') ? applyCustomBlocksTo(selectedToolbox) : selectedToolbox;
 
   workspace.clear();
   workspace.updateToolbox(dynamicToolbox);
   colorizeBubbles();
 
+  // --- CONFIGURACIÓN DE ETIQUETAS DINÁMICAS ---
+  Blockly.Msg['SIMPLE_NOTE_LABEL'] = (levelName === 'basic') ? 'sonido' : 'nota';
+
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
+    document.getElementById('create-block-btn').style.display = 'none';
     setTimeout(() => {
       const toolbox = workspace.getToolbox();
       if (toolbox && typeof toolbox.selectItemByPosition === 'function') {
         toolbox.selectItemByPosition(0);
-        // Evitar que se cierre al hacer click en el fondo (en algunas versiones de Blockly funciona)
         const flyout = toolbox.getFlyout();
-        if (flyout) {
-          flyout.autoClose = false;
-        }
+        if (flyout) flyout.autoClose = false;
       }
     }, 50);
   } else {
     document.body.classList.remove('basic-mode');
+    document.getElementById('create-block-btn').style.display = (levelName === 'free') ? 'inline-block' : 'none';
   }
 
   // 1. Cargar bloques guardados para ESTE nivel específico
@@ -774,18 +761,18 @@ let pendingEditBlockId = null; // null = crear modo, string = editar modo
 
 // Synchronize color input and text display
 colorInput.addEventListener('input', (e) => {
-    hexDisplay.textContent = e.target.value;
+  hexDisplay.textContent = e.target.value;
 });
 
 // Función para abrir el modal en modo EDITAR
 function openModalForEdit(blockData) {
-    pendingEditBlockId = blockData.id;
-    pendingBlockSelection = null;
-    nameInput.value = blockData.name;
-    colorInput.value = blockData.color || '#8b5cf6';
-    hexDisplay.textContent = blockData.color || '#8b5cf6';
-    modalTitle.textContent = 'Editar Bloque';
-    modal.style.display = 'flex';
+  pendingEditBlockId = blockData.id;
+  pendingBlockSelection = null;
+  nameInput.value = blockData.name;
+  colorInput.value = blockData.color || '#8b5cf6';
+  hexDisplay.textContent = blockData.color || '#8b5cf6';
+  modalTitle.textContent = 'Editar Bloque';
+  modal.style.display = 'flex';
 }
 
 // 4. Crear macro de bloque del usuario
@@ -805,9 +792,9 @@ document.getElementById('create-block-btn').addEventListener('click', () => {
 });
 
 btnCancel.addEventListener('click', () => {
-    modal.style.display = 'none';
-    pendingBlockSelection = null;
-    pendingEditBlockId = null;
+  modal.style.display = 'none';
+  pendingBlockSelection = null;
+  pendingEditBlockId = null;
 });
 
 function refreshToolboxAfterUpdate() {
@@ -817,7 +804,8 @@ function refreshToolboxAfterUpdate() {
     case 'intermediate': baseToolbox = toolboxIntermediate; break;
     case 'advanced': baseToolbox = toolboxAdvanced; break;
   }
-  workspace.updateToolbox(applyCustomBlocksTo(baseToolbox, currentLevel === 'basic'));
+  const dynamicToolbox = (currentLevel === 'free')? applyCustomBlocksTo(baseToolbox) : baseToolbox;
+  workspace.updateToolbox(dynamicToolbox);
   colorizeBubbles();
   if (currentLevel === 'basic') {
     setTimeout(() => {
@@ -834,8 +822,8 @@ function refreshToolboxAfterUpdate() {
 btnSave.addEventListener('click', () => {
   let blockName = nameInput.value;
   if (!blockName || blockName.trim() === "") {
-      alert("Por favor, introduce un nombre para el bloque.");
-      return;
+    alert("Por favor, introduce un nombre para el bloque.");
+    return;
   }
 
   if (pendingEditBlockId) {

@@ -3,7 +3,7 @@ Blockly.Blocks['loop'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.appendDummyInput()
-            .appendField('repetir esto')
+            .appendField('repetir todo')
             .appendField('a velocidad')
             .appendField(new Blockly.FieldDropdown([["lento", "2n"], ["medio", "4n"], ["rápido", "8n"]]), "times");
         this.appendStatementInput('DO')
