@@ -71,11 +71,11 @@ stopBTN.addEventListener("click", () => {
 })
 
 feedbackBTN.addEventListener("click", () => {
-    window.open("https://forms.gle/NHxHTTj8iaees46C7", "_blank");
+    window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
 });
 
 feedbackHomeBTN.addEventListener("click", () => {
-    window.open("https://forms.gle/NHxHTTj8iaees46C7", "_blank");
+    window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
 });
 
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
