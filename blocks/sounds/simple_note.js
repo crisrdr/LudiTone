@@ -64,7 +64,7 @@ Blockly.Blocks['simple_note'] = {
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
                 .appendField(Blockly.Msg['SIMPLE_NOTE_LABEL'] || "nota", "NOTE_LABEL")
-                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"]]), "note");
+                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note");
         }
 
         // Add options inputs

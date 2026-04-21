@@ -2,9 +2,7 @@ Blockly.Blocks['semitone2'] = {
     init: function () {
         const basicNotes = [
             ["c4", "c4"], ["d4", "d4"], ["e4", "e4"], 
-            ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"],
-            ["c5", "c5"], ["d5", "d5"], ["e5", "e5"], 
-            ["f5", "f5"], ["g5", "g5"], ["a5", "a5"], ["b5", "b5"]
+            ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]
         ];
 
         const accidentals = [
