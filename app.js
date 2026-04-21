@@ -307,14 +307,16 @@ const toolboxAdvanced = {
       contents: [
         {
           kind: 'category', name: 'Puzzle', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note' }, { kind: 'block', type: 'semitone' },
-            { kind: 'block', type: 'chord' }, { kind: 'block', type: 'chord_ed' }
+            { kind: 'block', type: 'simple_note_ed' },
+            { kind: 'block', type: 'semitone_ed' },
+            { kind: 'block', type: 'chord_ed' }
           ]
         },
         {
           kind: 'category', name: 'Caja', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note2' }, { kind: 'block', type: 'semitone2' },
-            { kind: 'block', type: 'chord2' }, { kind: 'block', type: 'chord_ed2' }
+            { kind: 'block', type: 'simple_note_ed2' },
+            { kind: 'block', type: 'semitone_ed2' },
+            { kind: 'block', type: 'chord_ed2' }
           ]
         }
       ]
@@ -457,7 +459,15 @@ const toolboxFree = {
             },
             {
               kind: 'block',
+              type: 'simple_note_ed'
+            },
+            {
+              kind: 'block',
               type: 'semitone'
+            },
+            {
+              kind: 'block',
+              type: 'semitone_ed'
             },
             {
               kind: 'block',
@@ -480,7 +490,15 @@ const toolboxFree = {
             },
             {
               kind: 'block',
+              type: 'simple_note_ed2'
+            },
+            {
+              kind: 'block',
               type: 'semitone2'
+            },
+            {
+              kind: 'block',
+              type: 'semitone_ed2'
             },
             {
               kind: 'block',
