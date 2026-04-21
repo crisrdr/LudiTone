@@ -2,6 +2,8 @@
 
 const playBTN = document.getElementById("play-btn");
 const stopBTN = document.getElementById("stop-btn");
+const feedbackBTN = document.getElementById("feedback-btn");
+const feedbackHomeBTN = document.getElementById("feedback-home-btn");
 const clearBTN = document.getElementById("clear-btn");
 let timeDur = 0; //it controls the duration of the notes
 let num = 0; //it controls the number of synths on a given play.
@@ -67,6 +69,14 @@ playBTN.addEventListener("click", () => {
 stopBTN.addEventListener("click", () => {
   stopAll();
 })
+
+feedbackBTN.addEventListener("click", () => {
+    window.open("https://forms.gle/NHxHTTj8iaees46C7", "_blank");
+});
+
+feedbackHomeBTN.addEventListener("click", () => {
+    window.open("https://forms.gle/NHxHTTj8iaees46C7", "_blank");
+});
 
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
 let customUserBlocks = JSON.parse(localStorage.getItem('blocklyMusicCustomBlocks') || '[]');

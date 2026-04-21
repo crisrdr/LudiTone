@@ -127,6 +127,14 @@
     background-color: #7c3aed;
 }
 
+#feedback-btn {
+    background-color: #17a2b8;
+}
+
+#feedback-btn:hover {
+    background-color: #138496;
+}
+
 /* MODAL STYLES (MATCHING STARTUP MENU) */
 .modal-overlay {
     position: fixed;
@@ -272,3 +280,44 @@
     border-color: rgba(255, 235, 59, 0.8) !important; 
 }
 .blocklyTreeRow[data-category="Opciones"]:hover { background-color: rgba(255, 235, 59, 0.35) !important; }
+
+.home-feedback {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1001;
+}
+
+.home-feedback p {
+    color: white;
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+#feedback-home-btn {
+    background-color: #17a2b8;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+}
+
+#feedback-home-btn:hover {
+    background-color: #138496;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+}
+
