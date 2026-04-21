@@ -510,14 +510,6 @@ const toolboxFree = {
             },
             {
               kind: 'block',
-              blockxml: simple_note_dur
-            },
-            {
-              kind: 'block',
-              blockxml: semitone_dur
-            },
-            {
-              kind: 'block',
               type: 'opt_wave_shape'
             },
             {
