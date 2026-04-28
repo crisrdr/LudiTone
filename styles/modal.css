@@ -1,0 +1,177 @@
+/* ============================================================
+   MODAL — Modal de creación/edición de bloques personalizados
+   ============================================================ */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 60, 114, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 12px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+}
+
+.modal-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+}
+
+/* --- Grupos de entrada --- */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.input-group input[type="text"] {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 1rem;
+    color: white;
+    outline: none;
+}
+
+.input-group input[type="text"]::placeholder { color: rgba(255, 255, 255, 0.6); }
+.input-group input[type="text"]:focus { border-color: rgba(255, 255, 255, 0.8); }
+
+/* --- Selector de color --- */
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.input-group input[type="color"] {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+}
+
+.input-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.input-group input[type="color"]::-webkit-color-swatch {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+#color-hex-display {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* --- Acciones del modal --- */
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+.btn-primary {
+    background: #28a745;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+.btn-primary:hover { background: #218838; transform: translateY(-2px); }
+
+/* --- Selector de niveles (chips) --- */
+
+.level-note {
+    margin: 2px 0 8px 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-style: italic;
+}
+
+.level-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.level-chip {
+    cursor: pointer;
+    user-select: none;
+}
+
+.level-chip input[type="checkbox"] { display: none; }
+
+.level-chip span {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
+}
+
+.level-chip input:checked + span {
+    background: rgba(34, 197, 94, 0.5);
+    border-color: rgba(34, 197, 94, 0.9);
+    color: white;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.level-chip span:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.level-chip input:checked + span:hover { background: rgba(34, 197, 94, 0.7); }

@@ -1,594 +1,145 @@
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-        }
-
-        .controls {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            gap: 10px;
-            position: relative;
-            align-items: center;
-        }
-
-        .controls button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            transition: background-color 0.2s;
-        }
-
-        #play-btn {
-            background-color: #28a745;
-        }
-
-        #play-btn:hover {
-            background-color: #218838;
-        }
-
-        #stop-btn {
-            background-color: #dc3545;
-        }
-
-        #stop-btn:hover {
-            background-color: #c82333;
-        }
-
-        #live-btn {
-            background-color: #007bff;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-        }
-
-        #live-btn.live-active {
-            background-color: #ff5722;
-            animation: pulse-live 2s infinite;
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.5);
-        }
-
-        @keyframes pulse-live {
-            0% {
-                transform: translateX(-50%) scale(1);
-            }
-
-            50% {
-                transform: translateX(-50%) scale(1.05);
-                box-shadow: 0 0 20px rgba(255, 87, 34, 0.8);
-            }
-
-            100% {
-                transform: translateX(-50%) scale(1);
-            }
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed !important;
-            filter: grayscale(0.5);
-        }
-
-        #clear-btn {
-            background-color: #696969;
-            margin-left: auto;
-        }
-
-        #clear-btn:hover {
-            background-color: #525252;
-        }
-
-        #btn-menu {
-            background-color: #343a40;
-        }
-
-        #btn-menu:hover {
-            background-color: #23272b;
-        }
-
-        #startup-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.4s ease;
-        }
-
-        #startup-menu h1 {
-            color: white;
-            margin-bottom: 40px;
-            font-size: 3rem;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .cards-container {
-            display: flex;
-            gap: 20px;
-            max-width: 1000px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .mode-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            text-align: center;
-            width: 200px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .mode-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .mode-card h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.5rem;
-        }
-
-        .mode-card p {
-            opacity: 0.8;
-            font-size: 0.95rem;
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        #create-block-btn {
-            background-color: #8b5cf6;
-            margin-left: 10px;
-        }
-
-        #create-block-btn:hover {
-            background-color: #7c3aed;
-        }
-
-        /* TOAST DE AVISO: bloque no permitido */
-        #block-warning-toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%) translateY(12px);
-            background: rgba(200, 30, 50, 0.92);
-            color: white;
-            padding: 11px 22px;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-            transition: opacity 0.25s ease, transform 0.25s ease;
-            white-space: nowrap;
-        }
-
-        #block-warning-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        #feedback-btn {
-            background-color: #17a2b8;
-        }
-
-        #feedback-btn:hover {
-            background-color: #138496;
-        }
-
-        /* MODAL STYLES (MATCHING STARTUP MENU) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(30, 60, 114, 0.7);
-            /* Deep blue translucent */
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-            border-radius: 12px;
-            width: 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            color: white;
-        }
-
-        .modal-content h2 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: white;
-            text-align: center;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-group label {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .input-group input[type="text"] {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            font-size: 1rem;
-            color: white;
-            outline: none;
-        }
-
-        .input-group input[type="text"]::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .input-group input[type="text"]:focus {
-            border-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .color-picker-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .input-group input[type="color"] {
-            width: 50px;
-            height: 50px;
-            padding: 0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: transparent;
-        }
-
-        .input-group input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-
-        .input-group input[type="color"]::-webkit-color-swatch {
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
-        }
-
-        #color-hex-display {
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .modal-actions button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-primary {
-            background: #28a745;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        /* LEVEL SELECTOR CHIPS (MODAL) */
-        .level-note {
-            margin: 2px 0 8px 0;
-            font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.55);
-            font-style: italic;
-        }
-
-        .level-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .level-chip {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .level-chip input[type="checkbox"] {
-            display: none;
-        }
-
-        .level-chip span {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.82rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            letter-spacing: 0.02em;
-        }
-
-        .level-chip input:checked + span {
-            background: rgba(34, 197, 94, 0.5);
-            border-color: rgba(34, 197, 94, 0.9);
-            color: white;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-        }
-
-        .level-chip span:hover {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
-        }
-
-        .level-chip input:checked + span:hover {
-            background: rgba(34, 197, 94, 0.7);
-        }
-
-        /* CUSTOM BLOCKLY TOOLBOX STYLES (BUBBLE CONCEPT) */
-        .blocklyToolboxDiv {
-            background-color: #b9cadb !important;
-            /* Fondo suave para que resalten las burbujas */
-            padding: 10px 5px !important;
-            border-right: none !important;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        /* BÁSICO: bloquear el botón de categoría para que el flyout no se pueda cerrar */
-        body.basic-mode .blocklyTreeRow {
-            pointer-events: none !important;
-            cursor: default !important;
-        }
-
-        .blocklyTreeRow {
-            background: white !important;
-            border-radius: 20px !important;
-            margin-bottom: 12px !important;
-            margin-left: 8px !important;
-            margin-right: 8px !important;
-            padding: 8px 12px !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
-            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s !important;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            display: flex !important;
-            align-items: center !important;
-            height: auto !important;
-            min-height: 35px !important;
-        }
-
-        .blocklyTreeRow:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
-            background: #f8fbff !important;
-        }
-
-        /* Estado Seleccionado */
-        .blocklyTreeSelected {
-            background: #eef4ff !important;
-            border: 1px solid rgba(42, 82, 152, 0.3) !important;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .blocklyTreeLabel {
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 600 !important;
-            font-size: 0.95rem !important;
-            color: #444 !important;
-        }
-
-        /* Ocultamos algunas líneas por defecto del árbol si usa el viejo estilo */
-        .blocklyTreeSeparator {
-            display: none !important;
-        }
-
-        /* Subcategorías anidadas: indentación hacia la derecha */
-        .blocklyTreeChildren .blocklyTreeRow,
-        [role="group"] .blocklyTreeRow {
-            margin-left: 22px !important;
-            margin-right: 4px !important;
-            width: auto !important;
-            padding-left: 10px !important;
-        }
-
-        /* Redondear también el menú desplegable interno (Flyout) */
-        .blocklyFlyoutBackground {
-            fill: #b9cadb !important;
-            fill-opacity: 0.95 !important;
-        }
-
-        /* COLORES POR CATEGORÍA EN LAS BURBUJAS */
-        .blocklyTreeRow[data-category="Control"] {
-            background-color: rgb(137, 202, 255) !important;
-            border-color: rgb(0, 140, 255) !important;
-        }
-
-        .blocklyTreeRow[data-category="Control"]:hover {
-            background-color: rgba(0, 140, 255, 0.25) !important;
-        }
-
-        .blocklyTreeRow[data-category="Efectos"] {
-            background-color: rgb(255, 126, 165) !important;
-            border-color: rgb(255, 0, 76) !important;
-        }
-
-        .blocklyTreeRow[data-category="Efectos"]:hover {
-            background-color: rgba(255, 0, 76, 0.25) !important;
-        }
-
-        .blocklyTreeRow[data-category="Notas"] {
-            background-color: rgb(152, 255, 118) !important;
-            border-color: rgb(0, 255, 8) !important;
-        }
-
-        .blocklyTreeRow[data-category="Notas"]:hover {
-            background-color: rgba(0, 255, 8, 0.25) !important;
-        }
-
-        .blocklyTreeRow[data-category="Mis Sonidos"] {
-            margin-top: 30px !important;
-            background-color: rgb(235, 124, 255) !important;
-            border-color: rgb(217, 0, 255) !important;
-        }
-
-        .blocklyTreeRow[data-category="Mis Sonidos"]:hover {
-            background-color: rgba(217, 0, 255, 0.25) !important;
-        }
-
-        .blocklyTreeRow[data-category="Mis Bloques"] {
-            margin-top: 30px !important;
-            /* SEPARACIÓN FÍSICA */
-            background-color: rgb(235, 124, 255) !important;
-            border-color: rgb(217, 0, 255) !important;
-        }
-
-        .blocklyTreeRow[data-category="Mis Bloques"]:hover {
-            background-color: rgba(217, 0, 255, 0.25) !important;
-        }
-
-        .blocklyTreeRow[data-category="Opciones"] {
-            background-color: rgba(255, 235, 59, 0.5) !important;
-            border-color: rgba(255, 235, 59, 0.8) !important;
-        }
-
-        .blocklyTreeRow[data-category="Opciones"]:hover {
-            background-color: rgba(255, 235, 59, 0.35) !important;
-        }
-
-        /* TARJETA "CREAR SONIDO" */
-        .mode-card--sound {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(234, 88, 12, 0.2) 100%);
-            border-color: rgba(245, 158, 11, 0.5) !important;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mode-card--sound::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 40%;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.12);
-            transform: skewX(-20deg);
-            transition: left 0.6s ease;
-            pointer-events: none;
-        }
-
-        .mode-card--sound:hover::before {
-            left: 130%;
-        }
-
-        .mode-card--sound:hover {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(234, 88, 12, 0.35) 100%);
-            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
-            border-color: rgba(245, 158, 11, 0.8) !important;
-        }
-
-        .sound-card-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .home-feedback {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            z-index: 1001;
-        }
-
-        .home-feedback p {
-            color: white;
-            margin: 0;
-            font-size: 0.95rem;
-            opacity: 0.9;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            max-width: 300px;
-            line-height: 1.4;
-        }
-
-        #feedback-home-btn {
-            background-color: #17a2b8;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
-        }
-
-        #feedback-home-btn:hover {
-            background-color: #138496;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-        }
+/* ============================================================
+   MENU — Pantalla de inicio (startup menu) y tarjetas de modo
+   ============================================================ */
+
+#startup-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease;
+}
+
+#startup-menu h1 {
+    color: white;
+    margin-bottom: 40px;
+    font-size: 3rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Contenedor de tarjetas --- */
+
+.cards-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1000px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.mode-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.mode-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+}
+
+.mode-card p {
+    opacity: 0.8;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* --- Tarjeta especial: Crear Sonido --- */
+
+.mode-card--sound {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(234, 88, 12, 0.2) 100%);
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-card--sound::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.12);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.mode-card--sound:hover::before { left: 130%; }
+
+.mode-card--sound:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(234, 88, 12, 0.35) 100%);
+    box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+    border-color: rgba(245, 158, 11, 0.8) !important;
+}
+
+.sound-card-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* --- Botón de comentarios en el menú de inicio --- */
+
+.home-feedback {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1001;
+}
+
+.home-feedback p {
+    color: white;
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+#feedback-home-btn {
+    background-color: #17a2b8;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+}
+
+#feedback-home-btn:hover {
+    background-color: #138496;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+}

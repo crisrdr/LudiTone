@@ -1,0 +1,96 @@
+/* ============================================================
+   CONTROLS — Barra superior de controles y toast de aviso
+   ============================================================ */
+
+.controls {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    position: relative;
+    align-items: center;
+}
+
+.controls button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+/* --- Botones individuales --- */
+
+#play-btn { background-color: #28a745; }
+#play-btn:hover { background-color: #218838; }
+
+#stop-btn { background-color: #dc3545; }
+#stop-btn:hover { background-color: #c82333; }
+
+#live-btn {
+    background-color: #007bff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+#live-btn.live-active {
+    background-color: #ff5722;
+    animation: pulse-live 2s infinite;
+    box-shadow: 0 0 15px rgba(255, 87, 34, 0.5);
+}
+
+@keyframes pulse-live {
+    0%   { transform: translateX(-50%) scale(1); }
+    50%  { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 20px rgba(255, 87, 34, 0.8); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+#clear-btn {
+    background-color: #696969;
+    margin-left: auto;
+}
+#clear-btn:hover { background-color: #525252; }
+
+#btn-menu { background-color: #343a40; }
+#btn-menu:hover { background-color: #23272b; }
+
+#create-block-btn {
+    background-color: #8b5cf6;
+    margin-left: 10px;
+}
+#create-block-btn:hover { background-color: #7c3aed; }
+
+#feedback-btn { background-color: #17a2b8; }
+#feedback-btn:hover { background-color: #138496; }
+
+/* --- Toast de aviso: bloque no permitido --- */
+
+#block-warning-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    background: rgba(200, 30, 50, 0.92);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+}
+
+#block-warning-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

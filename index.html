@@ -57,7 +57,11 @@
     <script defer src="blocks/effects/stereowidener.js"></script>
     <script defer src="blocks/effects/vibrato.js"></script>
     <script defer src="app.js"></script>
-    <link rel="stylesheet" href="styles/menu.css?v=8">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/controls.css">
+    <link rel="stylesheet" href="styles/menu.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    <link rel="stylesheet" href="styles/toolbox.css">
 </head>
 
 <body>
@@ -65,7 +69,7 @@
         <button id="play-btn">Play</button>
         <button id="stop-btn">Stop</button>
         <button id="live-btn" style="display: none;">Modo Live: OFF</button>
-        <button id="create-block-btn">Crear Bloque</button>
+        <button id="create-block-btn" style="display: none;">Crear Bloque</button>
         <button id="clear-btn">Limpiar Área</button>
         <button id="feedback-btn">Comentarios</button>
         <button id="btn-menu">Volver al Menú</button>
@@ -74,7 +78,7 @@
     <!-- Modal para crear bloque personalizado -->
     <div id="custom-block-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <h2>Crear Nuevo Bloque</h2>
+            <h2 id="modal-title">Crear Nuevo Bloque</h2>
 
             <div class="input-group">
                 <label for="block-name-input">Nombre del bloque:</label>

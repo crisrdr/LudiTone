@@ -1,0 +1,128 @@
+/* ============================================================
+   TOOLBOX — Estilos del menú lateral de Blockly
+   ============================================================ */
+
+/* Fondo del panel */
+.blocklyToolboxDiv {
+    background-color: #b9cadb !important;
+    padding: 10px 5px !important;
+    border-right: none !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Ocultar toolbox en modo básico */
+body.basic-mode .blocklyToolboxDiv { display: none !important; }
+
+/* Bloquear clic en el botón de categoría en modo básico
+   (mantiene el flyout siempre abierto) */
+body.basic-mode .blocklyTreeRow {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* --- Filas de categoría (burbujas) --- */
+
+.blocklyTreeRow {
+    background: white !important;
+    border-radius: 20px !important;
+    margin-bottom: 12px !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    padding: 8px 12px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    height: auto !important;
+    min-height: 35px !important;
+}
+
+.blocklyTreeRow:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important;
+    background: #f8fbff !important;
+}
+
+.blocklyTreeSelected {
+    background: #eef4ff !important;
+    border: 1px solid rgba(42, 82, 152, 0.3) !important;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05), 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.blocklyTreeLabel {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: #444 !important;
+}
+
+/* Ocultar separadores del árbol */
+.blocklyTreeSeparator { display: none !important; }
+
+/* Subcategorías anidadas: indentación */
+.blocklyTreeChildren .blocklyTreeRow,
+[role="group"] .blocklyTreeRow {
+    margin-left: 22px !important;
+    margin-right: 4px !important;
+    width: auto !important;
+    padding-left: 10px !important;
+}
+
+/* Flyout (panel de bloques desplegable) */
+.blocklyFlyoutBackground {
+    fill: #b9cadb !important;
+    fill-opacity: 0.95 !important;
+}
+
+/* --- Colores por categoría --- */
+
+.blocklyTreeRow[data-category="Control"] {
+    background-color: rgb(137, 202, 255) !important;
+    border-color: rgb(0, 140, 255) !important;
+}
+.blocklyTreeRow[data-category="Control"]:hover {
+    background-color: rgba(0, 140, 255, 0.25) !important;
+}
+
+.blocklyTreeRow[data-category="Efectos"] {
+    background-color: rgb(255, 126, 165) !important;
+    border-color: rgb(255, 0, 76) !important;
+}
+.blocklyTreeRow[data-category="Efectos"]:hover {
+    background-color: rgba(255, 0, 76, 0.25) !important;
+}
+
+.blocklyTreeRow[data-category="Notas"] {
+    background-color: rgb(152, 255, 118) !important;
+    border-color: rgb(0, 255, 8) !important;
+}
+.blocklyTreeRow[data-category="Notas"]:hover {
+    background-color: rgba(0, 255, 8, 0.25) !important;
+}
+
+.blocklyTreeRow[data-category="Opciones"] {
+    background-color: rgba(255, 235, 59, 0.5) !important;
+    border-color: rgba(255, 235, 59, 0.8) !important;
+}
+.blocklyTreeRow[data-category="Opciones"]:hover {
+    background-color: rgba(255, 235, 59, 0.35) !important;
+}
+
+.blocklyTreeRow[data-category="Mis Sonidos"] {
+    margin-top: 30px !important;
+    background-color: rgb(235, 124, 255) !important;
+    border-color: rgb(217, 0, 255) !important;
+}
+.blocklyTreeRow[data-category="Mis Sonidos"]:hover {
+    background-color: rgba(217, 0, 255, 0.25) !important;
+}
+
+.blocklyTreeRow[data-category="Mis Bloques"] {
+    margin-top: 30px !important;
+    background-color: rgb(235, 124, 255) !important;
+    border-color: rgb(217, 0, 255) !important;
+}
+.blocklyTreeRow[data-category="Mis Bloques"]:hover {
+    background-color: rgba(217, 0, 255, 0.25) !important;
+}
