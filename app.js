@@ -236,7 +236,7 @@ function registerCustomBlockDef(blockData) {
         // -- ÁREA DE TRABAJO: Desempaquetar para editar internamente --
 
         options.push({
-          text: '📦 Editar internamente (desempaquetar)',
+          text: 'Desempaquetar bloque',
           enabled: true,
           callback: function () {
             try {
@@ -265,13 +265,6 @@ function registerCustomBlockDef(blockData) {
               }
 
               thisBlock.dispose(false);
-
-              const keep = window.confirm(
-                "¿Conservar \"" + blockData.name + "\" en el menú para seguir usándolo?\n" +
-                "· Aceptar → Se mantiene en \"Mis Bloques\"\n" +
-                "· Cancelar → Se elimina del menú (sobreescribir)"
-              );
-              if (!keep) removeCustomBlock(blockData.id);
 
             } catch (e) {
               console.error("Error al desempaquetar bloque:", e);
