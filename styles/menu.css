@@ -165,6 +165,32 @@
             background-color: #7c3aed;
         }
 
+        /* TOAST DE AVISO: bloque no permitido */
+        #block-warning-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: rgba(200, 30, 50, 0.92);
+            color: white;
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            white-space: nowrap;
+        }
+
+        #block-warning-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         #feedback-btn {
             background-color: #17a2b8;
         }
@@ -307,6 +333,60 @@
             transform: translateY(-2px);
         }
 
+        /* LEVEL SELECTOR CHIPS (MODAL) */
+        .level-note {
+            margin: 2px 0 8px 0;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.55);
+            font-style: italic;
+        }
+
+        .level-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .level-chip {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .level-chip input[type="checkbox"] {
+            display: none;
+        }
+
+        .level-chip span {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            letter-spacing: 0.02em;
+        }
+
+        .level-chip input:checked + span {
+            background: rgba(34, 197, 94, 0.5);
+            border-color: rgba(34, 197, 94, 0.9);
+            color: white;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+
+        .level-chip span:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+
+        .level-chip input:checked + span:hover {
+            background: rgba(34, 197, 94, 0.7);
+        }
+
         /* CUSTOM BLOCKLY TOOLBOX STYLES (BUBBLE CONCEPT) */
         .blocklyToolboxDiv {
             background-color: #b9cadb !important;
@@ -314,6 +394,12 @@
             padding: 10px 5px !important;
             border-right: none !important;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* BÁSICO: bloquear el botón de categoría para que el flyout no se pueda cerrar */
+        body.basic-mode .blocklyTreeRow {
+            pointer-events: none !important;
+            cursor: default !important;
         }
 
         .blocklyTreeRow {
@@ -357,6 +443,15 @@
             display: none !important;
         }
 
+        /* Subcategorías anidadas: indentación hacia la derecha */
+        .blocklyTreeChildren .blocklyTreeRow,
+        [role="group"] .blocklyTreeRow {
+            margin-left: 22px !important;
+            margin-right: 4px !important;
+            width: auto !important;
+            padding-left: 10px !important;
+        }
+
         /* Redondear también el menú desplegable interno (Flyout) */
         .blocklyFlyoutBackground {
             fill: #b9cadb !important;
@@ -391,6 +486,16 @@
             background-color: rgba(0, 255, 8, 0.25) !important;
         }
 
+        .blocklyTreeRow[data-category="Mis Sonidos"] {
+            margin-top: 30px !important;
+            background-color: rgb(235, 124, 255) !important;
+            border-color: rgb(217, 0, 255) !important;
+        }
+
+        .blocklyTreeRow[data-category="Mis Sonidos"]:hover {
+            background-color: rgba(217, 0, 255, 0.25) !important;
+        }
+
         .blocklyTreeRow[data-category="Mis Bloques"] {
             margin-top: 30px !important;
             /* SEPARACIÓN FÍSICA */
@@ -409,6 +514,43 @@
 
         .blocklyTreeRow[data-category="Opciones"]:hover {
             background-color: rgba(255, 235, 59, 0.35) !important;
+        }
+
+        /* TARJETA "CREAR SONIDO" */
+        .mode-card--sound {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(234, 88, 12, 0.2) 100%);
+            border-color: rgba(245, 158, 11, 0.5) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card--sound::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.12);
+            transform: skewX(-20deg);
+            transition: left 0.6s ease;
+            pointer-events: none;
+        }
+
+        .mode-card--sound:hover::before {
+            left: 130%;
+        }
+
+        .mode-card--sound:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(234, 88, 12, 0.35) 100%);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+            border-color: rgba(245, 158, 11, 0.8) !important;
+        }
+
+        .sound-card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
         }
 
         .home-feedback {

@@ -15,6 +15,20 @@ let liveTimeout = null;
 // Registry of all active synths/effects — populated at runtime by generated code
 let activeSynths = [];
 
+// Muestra un mensaje temporal cuando un bloque no se puede colocar
+let _blockWarningTimer = null;
+function showBlockWarning(message) {
+  const toast = document.getElementById('block-warning-toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  if (_blockWarningTimer) clearTimeout(_blockWarningTimer);
+  _blockWarningTimer = setTimeout(() => {
+    toast.classList.remove('show');
+    _blockWarningTimer = null;
+  }, 2500);
+}
+
 // Stops the transport and immediately silences every active synth/effect
 function stopAll() {
   Tone.Transport.stop();
@@ -176,8 +190,9 @@ function removeCustomBlock(id) {
     case 'basic': baseToolbox = toolboxBasic; break;
     case 'intermediate': baseToolbox = toolboxIntermediate; break;
     case 'advanced': baseToolbox = toolboxAdvanced; break;
+    case 'sound': baseToolbox = toolboxSound; break;
   }
-  const dynamicToolbox = (currentLevel === 'free')? applyCustomBlocksTo(baseToolbox) : baseToolbox;
+  const dynamicToolbox = applyCustomBlocksTo(baseToolbox, currentLevel);
   workspace.updateToolbox(dynamicToolbox);
   colorizeBubbles();
 }
@@ -288,16 +303,26 @@ function registerCustomBlockDef(blockData) {
 // Registramos en cuanto arranque el script
 customUserBlocks.forEach(registerCustomBlockDef);
 
-function applyCustomBlocksTo(toolboxDef) {
-  if (customUserBlocks.length === 0) return toolboxDef;
+function applyCustomBlocksTo(toolboxDef, levelName) {
+  // En Libre y Crear Sonido se muestran SIEMPRE todos los bloques personalizados
+  let matching;
+  if (levelName === 'free' || levelName === 'sound') {
+    matching = customUserBlocks;
+  } else {
+    matching = customUserBlocks.filter(b => {
+      const levels = b.levels || []; // sin entrada = no aparece en básico/intermedio/avanzado
+      return levels.includes(levelName);
+    });
+  }
+  if (matching.length === 0) return toolboxDef;
 
   // Clonación profunda
   let newToolbox = JSON.parse(JSON.stringify(toolboxDef));
-  let blocksNodes = customUserBlocks.map(b => ({ kind: 'block', type: b.id }));
+  let blocksNodes = matching.map(b => ({ kind: 'block', type: b.id }));
 
   newToolbox.contents.push({
     kind: 'category',
-    name: 'Mis Bloques',
+    name: 'Mis Sonidos',
     colour: '60',
     contents: blocksNodes
   });
@@ -492,6 +517,68 @@ const toolboxAdvanced = {
             { kind: 'block', type: 'effect_autopanner' },
             { kind: 'block', type: 'effect_stereowidener' },
             { kind: 'block', type: 'effect_midsideeffect' }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const toolboxSound = {
+  kind: 'categoryToolbox',
+  contents: [
+    {
+      kind: "category", name: "Notas", colour: "20",
+      contents: [
+        {
+          kind: 'category', name: 'Puzzle', colour: '20',
+          contents: [
+            { kind: 'block', type: 'simple_note' },
+            { kind: 'block', type: 'simple_note_ed' },
+            { kind: 'block', type: 'semitone' },
+            { kind: 'block', type: 'semitone_ed' },
+            { kind: 'block', type: 'chord' },
+            { kind: 'block', type: 'chord_ed' }
+          ]
+        },
+        {
+          kind: 'category', name: 'Cajón', colour: '20',
+          contents: [
+            { kind: 'block', type: 'simple_note2' },
+            { kind: 'block', type: 'simple_note_ed2' },
+            { kind: 'block', type: 'semitone2' },
+            { kind: 'block', type: 'semitone_ed2' },
+            { kind: 'block', type: 'chord2' },
+            { kind: 'block', type: 'chord_ed2' }
+          ]
+        }
+      ]
+    },
+    {
+      kind: "category", name: "Opciones", colour: "120",
+      contents: [
+        {
+          kind: "category", name: "Opciones Puzzle", colour: "120",
+          contents: [
+            { kind: 'block', type: 'opt_duration' },
+            { kind: 'block', type: 'opt_volume' },
+            { kind: 'block', type: 'opt_wave_shape' },
+            { kind: 'block', type: 'opt_kind' },
+            { kind: 'block', type: 'opt_attack' },
+            { kind: 'block', type: 'opt_release' },
+            { kind: 'block', type: 'opt_adsr' }
+          ]
+        },
+        {
+          kind: "category", name: "Opciones Cajón", colour: "160",
+          contents: [
+            { kind: 'block', type: 'opt2_duration' },
+            { kind: 'block', type: 'opt2_volume' },
+            { kind: 'block', type: 'opt2_wave_shape' },
+            { kind: 'block', type: 'opt2_kind' },
+            { kind: 'block', type: 'opt2_attack' },
+            { kind: 'block', type: 'opt2_release' },
+            { kind: 'block', type: 'opt2_adsr' }
           ]
         }
       ]
@@ -783,10 +870,11 @@ function selectLevel(levelName) {
     case 'intermediate': selectedToolbox = toolboxIntermediate; break;
     case 'advanced': selectedToolbox = toolboxAdvanced; break;
     case 'free': selectedToolbox = toolboxFree; break;
+    case 'sound': selectedToolbox = toolboxSound; break;
   }
 
-  // Si estamos en modo libre, inyectamos los custom blocks
-  const dynamicToolbox = (levelName === 'free') ? applyCustomBlocksTo(selectedToolbox) : selectedToolbox;
+  // Inyectamos los custom blocks filtrados por nivel
+  const dynamicToolbox = applyCustomBlocksTo(selectedToolbox, levelName);
 
   workspace.clear();
   workspace.updateToolbox(dynamicToolbox);
@@ -809,7 +897,7 @@ function selectLevel(levelName) {
     }, 50);
   } else {
     document.body.classList.remove('basic-mode');
-    document.getElementById('create-block-btn').style.display = (levelName === 'free') ? 'inline-block' : 'none';
+    document.getElementById('create-block-btn').style.display = (levelName === 'sound') ? 'inline-block' : 'none';
     liveBTN.style.display = (levelName === 'free') ? 'inline-block' : 'none';
     
     // Reset live mode when entering/exiting a level
@@ -818,6 +906,25 @@ function selectLevel(levelName) {
     liveBTN.classList.remove("live-active");
     playBTN.disabled = false;
     stopBTN.disabled = false;
+
+    // Etiqueta dinámica de nota para el modo "Crear Sonido"
+    if (levelName === 'sound') {
+      Blockly.Msg['SIMPLE_NOTE_LABEL'] = 'nota';
+    }
+
+    // Cerrar el flyout al entrar en el nivel (menú lateral recogido por defecto)
+    setTimeout(() => {
+      const toolbox = workspace.getToolbox();
+      if (toolbox) {
+        if (typeof toolbox.clearSelection === 'function') {
+          toolbox.clearSelection();
+        }
+        const flyout = toolbox.getFlyout();
+        if (flyout && typeof flyout.hide === 'function') {
+          flyout.hide();
+        }
+      }
+    }, 50);
   }
 
   // 1. Cargar bloques guardados para ESTE nivel específico
@@ -892,6 +999,11 @@ function openModalForEdit(blockData) {
   colorInput.value = blockData.color || '#8b5cf6';
   hexDisplay.textContent = blockData.color || '#8b5cf6';
   modalTitle.textContent = 'Editar Bloque';
+  // Preseleccionar solo los niveles opcionales (intermedio/avanzado)
+  const blockLevels = (blockData.levels || []).filter(l => ['intermediate','advanced'].includes(l));
+  document.querySelectorAll('.level-checkbox').forEach(cb => {
+    cb.checked = blockLevels.includes(cb.value);
+  });
   modal.style.display = 'flex';
 }
 
@@ -899,7 +1011,7 @@ function openModalForEdit(blockData) {
 document.getElementById('create-block-btn').addEventListener('click', () => {
   let selected = Blockly.selected;
   if (!selected) {
-    alert("Por favor, selecciona primero el bloque superior del conjunto que quieres guardar.");
+    showBlockWarning('⚠️ Selecciona primero el bloque superior del conjunto que quieres guardar.');
     return;
   }
   pendingEditBlockId = null;
@@ -908,6 +1020,8 @@ document.getElementById('create-block-btn').addEventListener('click', () => {
   colorInput.value = '#8b5cf6';
   hexDisplay.textContent = '#8b5cf6';
   modalTitle.textContent = 'Crear Nuevo Bloque';
+  // Sin pre-selección: libre y crear sonido son siempre automáticos
+  document.querySelectorAll('.level-checkbox').forEach(cb => { cb.checked = false; });
   modal.style.display = 'flex';
 });
 
@@ -923,8 +1037,9 @@ function refreshToolboxAfterUpdate() {
     case 'basic': baseToolbox = toolboxBasic; break;
     case 'intermediate': baseToolbox = toolboxIntermediate; break;
     case 'advanced': baseToolbox = toolboxAdvanced; break;
+    case 'sound': baseToolbox = toolboxSound; break;
   }
-  const dynamicToolbox = (currentLevel === 'free')? applyCustomBlocksTo(baseToolbox) : baseToolbox;
+  const dynamicToolbox = applyCustomBlocksTo(baseToolbox, currentLevel);
   workspace.updateToolbox(dynamicToolbox);
   colorizeBubbles();
   if (currentLevel === 'basic') {
@@ -950,8 +1065,10 @@ btnSave.addEventListener('click', () => {
     // --- MODO EDITAR: actualizar nombre y color del bloque existente ---
     const idx = customUserBlocks.findIndex(b => b.id === pendingEditBlockId);
     if (idx !== -1) {
+      const editedLevels = Array.from(document.querySelectorAll('.level-checkbox:checked')).map(cb => cb.value);
       customUserBlocks[idx].name = blockName;
       customUserBlocks[idx].color = colorInput.value;
+      customUserBlocks[idx].levels = editedLevels; // solo básico/intermedio/avanzado opcionales
       localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
       // Re-registrar el bloque con los nuevos metadatos
       registerCustomBlockDef(customUserBlocks[idx]);
@@ -971,7 +1088,8 @@ btnSave.addEventListener('click', () => {
     container.appendChild(dom);
     let xmlText = Blockly.Xml.domToText(container);
     let id = "custom_" + Date.now();
-    let blockData = { id, name: blockName, color: colorInput.value, xml: xmlText };
+    const selectedLevels = Array.from(document.querySelectorAll('.level-checkbox:checked')).map(cb => cb.value);
+    let blockData = { id, name: blockName, color: colorInput.value, xml: xmlText, levels: selectedLevels }; // solo opcionales
     customUserBlocks.push(blockData);
     localStorage.setItem('blocklyMusicCustomBlocks', JSON.stringify(customUserBlocks));
     registerCustomBlockDef(blockData);
@@ -987,6 +1105,7 @@ document.getElementById('btn-basic').addEventListener('click', () => selectLevel
 document.getElementById('btn-intermediate').addEventListener('click', () => selectLevel('intermediate'));
 document.getElementById('btn-advanced').addEventListener('click', () => selectLevel('advanced'));
 document.getElementById('btn-free').addEventListener('click', () => selectLevel('free'));
+document.getElementById('btn-sound').addEventListener('click', () => selectLevel('sound'));
 
 document.getElementById('btn-menu').addEventListener('click', () => {
   document.getElementById('startup-menu').style.display = 'flex';

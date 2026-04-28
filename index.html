@@ -89,12 +89,29 @@
                 </div>
             </div>
 
+            <div class="input-group">
+                <label>Selecciona los niveles donde quieres que aparezca el bloque:</label>
+                <div class="level-selector">
+                    <label class="level-chip">
+                        <input type="checkbox" class="level-checkbox" value="intermediate">
+                        <span>Intermedio</span>
+                    </label>
+                    <label class="level-chip">
+                        <input type="checkbox" class="level-checkbox" value="advanced">
+                        <span>Avanzado</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="modal-actions">
                 <button id="cancel-block-btn" class="btn-secondary">Cancelar</button>
                 <button id="save-block-btn" class="btn-primary">Guardar Bloque</button>
             </div>
         </div>
     </div>
+
+    <!-- Toast de aviso: bloques no permitidos -->
+    <div id="block-warning-toast"></div>
 
     <div id="blocklyDiv" style="height: calc(100vh - 50px); width: 100vw; position: absolute; left: 0;"></div>
 
@@ -111,8 +128,13 @@
                 <h2>Avanzado</h2>
             </div>
             <div class="mode-card" id="btn-free">
-                <h2>Libre</h2>
-                <p>Todas las herramientas disponibles en la aplicación.</p>
+                <h2>Live</h2>
+                <p>Edición en tiempo real. Todas las herramientas disponibles.</p>
+            </div>
+            <div class="mode-card mode-card--sound" id="btn-sound">
+                <div class="sound-card-icon">🎹</div>
+                <h2>Crear Sonido</h2>
+                <p>Diseña tu propio sonido con notas y sus opciones.</p>
             </div>
             <div class="home-feedback">
                 <p>Deja tus comentarios para que podamos saber tu experiencia con la app :)</p>
