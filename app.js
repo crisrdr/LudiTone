@@ -8,6 +8,9 @@ const clearBTN = document.getElementById("clear-btn");
 let timeDur = 0; //it controls the duration of the notes
 let num = 0; //it controls the number of synths on a given play.
 let seqNum = 0; //it controls the sequence loop variables.
+const liveBTN = document.getElementById("live-btn");
+let isLiveMode = false;
+let liveTimeout = null;
 
 // Registry of all active synths/effects — populated at runtime by generated code
 let activeSynths = [];
@@ -28,20 +31,36 @@ function stopAll() {
 }
 
 // Generate JavaScript code and run it
-async function runCode() {
+async function runCode(isLiveUpdate = false) {
 
   // convert workspace to text code
   Blockly.JavaScript.addReservedWords('code');
+  Blockly.JavaScript.isLiveMode = isLiveMode; // <--- Inyectamos la flag aquí
   const code = Blockly.JavaScript.workspaceToCode(workspace);
 
   // Prepend helpers so generated code can self-register synths/effects
   const preamble =
-    'let current_dest = Tone.Destination;\n' +
-    'function _reg(node){ activeSynths.push(node); return node; }\n';
+    `let current_dest = Tone.Destination;\n` +
+    `function _reg(node){ 
+      activeSynths.push(node); 
+      // Si estamos en modo live, forzamos un sustain infinito por defecto 
+      if (${isLiveMode}) {
+        try {
+          if (node.envelope && node.envelope.sustain !== undefined) {
+             node.envelope.sustain = 1.0;
+          } else if (typeof node.set === 'function') {
+             // Esto sirve para PolySynth y otros nodos complejos
+             node.set({ envelope: { sustain: 1.0 } });
+          }
+        } catch(e) { /* Algunos nodos no tienen envolvente */ }
+      }
+      return node; 
+    }\n`;
 
   // Wrap every `new Tone.XxxSynth/Effect(...)` so it auto-registers
+  // El regex ahora es más general para evitar que se escape nada
   const instrumentedCode = code.replace(
-    /new\s+(Tone\.(?:[A-Za-z]+Synth|AutoFilter|Reverb|Freeverb|JCReverb|Delay|PingPongDelay|Chorus|Phaser|Tremolo|Vibrato|Distortion|BitCrusher|Chebyshev|PitchShift|FrequencyShifter|AutoPanner|StereoWidener|MidSideEffect|AutoWah)[^)]*\))/g,
+    /new\s+(Tone\.[A-Z][A-Za-z]+(?:\([^)]*\))?)/g,
     '_reg(new $1)'
   );
 
@@ -52,13 +71,18 @@ async function runCode() {
   try {
     await Tone.start(); // Hacemos doble check al contexto de audio con un gesto
     eval(wrapCode);
-    await Tone.Transport.start();
+    
+    // Si no es una actualización en vivo, arrancamos el transporte
+    if (!isLiveUpdate) {
+      await Tone.Transport.start();
+    }
   } catch (e) {
     alert(e);
   }
 }
 
 playBTN.addEventListener("click", () => {
+  if (isLiveMode) return; // Prevent manual play if live mode is on
   stopAll();
   timeDur = 0;
   num = 0;
@@ -67,8 +91,70 @@ playBTN.addEventListener("click", () => {
 })
 
 stopBTN.addEventListener("click", () => {
+  if (isLiveMode) return; // Prevent manual stop if live mode is on
   stopAll();
 })
+
+liveBTN.addEventListener("click", () => {
+  isLiveMode = !isLiveMode;
+  if (isLiveMode) {
+    liveBTN.textContent = "Modo Live: ON";
+    liveBTN.classList.add("live-active");
+    playBTN.disabled = true;
+    stopBTN.disabled = true;
+    
+    // Al activar, empezamos a sonar de inmediato
+    stopAll();
+    timeDur = 0;
+    num = 0;
+    seqNum = 0;
+    runCode();
+  } else {
+    liveBTN.textContent = "Modo Live: OFF";
+    liveBTN.classList.remove("live-active");
+    playBTN.disabled = false;
+    stopBTN.disabled = false;
+    
+    // Al desactivar, paramos todo
+    stopAll();
+  }
+});
+
+// Función para actualizaciones en caliente (Live Coding)
+async function liveUpdate() {
+  if (!isLiveMode) return;
+  
+  if (liveTimeout) clearTimeout(liveTimeout);
+  
+  liveTimeout = setTimeout(async () => {
+    console.log("Live Update Triggered...");
+    
+    // 1. Cancelamos eventos futuros pero mantenemos el transporte corriendo
+    Tone.Transport.cancel(Tone.Transport.seconds + 0.1);
+    
+    // 2. Liberamos sintetizadores antiguos
+    activeSynths.forEach(node => {
+      try {
+        if (typeof node.releaseAll === 'function') node.releaseAll(0.1);
+        setTimeout(() => {
+          try { node.dispose(); } catch(e){}
+        }, 200);
+      } catch (e) { /* already disposed */ }
+    });
+    activeSynths = [];
+    
+    // 3. Reseteamos contadores para el nuevo código
+    // No reseteamos seqNum porque las secuencias dependen del tiempo global
+    num = 0; 
+    
+    // 4. Importante: El código nuevo debe empezar a programarse desde NOW
+    timeDur = Tone.Transport.seconds + 0.15; // Un pequeño margen para el procesado
+    
+    // 5. Ejecutar código sin reiniciar el transporte
+    await runCode(true); 
+    
+  }, 600); // Debounce de 600ms
+}
 
 feedbackBTN.addEventListener("click", () => {
     window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
@@ -712,6 +798,7 @@ function selectLevel(levelName) {
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
     document.getElementById('create-block-btn').style.display = 'none';
+    liveBTN.style.display = 'none';
     setTimeout(() => {
       const toolbox = workspace.getToolbox();
       if (toolbox && typeof toolbox.selectItemByPosition === 'function') {
@@ -723,6 +810,14 @@ function selectLevel(levelName) {
   } else {
     document.body.classList.remove('basic-mode');
     document.getElementById('create-block-btn').style.display = (levelName === 'free') ? 'inline-block' : 'none';
+    liveBTN.style.display = (levelName === 'free') ? 'inline-block' : 'none';
+    
+    // Reset live mode when entering/exiting a level
+    isLiveMode = false;
+    liveBTN.textContent = "Modo Live: OFF";
+    liveBTN.classList.remove("live-active");
+    playBTN.disabled = false;
+    stopBTN.disabled = false;
   }
 
   // 1. Cargar bloques guardados para ESTE nivel específico
@@ -753,6 +848,11 @@ workspace.addChangeListener((e) => {
     const xml = Blockly.Xml.workspaceToDom(workspace);
     const xmlText = Blockly.Xml.domToText(xml);
     localStorage.setItem('blocklyMusicParams_' + currentLevel, xmlText);
+    
+    // Si el modo live está activo, disparamos actualización
+    if (isLiveMode && (e.type === Blockly.Events.BLOCK_CHANGE || e.type === Blockly.Events.BLOCK_MOVE || e.type === Blockly.Events.BLOCK_CREATE || e.type === Blockly.Events.BLOCK_DELETE)) {
+       liveUpdate();
+    }
   }
 });
 

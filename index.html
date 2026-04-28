@@ -48,7 +48,7 @@
     <script defer src="blocks/effects/tremolo.js"></script>
     <script defer src="blocks/effects/autopanner.js"></script>
     <script defer src="blocks/effects/autowah.js"></script>
-    <script defer src="blocks/effects/chebyshev.js"></script>    
+    <script defer src="blocks/effects/chebyshev.js"></script>
     <script defer src="blocks/effects/freeverb.js"></script>
     <script defer src="blocks/effects/jcreverb.js"></script>
     <script defer src="blocks/effects/midsideeffect.js"></script>
@@ -64,6 +64,7 @@
     <div class="controls">
         <button id="play-btn">Play</button>
         <button id="stop-btn">Stop</button>
+        <button id="live-btn" style="display: none;">Modo Live: OFF</button>
         <button id="create-block-btn">Crear Bloque</button>
         <button id="clear-btn">Limpiar Área</button>
         <button id="feedback-btn">Comentarios</button>
@@ -74,12 +75,12 @@
     <div id="custom-block-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h2>Crear Nuevo Bloque</h2>
-            
+
             <div class="input-group">
                 <label for="block-name-input">Nombre del bloque:</label>
                 <input type="text" id="block-name-input" placeholder="Ej: Mi Acorde">
             </div>
-            
+
             <div class="input-group">
                 <label for="block-color-input">Color del bloque:</label>
                 <div class="color-picker-wrapper">
@@ -87,14 +88,14 @@
                     <span id="color-hex-display">#8b5cf6</span>
                 </div>
             </div>
-            
+
             <div class="modal-actions">
                 <button id="cancel-block-btn" class="btn-secondary">Cancelar</button>
                 <button id="save-block-btn" class="btn-primary">Guardar Bloque</button>
             </div>
         </div>
     </div>
-    
+
     <div id="blocklyDiv" style="height: calc(100vh - 50px); width: 100vw; position: absolute; left: 0;"></div>
 
     <div id="startup-menu">
@@ -113,10 +114,11 @@
                 <h2>Libre</h2>
                 <p>Todas las herramientas disponibles en la aplicación.</p>
             </div>
-        <div class="home-feedback">
-            <p>Deja tus comentarios para que podamos saber tu experiencia con la app :)</p>
-            <button id="feedback-home-btn">Comentarios</button>
+            <div class="home-feedback">
+                <p>Deja tus comentarios para que podamos saber tu experiencia con la app :)</p>
+                <button id="feedback-home-btn">Comentarios</button>
+            </div>
         </div>
-    </div>
 </body>
+
 </html>

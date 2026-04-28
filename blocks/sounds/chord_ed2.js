@@ -84,7 +84,12 @@ Blockly.JavaScript['chord_ed2'] = function (block) {
     code += `  const freqs${myNum} = chordNotes_${myNum}.map(n => Tone.Frequency(n).toFrequency());\n`;
 
     code += `  if (freqs${myNum}.length > 0) {\n`;
-    code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+    const isLive = Blockly.JavaScript.isLiveMode;
+    if (isLive) {
+        code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttack(freqs${myNum}, time${volumeParam}); }, timeDur);\n`;
+    } else {
+        code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+    }
     code += `  }\n`;
 
     // Check if we are inside a sequence block

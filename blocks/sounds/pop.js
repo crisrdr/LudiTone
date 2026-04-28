@@ -13,7 +13,12 @@ Blockly.JavaScript['pop'] = function (block) {
     const dur = 1;
 
     let code = `const synth${num} = new Tone.MembraneSynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
-    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time); }, timeDur);\n`;
+    code += `  const isLive = Blockly.JavaScript.isLiveMode;\n`;
+    code += `  if (isLive) {\n`;
+    code += `    Tone.Transport.schedule((time) => { synth${num}.triggerAttack('${note}', time); }, timeDur);\n`;
+    code += `  } else {\n`;
+    code += `    Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time); }, timeDur);\n`;
+    code += `  }\n`;
 
     // Check if inside a sequence to advance timeDur
     let topBlock = block.getSurroundParent();

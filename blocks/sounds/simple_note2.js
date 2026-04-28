@@ -93,18 +93,33 @@ Blockly.JavaScript['simple_note2'] = function (block) {
         topBlock = topBlock.getSurroundParent();
     }
 
+    const isLive = Blockly.JavaScript.isLiveMode;
     if (isInsideChord) {
         code += `  chordNotesObj.push('${note}');\n`;
     } else {
         if (isPoly) {
             code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
             if (options.kind === 'harm') {
-                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4], ${dur}, time${volumeParam}); }, timeDur);\n`;
+                const notes = `[baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4]`;
+                if (isLive) {
+                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;
+                } else {
+                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+                }
             } else { // inharmonic
-                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease([baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93], ${dur}, time${volumeParam}); }, timeDur);\n`;
+                const notes = `[baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93]`;
+                if (isLive) {
+                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;
+                } else {
+                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+                }
             }
         } else {
-            code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time${volumeParam}); }, timeDur);\n`;
+            if (isLive) {
+                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack('${note}', time${volumeParam}); }, timeDur);\n`;
+            } else {
+                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time${volumeParam}); }, timeDur);\n`;
+            }
         }
 
         if (isInsideSequence) {
