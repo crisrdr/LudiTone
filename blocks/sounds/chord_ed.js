@@ -178,21 +178,30 @@ Blockly.JavaScript['chord_ed'] = function (block) {
         code += `  synth${myNum}.set({ oscillator: { type: '${waveShape}' } });\n`;
     }
 
-    if (options.attack !== undefined || options.release !== undefined || options.decay !== undefined || options.sustain !== undefined) {
-        const a = options.attack !== undefined ? options.attack : 0.005;
-        const d = options.decay !== undefined ? options.decay : 0.1;
-        const s = options.sustain !== undefined ? options.sustain : 0.3;
-        const r = options.release !== undefined ? options.release : 1;
-        code += `  synth${myNum}.set({ envelope: { attack: ` + a + `, decay: ` + d + `, sustain: ` + s + `, release: ` + r + ` } });\n`;
+    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    let envParts = [];
+    if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
+    if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
+    if (options.sustain !== undefined) envParts.push(`sustain: ${options.sustain}`);
+    if (options.release !== undefined) envParts.push(`release: ${options.release}`);
 
-        if (options.dur !== undefined) {
-            dur = options.dur;
-        } else {
-            dur = a + d + r;
-        }
+    if (envParts.length > 0) {
+        code += `  synth${myNum}.set({envelope: {` + envParts.join(', ') + `}});\n`;
+    }
+
+    // 3. Configuramos la duración
+    if (options.dur !== undefined) {
+        dur = options.dur;
     } else {
-        if (options.dur !== undefined) {
-            dur = options.dur;
+        // Si hay envolvente pero no duración explícita, adaptamos la duración
+        // para que de tiempo a que ocurra el ataque y el decaimiento.
+        if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
+            const a = options.attack !== undefined ? options.attack : 0.005;
+            const d = options.decay !== undefined ? options.decay : 0.1;
+            const r = options.release !== undefined ? options.release : 1;
+            dur = a + d + r; 
+        } else {
+            dur = 1; // Duración estándar de 1 segundo
         }
     }
 

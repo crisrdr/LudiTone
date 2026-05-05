@@ -43,7 +43,7 @@ Blockly.Blocks['opt2_attack'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("ataque")
-            .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "attack");
+            .appendField(new Blockly.FieldNumber(0.1, 0, 2, 0.01), "attack");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);
@@ -56,11 +56,45 @@ Blockly.JavaScript['opt2_attack'] = function (block) {
     return code;
 };
 
+Blockly.Blocks['opt2_decay'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("caída")
+            .appendField(new Blockly.FieldNumber(0.1, 0, 2, 0.01), "decay");
+        this.setPreviousStatement(true, "options2");
+        this.setNextStatement(true, "options2");
+        this.setColour(210);
+    }
+};
+
+Blockly.JavaScript['opt2_decay'] = function (block) {
+    var value = block.getFieldValue('decay');
+    var code = `options.decay = ${value};\n`;
+    return code;
+};
+
+Blockly.Blocks['opt2_sustain'] = {
+    init: function () {
+        this.appendDummyInput()
+            .appendField("sostenimiento")
+            .appendField(new Blockly.FieldNumber(0.3, 0, 1, 0.01), "sustain");
+        this.setPreviousStatement(true, "options2");
+        this.setNextStatement(true, "options2");
+        this.setColour(210);
+    }
+};
+
+Blockly.JavaScript['opt2_sustain'] = function (block) {
+    var value = block.getFieldValue('sustain');
+    var code = `options.sustain = ${value};\n`;
+    return code;
+};
+
 Blockly.Blocks['opt2_release'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("liberación")
-            .appendField(new Blockly.FieldNumber(1, 0.1, 10, 0.1), "release");
+            .appendField(new Blockly.FieldNumber(1, 0.1, 5, 0.1), "release");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);
@@ -77,7 +111,7 @@ Blockly.Blocks['opt2_volume'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("volumen")
-            .appendField(new Blockly.FieldNumber(1, 0, 2, 0.01), "vol");
+            .appendField(new Blockly.FieldNumber(1, 0, 10, 0.01), "vol");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);
@@ -115,13 +149,13 @@ Blockly.Blocks['opt2_adsr'] = {
         this.appendDummyInput()
             .appendField("ADSR")
             .appendField("A")
-            .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "attack")
+            .appendField(new Blockly.FieldNumber(0.1, 0, 2, 0.01), "attack")
             .appendField("D")
-            .appendField(new Blockly.FieldNumber(0.1, 0, 5, 0.01), "decay")
+            .appendField(new Blockly.FieldNumber(0.1, 0, 2, 0.01), "decay")
             .appendField("S")
             .appendField(new Blockly.FieldNumber(0.5, 0, 1, 0.01), "sustain")
             .appendField("R")
-            .appendField(new Blockly.FieldNumber(1, 0.1, 10, 0.1), "release");
+            .appendField(new Blockly.FieldNumber(1, 0.1, 5, 0.1), "release");
         this.setPreviousStatement(true, "options2");
         this.setNextStatement(true, "options2");
         this.setColour(210);

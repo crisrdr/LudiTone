@@ -436,6 +436,8 @@ const toolboxAdvanced = {
             { kind: 'block', type: 'opt_wave_shape' },
             { kind: 'block', type: 'opt_kind' },
             { kind: 'block', type: 'opt_attack' },
+            { kind: 'block', type: 'opt_decay' },
+            { kind: 'block', type: 'opt_sustain' },
             { kind: 'block', type: 'opt_release' },
             { kind: 'block', type: 'opt_adsr' }
           ]
@@ -448,6 +450,8 @@ const toolboxAdvanced = {
             { kind: 'block', type: 'opt2_wave_shape' },
             { kind: 'block', type: 'opt2_kind' },
             { kind: 'block', type: 'opt2_attack' },
+            { kind: 'block', type: 'opt2_decay' },
+            { kind: 'block', type: 'opt2_sustain' },
             { kind: 'block', type: 'opt2_release' },
             { kind: 'block', type: 'opt2_adsr' }
           ]
@@ -558,6 +562,8 @@ const toolboxSound = {
             { kind: 'block', type: 'opt_wave_shape' },
             { kind: 'block', type: 'opt_kind' },
             { kind: 'block', type: 'opt_attack' },
+            { kind: 'block', type: 'opt_decay' },
+            { kind: 'block', type: 'opt_sustain' },
             { kind: 'block', type: 'opt_release' },
             { kind: 'block', type: 'opt_adsr' }
           ]
@@ -570,6 +576,8 @@ const toolboxSound = {
             { kind: 'block', type: 'opt2_wave_shape' },
             { kind: 'block', type: 'opt2_kind' },
             { kind: 'block', type: 'opt2_attack' },
+            { kind: 'block', type: 'opt2_decay' },
+            { kind: 'block', type: 'opt2_sustain' },
             { kind: 'block', type: 'opt2_release' },
             { kind: 'block', type: 'opt2_adsr' }
           ]
@@ -702,6 +710,14 @@ const toolboxFree = {
             },
             {
               kind: 'block',
+              type: 'opt_decay'
+            },
+            {
+              kind: 'block',
+              type: 'opt_sustain'
+            },
+            {
+              kind: 'block',
               type: 'opt_release'
             },
             {
@@ -734,6 +750,14 @@ const toolboxFree = {
             {
               kind: 'block',
               type: 'opt2_attack'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_decay'
+            },
+            {
+              kind: 'block',
+              type: 'opt2_sustain'
             },
             {
               kind: 'block',
