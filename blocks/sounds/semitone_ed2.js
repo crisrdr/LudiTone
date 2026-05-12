@@ -1,3 +1,7 @@
+/**
+ * Bloque semitono con elección de octava y opciones en modo caja (statement)
+ */
+
 Blockly.Blocks['semitone_ed2'] = {
     init: function () {
         const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
@@ -17,7 +21,7 @@ Blockly.Blocks['semitone_ed2'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setTooltip("Reproduce una nota con accidentes especificando la octava (1-7). Puedes encajarle opciones adicionales.");
+        this.setTooltip("Reproduce una nota con semitono a elegir, especificando la octava (1-7). Puedes encajarle opciones adicionales dentro de la caja.");
     }
 };
 
@@ -37,7 +41,7 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
             let fn = new Function('options', optionsCode);
             fn(options);
         } catch (e) { 
-            console.error("Error evaluating options2 blocks: ", e); 
+            console.error("Error evaluating options2 blocks in semitone_ed2. optionsCode:", optionsCode, "Error:", e); 
         }
     }
 
@@ -67,19 +71,15 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    if (options.dur !== undefined) {
-        dur = options.dur;
+    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
+    const sustainDur = options.dur !== undefined ? options.dur : 1;
+    if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
+        const a = options.attack !== undefined ? options.attack : 0.005;
+        const d = options.decay !== undefined ? options.decay : 0.1;
+        const r = options.release !== undefined ? options.release : 1;
+        dur = a + d + sustainDur + r;
     } else {
-        // Si hay envolvente pero no duración explícita, adaptamos la duración
-        // para que de tiempo a que ocurra el ataque y el decaimiento.
-        if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
-            const a = options.attack !== undefined ? options.attack : 0.005;
-            const d = options.decay !== undefined ? options.decay : 0.1;
-            const r = options.release !== undefined ? options.release : 1;
-            dur = a + d + r; 
-        } else {
-            dur = 1; // Duración estándar de 1 segundo
-        }
+        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
     if (options.volume !== undefined) {
