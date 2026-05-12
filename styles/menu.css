@@ -8,7 +8,9 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background:
+        linear-gradient(135deg, rgba(30, 60, 114, 0.75) 0%, rgba(42, 82, 152, 0.75) 100%),
+        url('bach.jpeg') center / cover no-repeat;
     z-index: 1000;
     display: flex;
     flex-direction: column;
