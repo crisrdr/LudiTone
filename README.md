@@ -20,7 +20,7 @@ La aplicación combina [Google Blockly](https://developers.google.com/blockly) c
 
 Este proyecto surge de la necesidad de incorporar herramientas tecnológicas innovadoras en la educación musical. La programación por bloques elimina la barrera sintáctica que supone el código texto, permitiendo que el alumno se concentre en los conceptos musicales: notas, acordes, ritmos, efectos y síntesis de sonido.
 
-La aplicación fue presentada y utilizada en el taller del **ICLC 2025** (*International Conference on Live Coding*) como herramienta para la enseñanza de música por computador.
+Una primera versión de la aplicación fue presentada y utilizada en el taller del **ICLC 2025** (*International Conference on Live Coding*) como herramienta para la enseñanza de música por computador.
 
 ---
 
@@ -39,7 +39,7 @@ La aplicación fue presentada y utilizada en el taller del **ICLC 2025** (*Inter
 - **Notas musicales** (Do, Re, Mi... en varias octavas)
 - **Semitonos** con control de alteraciones
 - **Acordes** predefinidos y personalizados
-- **Parámetros de síntesis**: ataque, decaimiento, sustain, liberación (ADSR)
+- **Parámetros de síntesis**: ataque, decay, sustain, release (ADSR)
 - **Bloques personalizados**: el profesor o alumno puede crear y guardar sus propios bloques
 
 ### 🎚️ Efectos de Audio
@@ -47,66 +47,9 @@ Más de 15 efectos de procesado de señal disponibles como bloques visuales:
 
 `Reverb` · `Delay` · `Distortion` · `Chorus` · `BitCrusher` · `PitchShift` · `AutoFilter` · `LowPassFilter` · `HighPassFilter` · `Tremolo` · `AutoPanner` · `AutoWah` · `Chebyshev` · `FreeVerb` · `JCReverb` · `MidSideEffect` · `Phaser` · `PingPongDelay` · `StereoWidener` · `Vibrato`
 
-### 🔧 Funcionalidades Adicionales
-- ▶️ **Play / Stop** para reproducción instantánea
-- 🔄 **Modo Live**: ejecución continua con modificación de bloques en caliente
-- 🎨 **Creador de bloques personalizados** con nombre, color y nivel de aparición
-- 💬 **Sistema de comentarios/feedback** para recopilar experiencia de usuario
-- 🗑️ **Limpieza del área de trabajo** con un clic
-
 ---
 
-## 🛠️ Tecnologías Utilizadas
-
-| Tecnología | Rol |
-|------------|-----|
-| [Google Blockly](https://developers.google.com/blockly) | Motor de programación visual por bloques |
-| [Tone.js](https://tonejs.github.io/) | Síntesis y procesado de audio web |
-| HTML5 / CSS3 / JavaScript | Desarrollo web frontend |
-| Web Audio API | Base del motor de audio en el navegador |
-
----
-
-## 🚀 Instalación y Ejecución
-
-### Requisitos
-- [Node.js](https://nodejs.org/) (v16 o superior)
-- Navegador moderno con soporte para Web Audio API (Chrome, Firefox, Edge)
-
-### Pasos
-
-```bash
-# 1. Clona el repositorio
-git clone https://github.com/tu-usuario/blockly-music-main.git
-cd blockly-music-main
-
-# 2. Instala las dependencias
-npm install
-
-# 3. Abre index.html en tu navegador
-# (no requiere servidor local — puedes abrirlo directamente)
-```
-
-> **Nota:** Para un funcionamiento óptimo, se recomienda servir el proyecto a través de un servidor local (p.ej. con la extensión *Live Server* de VS Code o `npx serve .`).
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-blockly-music-main/
-├── index.html              # Interfaz principal de la aplicación
-├── app.js                  # Lógica principal: toolbox, modos y ejecución de bloques
-├── blocks/
-│   ├── sounds/             # Bloques de notas, semitonos y acordes
-│   ├── effects/            # Bloques de efectos de audio (reverb, delay, etc.)
-│   ├── loop.js             # Bloque de repetición
-│   ├── sequence.js         # Bloque de secuencia
-│   ├── wait.js             # Bloque de pausa/espera
-│   ├── opt_blocks.js       # Bloques de parámetros (volumen, duración, ADSR...)
-│   └── opt2_blocks.js      # Bloques de síntesis avanzada
-└── styles/                 # Hojas de estilo CSS
-```
+🌐 **Acceso en línea:** [crisrdr.github.io/TFG](https://crisrdr.github.io/TFG/)
 
 ---
 
@@ -120,6 +63,6 @@ blockly-music-main/
 
 ## 👤 Autor
 
-**Cristina Rodríguez** — Trabajo de Fin de Grado  
+**Cristina Rodríguez de los Ríos Medina** — Trabajo de Fin de Grado  
 Grado en Ingeniería Informática  
-Universidad de Extremadura · 2025–2026
+Universidad de Autónoma de Madrid · 2025–2026
