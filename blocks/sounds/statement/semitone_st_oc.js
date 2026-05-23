@@ -1,57 +1,47 @@
-Blockly.Blocks['semitone2'] = {
+/**
+ * Bloque semitono Statement con selección de octava
+ */
+
+Blockly.Blocks['semitone_st_oc'] = {
     init: function () {
-        const basicNotes = [
-            ["c4", "c4"], ["d4", "d4"], ["e4", "e4"], 
-            ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]
-        ];
-
-        const accidentals = [
-            ["♮ (natural)", ""],
-            ["♯ (sostenido)", "#"],
-            ["♭ (bemol)", "b"]
-        ];
-
+        const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
+        const accidentals = [["♮ (natural)", ""], ["♯ (sostenido)", "#"], ["♭ (bemol)", "b"]];
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
             .appendField("semitono")
-            .appendField(new Blockly.FieldDropdown(basicNotes), "note")
-            .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
-            
+            .appendField(new Blockly.FieldDropdown(notes), "note")
+            .appendField(new Blockly.FieldDropdown(accidentals), "accidental")
+            .appendField("octava")
+            .appendField(new Blockly.FieldNumber(4, 1, 7), "octave");
+
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
             .appendField("opciones");
-            
+
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setTooltip("Reproduce una nota usando semitonos. Puedes encajarle opciones en su parte interior.");
+        this.setTooltip("Reproduce una nota con semitono a elegir, especificando la octava (1-7). Puedes encajarle opciones adicionales dentro de la caja.");
     }
 };
 
-Blockly.JavaScript['semitone2'] = function (block) {
-    let baseNote = block.getFieldValue('note'); // e.g., 'c4'
-    let accidental = block.getFieldValue('accidental'); // e.g., '#' or 'b' or ''
-    
-    // Construct the actual Tone.js note string: 'c#4' or 'cb4' or 'c4'
-    let pitchClass = baseNote.charAt(0);
-    let octave = baseNote.charAt(1);
-    const note = pitchClass + accidental + octave;
+Blockly.JavaScript['semitone_st_oc'] = function (block) {
+    const noteName = block.getFieldValue('note');
+    const accidental = block.getFieldValue('accidental');
+    const octave = block.getFieldValue('octave');
+    const note = noteName + accidental + octave;
 
     let dur = 1;
-    let waveShape = '';
-
-    // Options object to be populated by the statements
+    let volumeParam = '';
     let options = {};
-    
-    // Evaluate the statements directly into JS string, then run it against `options`
+
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
-            // Evaluates something like: "options.dur = 1;\noptions.oscillator = 'sine';\n"
             let fn = new Function('options', optionsCode);
             fn(options);
-        } catch (e) { 
-            console.error("Error evaluating options2 blocks: ", e); 
+        } catch (e) {
+            console.error("Error evaluating options2 blocks in semitone_st_oc. optionsCode:", optionsCode, "Error:", e);
         }
     }
 
@@ -66,8 +56,7 @@ Blockly.JavaScript['semitone2'] = function (block) {
     }
 
     if (options.oscillator) {
-        waveShape = options.oscillator;
-        code += `  synth` + num + `.set({ oscillator: { type: '${waveShape}' } });\n`;
+        code += `  synth` + num + `.set({oscillator: {type: '${options.oscillator}'}});\n`;
     }
 
     // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
@@ -93,23 +82,18 @@ Blockly.JavaScript['semitone2'] = function (block) {
         dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
-    let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Check if we are inside a chord block
+    // Scheduling
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) {
-            isInsideChord = true;
-        }
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
-        }
+        if (topBlock.type.includes('chord_mt')) isInsideChord = true;
+        if (topBlock.type === 'sequence') isInsideSequence = true;
         topBlock = topBlock.getSurroundParent();
     }
 
@@ -146,9 +130,6 @@ Blockly.JavaScript['semitone2'] = function (block) {
             code += `  timeDur += ` + dur + `;\n`;
         }
     }
-
     num++;
     return code;
 };
-
-const semitone2_dur = '<block type="semitone2"><statement name="OPTIONS"><block type="opt2_duration"><field name="dur">1</field></block></statement></block>';

@@ -2,7 +2,7 @@ Blockly.Blocks['sequence'] = {
     init: function () {
         this.appendDummyInput()
             .appendField("secuenciar esto")
-            .appendField(new Blockly.FieldNumber(1, 1, 100, 1), "TIMES")
+            .appendField(new Blockly.FieldNumber(1, 1, 30, 1), "TIMES")
             .appendField("veces");
         this.appendStatementInput("DO")
             .setCheck(null);

@@ -1,4 +1,8 @@
-Blockly.Blocks['semitone'] = {
+/**
+ * Bloque semitono Mutator
+ */
+
+Blockly.Blocks['semitone_mt'] = {
     init: function () {
         this.itemCount_ = 0;
         this.updateShape_();
@@ -63,8 +67,12 @@ Blockly.Blocks['semitone'] = {
         }
     },
     updateShape_: function () {
+        // Save current values if the fields exist to prevent resetting to C4
+        var savedNote = this.getFieldValue('note');
+        var savedAccidental = this.getFieldValue('accidental');
+
         const basicNotes = [
-            ["c4", "c4"], ["d4", "d4"], ["e4", "e4"], 
+            ["c4", "c4"], ["d4", "d4"], ["e4", "e4"],
             ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]
         ];
 
@@ -94,13 +102,13 @@ Blockly.Blocks['semitone'] = {
                 let input = this.appendValueInput('ADD' + i)
                     .setCheck("options")
                     .setAlign(Blockly.ALIGN_RIGHT);
-                
+
                 if (i === 0) {
                     input.appendField("semitone", "BASE_TITLE")
-                         .appendField(new Blockly.FieldDropdown(basicNotes), "note")
-                         .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
+                        .appendField(new Blockly.FieldDropdown(basicNotes), "note")
+                        .appendField(new Blockly.FieldDropdown(accidentals), "accidental");
                 }
-                
+
                 input.appendField("opción");
             } else if (i === 0) {
                 if (!this.getField("BASE_TITLE")) {
@@ -117,13 +125,21 @@ Blockly.Blocks['semitone'] = {
             this.removeInput('ADD' + i_remove);
             i_remove++;
         }
+
+        // Restore saved values
+        if (savedNote !== null && this.getField('note')) {
+            this.setFieldValue(savedNote, 'note');
+        }
+        if (savedAccidental !== null && this.getField('accidental')) {
+            this.setFieldValue(savedAccidental, 'accidental');
+        }
     }
 };
 
-Blockly.JavaScript['semitone'] = function (block) {
+Blockly.JavaScript['semitone_mt'] = function (block) {
     let baseNote = block.getFieldValue('note'); // e.g., 'c4'
     let accidental = block.getFieldValue('accidental'); // e.g., '#' or 'b' or ''
-    
+
     // Construct the actual Tone.js note string: 'c#4' or 'cb4' or 'c4'
     let pitchClass = baseNote.charAt(0);
     let octave = baseNote.charAt(1);
@@ -201,7 +217,7 @@ Blockly.JavaScript['semitone'] = function (block) {
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type === 'chord' || topBlock.type === 'chord_ed') {
+        if (topBlock.type === 'chord_mt' || topBlock.type === 'chord_ed') {
             isInsideChord = true;
         }
         if (topBlock.type === 'sequence') {

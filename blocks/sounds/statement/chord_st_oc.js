@@ -1,39 +1,50 @@
-Blockly.Blocks['chord2'] = {
+/**
+ * Bloque de tipo acorde Statement con selección de octava
+ * Predefinido - Mayor o menor
+ */
+
+Blockly.Blocks['chord_st_oc'] = {
     init: function () {
+        const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
+
         this.appendDummyInput()
             .appendField("acorde")
-            .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note")
+            .appendField(new Blockly.FieldDropdown(notes), "note")
+            .appendField("octava")
+            .appendField(new Blockly.FieldNumber(4, 1, 7), "octave")
             .appendField("tipo")
             .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
-            
+
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
             .appendField("opciones");
-            
+
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(0);
-        this.setTooltip("Reproduce varias notas a la vez. Puedes encajarle opciones en su parte inferior.");
+        this.setTooltip("Reproduce un acorde mayor o menor especificando la octava (1-7). Puedes encajarle opciones en su parte inferior.");
     }
 };
 
-Blockly.JavaScript['chord2'] = function (block) {
-    const note = block.getFieldValue('note');
+Blockly.JavaScript['chord_st_oc'] = function (block) {
+    const noteName = block.getFieldValue('note');
+    const octave = block.getFieldValue('octave');
+    const note = noteName + octave;
     const chordType = block.getFieldValue('chord_type');
     let dur = 1;
     let waveShape = '';
 
     // Options object to be populated by the statements
     let options = {};
-    
+
     // Evaluate the statements directly into JS string, then run it against `options`
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
             let fn = new Function('options', optionsCode);
             fn(options);
-        } catch (e) { 
-            console.error("Error evaluating options2 blocks: ", e); 
+        } catch (e) {
+            console.error("Error evaluating options2 blocks: ", e);
         }
     }
 
@@ -49,7 +60,6 @@ Blockly.JavaScript['chord2'] = function (block) {
     }
 
     // 2. Configuramos el envelope
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -61,7 +71,6 @@ Blockly.JavaScript['chord2'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -69,10 +78,10 @@ Blockly.JavaScript['chord2'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
-    // 3. Verificamos volumen
+    // 4. Verificamos volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
@@ -113,4 +122,4 @@ Blockly.JavaScript['chord2'] = function (block) {
 
     num++;
     return code;
-}
+};

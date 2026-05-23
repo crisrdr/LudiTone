@@ -1,5 +1,7 @@
-// Mutator Container Block for Options
-Blockly.Blocks['chord_ed_mutator_container'] = {
+/**
+ * Contenedor de creación de acorde Mutator
+ */
+Blockly.Blocks['chord_mt_ed'] = {
     init: function () {
         this.setColour(0);
         this.appendDummyInput()
@@ -32,7 +34,7 @@ Blockly.Blocks['chord_ed'] = {
         this.updateShape_();
     },
     decompose: function (workspace) {
-        var containerBlock = workspace.newBlock('chord_ed_mutator_container');
+        var containerBlock = workspace.newBlock('chord_mt_ed');
         containerBlock.initSvg();
 
         var connection = containerBlock.getInput('OPTIONS').connection;

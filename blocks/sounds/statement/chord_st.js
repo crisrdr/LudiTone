@@ -1,24 +1,30 @@
-Blockly.Blocks['chord_ed2'] = {
+/**
+ * Bloque de tipo acorde Statement escala principal
+ * Predefinido - Mayor o menor
+ */
+
+Blockly.Blocks['chord_st'] = {
     init: function () {
         this.appendDummyInput()
-            .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("acorde");
+            .appendField("acorde")
+            .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note")
+            .appendField("tipo")
+            .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
             
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
             .appendField("opciones");
-
-        this.appendStatementInput('NOTES')
-            .setCheck(null);
-
+            
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(0);
-        this.setTooltip('Agrupa varias notas para forzar que suenen juntas al mismo tiempo (creando un acorde).');
+        this.setTooltip("Reproduce varias notas a la vez. Puedes encajarle opciones en su parte inferior.");
     }
 };
 
-Blockly.JavaScript['chord_ed2'] = function (block) {
+Blockly.JavaScript['chord_st'] = function (block) {
+    const note = block.getFieldValue('note');
+    const chordType = block.getFieldValue('chord_type');
     let dur = 1;
     let waveShape = '';
 
@@ -38,25 +44,16 @@ Blockly.JavaScript['chord_ed2'] = function (block) {
 
     let code = ``;
 
-    let myNum = num;
-    num++; // Immediately increment so nested blocks use subsequent numbers.
+    // Chord is inherently polyphonic
+    code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
-    code += `// --- Start Chord Wrapper ---\n`;
-    code += `const chordNotes_${myNum} = [];\n`;
-    code += `var chordNotesObj = chordNotes_${myNum};\n`;
-    
-    // Convert enclosed notes. We need to pass down context.
-    let notesCode = Blockly.JavaScript.statementToCode(block, 'NOTES');
-    code += notesCode;
-    
-    code += `// --- Execute PolySynth ---\n`;
-    code += `const synth${myNum} = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
-
+    // 1. Configuramos el oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
-        code += `  synth${myNum}.set({ oscillator: { type: '${waveShape}' } });\n`;
+        code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
+    // 2. Configuramos el envelope
     // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
@@ -65,7 +62,7 @@ Blockly.JavaScript['chord_ed2'] = function (block) {
     if (options.release !== undefined) envParts.push(`release: ${options.release}`);
 
     if (envParts.length > 0) {
-        code += `  synth${myNum}.set({envelope: {` + envParts.join(', ') + `}});\n`;
+        code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
     // 3. Configuramos la duración
@@ -80,22 +77,28 @@ Blockly.JavaScript['chord_ed2'] = function (block) {
         dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
+    // 3. Verificamos volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Usar directamente el array recolectado
-    code += `  const freqs${myNum} = chordNotes_${myNum}.map(n => Tone.Frequency(n).toFrequency());\n`;
+    // Calculamos las frecuencias del acorde
+    code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
 
-    code += `  if (freqs${myNum}.length > 0) {\n`;
+    if (chordType === 'major') {
+        code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.25992, baseFreq${num} * 1.4983];\n`;
+    } else {
+        code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.1892, baseFreq${num} * 1.4983];\n`;
+    }
+
+    // Disparamos el acorde
     const isLive = Blockly.JavaScript.isLiveMode;
     if (isLive) {
-        code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttack(freqs${myNum}, time${volumeParam}); }, timeDur);\n`;
+        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(freqs${num}, time${volumeParam}); }, timeDur);\n`;
     } else {
-        code += `    Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     }
-    code += `  }\n`;
 
     // Check if we are inside a sequence block
     let topBlock = block.getSurroundParent();
@@ -113,7 +116,6 @@ Blockly.JavaScript['chord_ed2'] = function (block) {
         code += `  timeDur += ` + dur + `;\n`;
     }
 
-    code += `// --- End Chord Wrapper ---\n`;
-
+    num++;
     return code;
 }

@@ -1,4 +1,9 @@
-Blockly.Blocks['chord'] = {
+/**
+ * Bloque de tipo acorde Mutator con selección de octava
+ * Predefinido - Mayor o menor
+ */
+
+Blockly.Blocks['chord_mt_oc'] = {
     init: function () {
         this.itemCount_ = 0; // Starts with 0 option slots
         this.updateShape_();
@@ -13,7 +18,7 @@ Blockly.Blocks['chord'] = {
         return container;
     },
     domToMutation: function (xmlElement) {
-        this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10);
+        this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10) || 0;
         this.updateShape_();
     },
     decompose: function (workspace) {
@@ -60,11 +65,20 @@ Blockly.Blocks['chord'] = {
         }
     },
     updateShape_: function () {
+        // Save current values if the fields exist to prevent resetting to C4
+        var savedNote = this.getFieldValue('note');
+        var savedOctave = this.getFieldValue('octave');
+        var savedChordType = this.getFieldValue('chord_type');
+
+        const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
+
         // Always keep the base fields
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
                 .appendField("acorde")
-                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note")
+                .appendField(new Blockly.FieldDropdown(notes), "note")
+                .appendField("octava")
+                .appendField(new Blockly.FieldNumber(4, 1, 7), "octave")
                 .appendField("tipo")
                 .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
         }
@@ -84,11 +98,24 @@ Blockly.Blocks['chord'] = {
             this.removeInput('ADD' + i);
             i++;
         }
+
+        // Restore saved values
+        if (savedNote !== null && this.getField('note')) {
+            this.setFieldValue(savedNote, 'note');
+        }
+        if (savedOctave !== null && this.getField('octave')) {
+            this.setFieldValue(savedOctave, 'octave');
+        }
+        if (savedChordType !== null && this.getField('chord_type')) {
+            this.setFieldValue(savedChordType, 'chord_type');
+        }
     }
 };
 
-Blockly.JavaScript['chord'] = function (block) {
-    const note = block.getFieldValue('note');
+Blockly.JavaScript['chord_mt_oc'] = function (block) {
+    const noteName = block.getFieldValue('note');
+    const octave = block.getFieldValue('octave');
+    const note = noteName + octave;
     const chordType = block.getFieldValue('chord_type');
     let dur = 1;
     let waveShape = '';
@@ -123,7 +150,6 @@ Blockly.JavaScript['chord'] = function (block) {
     }
 
     // 2. Configuramos el envelope
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -135,7 +161,6 @@ Blockly.JavaScript['chord'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -143,10 +168,10 @@ Blockly.JavaScript['chord'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
-    // 3. Verificamos volumen
+    // 4. Verificamos volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
@@ -155,8 +180,6 @@ Blockly.JavaScript['chord'] = function (block) {
     // Calculamos las frecuencias del acorde
     code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
 
-    // Major chord: root, major 3rd, perfect 5th (ratios roughly 1, 1.2599, 1.4983 in equal temperament)
-    // Minor chord: root, minor 3rd, perfect 5th (ratios roughly 1, 1.1892, 1.4983)
     if (chordType === 'major') {
         code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.25992, baseFreq${num} * 1.4983];\n`;
     } else {
@@ -189,4 +212,4 @@ Blockly.JavaScript['chord'] = function (block) {
 
     num++;
     return code;
-}
+};

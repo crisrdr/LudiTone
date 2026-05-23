@@ -1,53 +1,45 @@
 /**
- * Bloque semitono con elección de octava y opciones en modo caja (statement)
+ * Bloque nota simple Statement en escala principal
  */
-
-Blockly.Blocks['semitone_ed2'] = {
+Blockly.Blocks['note_st'] = {
     init: function () {
-        const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
-        const accidentals = [["♮ (natural)", ""], ["♯ (sostenido)", "#"], ["♭ (bemol)", "b"]];
         this.appendDummyInput()
-            .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("semitono")
-            .appendField(new Blockly.FieldDropdown(notes), "note")
-            .appendField(new Blockly.FieldDropdown(accidentals), "accidental")
-            .appendField("octava")
-            .appendField(new Blockly.FieldNumber(4, 1, 7), "octave");
-            
+            .appendField(Blockly.Msg['SIMPLE_NOTE_LABEL'] || "nota")
+            .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note");
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
             .appendField("opciones");
-            
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(20);
-        this.setTooltip("Reproduce una nota con semitono a elegir, especificando la octava (1-7). Puedes encajarle opciones adicionales dentro de la caja.");
+        this.setTooltip("Reproduce una nota. Puedes encajarle opciones adicionales en su parte inferior.");
     }
 };
 
-Blockly.JavaScript['semitone_ed2'] = function (block) {
-    const noteName = block.getFieldValue('note');
-    const accidental = block.getFieldValue('accidental');
-    const octave = block.getFieldValue('octave');
-    const note = noteName + accidental + octave;
-    
+Blockly.JavaScript['note_st'] = function (block) {
+    const note = block.getFieldValue('note');
     let dur = 1;
-    let volumeParam = '';
+    let waveShape = '';
+
+    // Options object to be populated by the statements
     let options = {};
-    
+
+    // Evaluate the statements directly into JS string, then run it against `options`
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
+            // Evaluates something like: "options.dur = 1;\noptions.oscillator = 'sine';\n"
             let fn = new Function('options', optionsCode);
             fn(options);
-        } catch (e) { 
-            console.error("Error evaluating options2 blocks in semitone_ed2. optionsCode:", optionsCode, "Error:", e); 
+        } catch (e) {
+            console.error("Error evaluating options2 blocks: ", e);
         }
     }
 
     let isPoly = false;
     let code = ``;
 
+    // Si la opción "kind" existe, usamos PolySynth en vez de Synth normal.
     if (options.kind !== undefined && options.kind !== null) {
         isPoly = true;
         code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
@@ -55,8 +47,10 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
         code += `const synth` + num + ` = new Tone.Synth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
     }
 
+    // 1. Configuramos el oscilador si está presente
     if (options.oscillator) {
-        code += `  synth` + num + `.set({oscillator: {type: '${options.oscillator}'}});\n`;
+        waveShape = options.oscillator;
+        code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
     // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
@@ -71,29 +65,40 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
-    const sustainDur = options.dur !== undefined ? options.dur : 1;
-    if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
-        const a = options.attack !== undefined ? options.attack : 0.005;
-        const d = options.decay !== undefined ? options.decay : 0.1;
-        const r = options.release !== undefined ? options.release : 1;
-        dur = a + d + sustainDur + r;
+    if (options.dur !== undefined) {
+        dur = options.dur;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        // Si hay envolvente pero no duración explícita, adaptamos la duración
+        // para que de tiempo a que ocurra el ataque y el decaimiento.
+        if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
+            const a = options.attack !== undefined ? options.attack : 0.005;
+            const d = options.decay !== undefined ? options.decay : 0.1;
+            const r = options.release !== undefined ? options.release : 1;
+            dur = a + d + r;
+        } else {
+            dur = 1; // Duración estándar de 1 segundo
+        }
     }
 
+    // 4. Verificamos si hay volumen
+    let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Scheduling
+    // Finalmente hacemos que suene
+    // Check if we are inside a chord block
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) isInsideChord = true;
-        if (topBlock.type === 'sequence') isInsideSequence = true;
+        if (topBlock.type === 'chord_mt' || topBlock.type === 'chord_ed') {
+            isInsideChord = true;
+        }
+        if (topBlock.type === 'sequence') {
+            isInsideSequence = true;
+        }
         topBlock = topBlock.getSurroundParent();
     }
 
@@ -110,7 +115,7 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
                 } else {
                     code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
                 }
-            } else {
+            } else { // inharmonic
                 const notes = `[baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93]`;
                 if (isLive) {
                     code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;
@@ -130,6 +135,9 @@ Blockly.JavaScript['semitone_ed2'] = function (block) {
             code += `  timeDur += ` + dur + `;\n`;
         }
     }
+
     num++;
     return code;
-};
+}
+
+const note_st_dur = '<block type="note_st"><statement name="OPTIONS"><block type="opt2_duration"><field name="dur">1</field></block></statement></block>';

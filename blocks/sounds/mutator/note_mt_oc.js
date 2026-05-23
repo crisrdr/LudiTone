@@ -1,8 +1,7 @@
 /**
- * Bloque semitono con elección de octava y opciones en modo puzzle (mutator)
+ * Bloque nota simple Mutator con selección de escala
  */
-
-Blockly.Blocks['semitone_ed'] = {
+Blockly.Blocks['note_mt_oc'] = {
     init: function () {
         this.itemCount_ = 0;
         this.updateShape_();
@@ -10,7 +9,7 @@ Blockly.Blocks['semitone_ed'] = {
         this.setNextStatement(true, null);
         this.setColour(20);
         this.setMutator(new Blockly.Mutator(['options_item']));
-        this.setTooltip('Reproduce una nota con accidentes (♯, ♭) especificando la octava (1-7).');
+        this.setTooltip('Reproduce una nota natural especificando la octava (1-7).');
     },
     mutationToDom: function () {
         var container = Blockly.utils.xml.createElement('mutation');
@@ -65,15 +64,17 @@ Blockly.Blocks['semitone_ed'] = {
         }
     },
     updateShape_: function () {
+        // Save current values if the fields exist to prevent resetting to C4
+        var savedNote = this.getFieldValue('note');
+        var savedOctave = this.getFieldValue('octave');
+
         const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
-        const accidentals = [["♮ (natural)", ""], ["♯ (sostenido)", "#"], ["♭ (bemol)", "b"]];
-        
+
         if (this.itemCount_ === 0) {
             if (!this.getInput('BASE')) {
                 this.appendDummyInput('BASE')
-                    .appendField("semitono")
+                    .appendField("nota")
                     .appendField(new Blockly.FieldDropdown(notes), "note")
-                    .appendField(new Blockly.FieldDropdown(accidentals), "accidental")
                     .appendField("octava")
                     .appendField(new Blockly.FieldNumber(4, 1, 7), "octave");
             }
@@ -89,23 +90,21 @@ Blockly.Blocks['semitone_ed'] = {
                 var input = this.appendValueInput('ADD' + i)
                     .setCheck("options")
                     .setAlign(Blockly.ALIGN_RIGHT);
-                
+
                 if (i === 0) {
-                    input.appendField("semitono")
-                         .appendField(new Blockly.FieldDropdown(notes), "note")
-                         .appendField(new Blockly.FieldDropdown(accidentals), "accidental")
-                         .appendField("octava")
-                         .appendField(new Blockly.FieldNumber(4, 1, 7), "octave");
+                    input.appendField("nota")
+                        .appendField(new Blockly.FieldDropdown(notes), "note")
+                        .appendField("octava")
+                        .appendField(new Blockly.FieldNumber(4, 1, 7), "octave");
                 }
-                
+
                 input.appendField("opción");
             } else if (i === 0) {
                 if (!this.getField("note")) {
-                    this.getInput('ADD0').insertFieldAt(0, "semitono");
+                    this.getInput('ADD0').insertFieldAt(0, "nota");
                     this.getInput('ADD0').insertFieldAt(1, new Blockly.FieldDropdown(notes), "note");
-                    this.getInput('ADD0').insertFieldAt(2, new Blockly.FieldDropdown(accidentals), "accidental");
-                    this.getInput('ADD0').insertFieldAt(3, "octava");
-                    this.getInput('ADD0').insertFieldAt(4, new Blockly.FieldNumber(4, 1, 7), "octave");
+                    this.getInput('ADD0').insertFieldAt(2, "octava");
+                    this.getInput('ADD0').insertFieldAt(3, new Blockly.FieldNumber(4, 1, 7), "octave");
                 }
             }
         }
@@ -115,18 +114,27 @@ Blockly.Blocks['semitone_ed'] = {
             this.removeInput('ADD' + i);
             i++;
         }
+
+        // Restore saved values
+        if (savedNote !== null && this.getField('note')) {
+            this.setFieldValue(savedNote, 'note');
+        }
+        if (savedOctave !== null && this.getField('octave')) {
+            this.setFieldValue(savedOctave, 'octave');
+        }
     }
 };
 
-Blockly.JavaScript['semitone_ed'] = function (block) {
+Blockly.JavaScript['note_mt_oc'] = function (block) {
     const noteName = block.getFieldValue('note');
-    const accidental = block.getFieldValue('accidental');
     const octave = block.getFieldValue('octave');
-    const note = noteName + accidental + octave;
-    
+    const note = noteName + octave;
+
     let dur = 1;
     let volumeParam = '';
-    let elements = [];
+
+    // Collect options
+    var elements = [];
     for (var i = 0; i < block.itemCount_; i++) {
         var val = Blockly.JavaScript.valueToCode(block, 'ADD' + i, Blockly.JavaScript.ORDER_NONE);
         if (val && val !== "''" && val !== '""' && val !== "null") {
@@ -170,15 +178,19 @@ Blockly.JavaScript['semitone_ed'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
-    const sustainDur = options.dur !== undefined ? options.dur : 1;
-    if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
-        const a = options.attack !== undefined ? options.attack : 0.005;
-        const d = options.decay !== undefined ? options.decay : 0.1;
-        const r = options.release !== undefined ? options.release : 1;
-        dur = a + d + sustainDur + r;
+    if (options.dur !== undefined) {
+        dur = options.dur;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        // Si hay envolvente pero no duración explícita, adaptamos la duración
+        // para que de tiempo a que ocurra el ataque y el decaimiento.
+        if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
+            const a = options.attack !== undefined ? options.attack : 0.005;
+            const d = options.decay !== undefined ? options.decay : 0.1;
+            const r = options.release !== undefined ? options.release : 1;
+            dur = a + d + r;
+        } else {
+            dur = 1; // Duración estándar de 1 segundo
+        }
     }
 
     if (options.volume !== undefined) {
@@ -191,7 +203,7 @@ Blockly.JavaScript['semitone_ed'] = function (block) {
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) isInsideChord = true;
+        if (topBlock.type.includes('chord_mt')) isInsideChord = true;
         if (topBlock.type === 'sequence') isInsideSequence = true;
         topBlock = topBlock.getSurroundParent();
     }
@@ -209,7 +221,7 @@ Blockly.JavaScript['semitone_ed'] = function (block) {
                 } else {
                     code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
                 }
-            } else {
+            } else { // inharmonic
                 const notes = `[baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93]`;
                 if (isLive) {
                     code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;

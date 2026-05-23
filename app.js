@@ -85,7 +85,7 @@ async function runCode(isLiveUpdate = false) {
   try {
     await Tone.start(); // Hacemos doble check al contexto de audio con un gesto
     eval(wrapCode);
-    
+
     // Si no es una actualización en vivo, arrancamos el transporte
     if (!isLiveUpdate) {
       await Tone.Transport.start();
@@ -116,7 +116,7 @@ liveBTN.addEventListener("click", () => {
     liveBTN.classList.add("live-active");
     playBTN.disabled = true;
     stopBTN.disabled = true;
-    
+
     // Al activar, empezamos a sonar de inmediato
     stopAll();
     timeDur = 0;
@@ -128,7 +128,7 @@ liveBTN.addEventListener("click", () => {
     liveBTN.classList.remove("live-active");
     playBTN.disabled = false;
     stopBTN.disabled = false;
-    
+
     // Al desactivar, paramos todo
     stopAll();
   }
@@ -137,45 +137,45 @@ liveBTN.addEventListener("click", () => {
 // Función para actualizaciones en caliente (Live Coding)
 async function liveUpdate() {
   if (!isLiveMode) return;
-  
+
   if (liveTimeout) clearTimeout(liveTimeout);
-  
+
   liveTimeout = setTimeout(async () => {
     console.log("Live Update Triggered...");
-    
+
     // 1. Cancelamos eventos futuros pero mantenemos el transporte corriendo
     Tone.Transport.cancel(Tone.Transport.seconds + 0.1);
-    
+
     // 2. Liberamos sintetizadores antiguos
     activeSynths.forEach(node => {
       try {
         if (typeof node.releaseAll === 'function') node.releaseAll(0.1);
         setTimeout(() => {
-          try { node.dispose(); } catch(e){}
+          try { node.dispose(); } catch (e) { }
         }, 200);
       } catch (e) { /* already disposed */ }
     });
     activeSynths = [];
-    
+
     // 3. Reseteamos contadores para el nuevo código
     // No reseteamos seqNum porque las secuencias dependen del tiempo global
-    num = 0; 
-    
+    num = 0;
+
     // 4. Importante: El código nuevo debe empezar a programarse desde NOW
     timeDur = Tone.Transport.seconds + 0.15; // Un pequeño margen para el procesado
-    
+
     // 5. Ejecutar código sin reiniciar el transporte
-    await runCode(true); 
-    
+    await runCode(true);
+
   }, 600); // Debounce de 600ms
 }
 
 feedbackBTN.addEventListener("click", () => {
-    window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
+  window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
 });
 
 feedbackHomeBTN.addEventListener("click", () => {
-    window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
+  window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
 });
 
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
@@ -331,9 +331,9 @@ const toolboxBasic = {
       name: "",
       colour: "0",
       contents: [
-        { kind: 'block', type: 'simple_note' },
-        { kind: 'block', blockxml: simple_note_vol },
-        { kind: 'block', blockxml: simple_note_dur },
+        { kind: 'block', type: 'note_mt' },
+        { kind: 'block', blockxml: note_mt_vol },
+        { kind: 'block', blockxml: note_mt_dur },
         { kind: 'block', type: 'opt_volume' },
         { kind: 'block', type: 'opt_duration' }
       ]
@@ -357,16 +357,16 @@ const toolboxIntermediate = {
       contents: [
         {
           kind: 'category', name: 'Puzzle', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note' },
-            { kind: 'block', type: 'semitone' },
-            { kind: 'block', type: 'chord' }
+            { kind: 'block', type: 'note_mt' },
+            { kind: 'block', type: 'semitone_mt' },
+            { kind: 'block', type: 'chord_mt' }
           ]
         },
         {
           kind: 'category', name: 'Caja', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note2' },
-            { kind: 'block', type: 'semitone2' },
-            { kind: 'block', type: 'chord2' }
+            { kind: 'block', type: 'note_st' },
+            { kind: 'block', type: 'semitone_st' },
+            { kind: 'block', type: 'chord_st' }
           ]
         }
       ]
@@ -411,16 +411,18 @@ const toolboxAdvanced = {
       contents: [
         {
           kind: 'category', name: 'Puzzle', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note_ed' },
-            { kind: 'block', type: 'semitone_ed' },
-            { kind: 'block', type: 'chord_ed' }
+            { kind: 'block', type: 'note_mt_oc' },
+            { kind: 'block', type: 'semitone_mt_oc' },
+            { kind: 'block', type: 'chord_mt_oc' },
+            { kind: 'block', type: 'chord_mt_ed' }
           ]
         },
         {
           kind: 'category', name: 'Caja', colour: '20', contents: [
-            { kind: 'block', type: 'simple_note_ed2' },
-            { kind: 'block', type: 'semitone_ed2' },
-            { kind: 'block', type: 'chord_ed2' }
+            { kind: 'block', type: 'note_st_oc' },
+            { kind: 'block', type: 'semitone_st_oc' },
+            { kind: 'block', type: 'chord_st_oc' },
+            { kind: 'block', type: 'chord_st_ed' }
           ]
         }
       ]
@@ -530,23 +532,25 @@ const toolboxSound = {
         {
           kind: 'category', name: 'Puzzle', colour: '20',
           contents: [
-            { kind: 'block', type: 'simple_note' },
-            { kind: 'block', type: 'simple_note_ed' },
-            { kind: 'block', type: 'semitone' },
-            { kind: 'block', type: 'semitone_ed' },
-            { kind: 'block', type: 'chord' },
-            { kind: 'block', type: 'chord_ed' }
+            { kind: 'block', type: 'note_mt' },
+            { kind: 'block', type: 'note_mt_oc' },
+            { kind: 'block', type: 'semitone_mt' },
+            { kind: 'block', type: 'semitone_mt_oc' },
+            { kind: 'block', type: 'chord_mt' },
+            { kind: 'block', type: 'chord_mt_oc' },
+            { kind: 'block', type: 'chord__mt_ed' }
           ]
         },
         {
           kind: 'category', name: 'Cajón', colour: '20',
           contents: [
-            { kind: 'block', type: 'simple_note2' },
-            { kind: 'block', type: 'simple_note_ed2' },
-            { kind: 'block', type: 'semitone2' },
-            { kind: 'block', type: 'semitone_ed2' },
-            { kind: 'block', type: 'chord2' },
-            { kind: 'block', type: 'chord_ed2' }
+            { kind: 'block', type: 'note_st' },
+            { kind: 'block', type: 'note_st_oc' },
+            { kind: 'block', type: 'semitone_st' },
+            { kind: 'block', type: 'semitone_st_oc' },
+            { kind: 'block', type: 'chord_st' },
+            { kind: 'block', type: 'chord_st_oc' },
+            { kind: 'block', type: 'chord_st_ed' }
           ]
         }
       ]
@@ -610,10 +614,6 @@ const toolboxFree = {
           "fields": {
             "NUM": 1
           }
-        },
-        {
-          kind: 'block',
-          type: 'pop',
         }
       ],
     },
@@ -629,27 +629,31 @@ const toolboxFree = {
           contents: [
             {
               kind: 'block',
-              type: 'simple_note'
+              type: 'note_mt'
             },
             {
               kind: 'block',
-              type: 'simple_note_ed'
+              type: 'note_mt_oc'
             },
             {
               kind: 'block',
-              type: 'semitone'
+              type: 'semitone_mt'
             },
             {
               kind: 'block',
-              type: 'semitone_ed'
+              type: 'semitone_mt_oc'
             },
             {
               kind: 'block',
-              type: 'chord'
+              type: 'chord_mt'
             },
             {
               kind: 'block',
-              type: 'chord_ed'
+              type: 'chord_mt_oc'
+            },
+            {
+              kind: 'block',
+              type: 'chord_mt_ed'
             }
           ]
         },
@@ -660,27 +664,31 @@ const toolboxFree = {
           contents: [
             {
               kind: 'block',
-              type: 'simple_note2'
+              type: 'note_st'
             },
             {
               kind: 'block',
-              type: 'simple_note_ed2'
+              type: 'note_st_oc'
             },
             {
               kind: 'block',
-              type: 'semitone2'
+              type: 'semitone_st'
             },
             {
               kind: 'block',
-              type: 'semitone_ed2'
+              type: 'semitone_st_oc'
             },
             {
               kind: 'block',
-              type: 'chord2'
+              type: 'chord_st'
             },
             {
               kind: 'block',
-              type: 'chord_ed2'
+              type: 'chord_st_oc'
+            },
+            {
+              kind: 'block',
+              type: 'chord_st_ed'
             }
           ]
         }
@@ -863,6 +871,7 @@ const workspace = Blockly.inject('blocklyDiv', {
 // --- VARIABLES GLOBALES SEMÁFORO ---
 let currentLevel = null;
 let isLoadingLevel = false;
+let trashcanContentsPerLevel = {};
 
 function colorizeBubbles() {
   setTimeout(() => {
@@ -878,6 +887,14 @@ function colorizeBubbles() {
 
 // Nivel selector logic
 function selectLevel(levelName) {
+  // Save current level's trashcan contents
+  if (currentLevel && workspace.trashcan) {
+    trashcanContentsPerLevel[currentLevel] = [...workspace.trashcan.contents_];
+    if (typeof workspace.trashcan.closeFlyout === 'function') {
+      workspace.trashcan.closeFlyout();
+    }
+  }
+
   isLoadingLevel = true;
   currentLevel = levelName;
 
@@ -892,6 +909,9 @@ function selectLevel(levelName) {
 
   // Inyectamos los custom blocks filtrados por nivel
   const dynamicToolbox = applyCustomBlocksTo(selectedToolbox, levelName);
+
+  // Disable events so workspace.clear() doesn't send cleared blocks to next level's trashcan
+  Blockly.Events.disable();
 
   workspace.clear();
   workspace.updateToolbox(dynamicToolbox);
@@ -916,7 +936,7 @@ function selectLevel(levelName) {
     document.body.classList.remove('basic-mode');
     document.getElementById('create-block-btn').style.display = (levelName === 'sound') ? 'inline-block' : 'none';
     liveBTN.style.display = (levelName === 'free') ? 'inline-block' : 'none';
-    
+
     // Reset live mode when entering/exiting a level
     isLiveMode = false;
     liveBTN.textContent = "Modo Live: OFF";
@@ -955,6 +975,14 @@ function selectLevel(levelName) {
     }
   }
 
+  // Re-enable events after workspace loading is done
+  Blockly.Events.enable();
+
+  // Restore the new level's trashcan contents
+  if (workspace.trashcan) {
+    workspace.trashcan.contents_ = trashcanContentsPerLevel[levelName] || [];
+  }
+
   isLoadingLevel = false;
 
   document.getElementById('startup-menu').style.opacity = '0';
@@ -972,10 +1000,10 @@ workspace.addChangeListener((e) => {
     const xml = Blockly.Xml.workspaceToDom(workspace);
     const xmlText = Blockly.Xml.domToText(xml);
     localStorage.setItem('blocklyMusicParams_' + currentLevel, xmlText);
-    
+
     // Si el modo live está activo, disparamos actualización
     if (isLiveMode && (e.type === Blockly.Events.BLOCK_CHANGE || e.type === Blockly.Events.BLOCK_MOVE || e.type === Blockly.Events.BLOCK_CREATE || e.type === Blockly.Events.BLOCK_DELETE)) {
-       liveUpdate();
+      liveUpdate();
     }
   }
 });
@@ -1017,7 +1045,7 @@ function openModalForEdit(blockData) {
   hexDisplay.textContent = blockData.color || '#8b5cf6';
   modalTitle.textContent = 'Editar Bloque';
   // Preseleccionar solo los niveles opcionales (intermedio/avanzado)
-  const blockLevels = (blockData.levels || []).filter(l => ['intermediate','advanced'].includes(l));
+  const blockLevels = (blockData.levels || []).filter(l => ['intermediate', 'advanced'].includes(l));
   document.querySelectorAll('.level-checkbox').forEach(cb => {
     cb.checked = blockLevels.includes(cb.value);
   });

@@ -1,0 +1,5 @@
+1. En los bloques de tipo mutator, al añadir entradas de "opciones" se cambia la nota seleccionada a la puesta por defecto (C4), quiero que se mantenga la nota que estaba seleccionada u otros valores que pudiese tener. Se puede?
+
+2. Si elimino algo en el nivel "Avanzado" y me meto en el nivel "Básico" me aparecene en la papelera los bloques eliminados en avanzado u otras secciones. Se puede hacer que la paplera sea única al nivel o sección en la que se está trabajando? Esta idea ya se implementó para el área de trabajo, que se guardara para cada sección en local storage.
+
+3. Tengo bloques de sonido con posibilidad de elegir la octava para "simple_note" y "semitone", también quiero que crees dicho bloque para el bloque que ya tenemos de acorde dónde se puede elegir acorde menor o mayor.

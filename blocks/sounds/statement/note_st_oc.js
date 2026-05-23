@@ -1,4 +1,8 @@
-Blockly.Blocks['simple_note_ed2'] = {
+/**
+ * Bloque nota simple Statement con selección de octava
+ */
+
+Blockly.Blocks['note_st_oc'] = {
     init: function () {
         const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
         this.appendDummyInput()
@@ -16,22 +20,22 @@ Blockly.Blocks['simple_note_ed2'] = {
     }
 };
 
-Blockly.JavaScript['simple_note_ed2'] = function (block) {
+Blockly.JavaScript['note_st_oc'] = function (block) {
     const noteName = block.getFieldValue('note');
     const octave = block.getFieldValue('octave');
     const note = noteName + octave;
-    
+
     let dur = 1;
     let volumeParam = '';
     let options = {};
-    
+
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
             let fn = new Function('options', optionsCode);
             fn(options);
-        } catch (e) { 
-            console.error("Error evaluating options2 blocks: ", e); 
+        } catch (e) {
+            console.error("Error evaluating options2 blocks: ", e);
         }
     }
 
@@ -70,7 +74,7 @@ Blockly.JavaScript['simple_note_ed2'] = function (block) {
             const a = options.attack !== undefined ? options.attack : 0.005;
             const d = options.decay !== undefined ? options.decay : 0.1;
             const r = options.release !== undefined ? options.release : 1;
-            dur = a + d + r; 
+            dur = a + d + r;
         } else {
             dur = 1; // Duración estándar de 1 segundo
         }
@@ -86,7 +90,7 @@ Blockly.JavaScript['simple_note_ed2'] = function (block) {
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) isInsideChord = true;
+        if (topBlock.type.includes('chord_mt')) isInsideChord = true;
         if (topBlock.type === 'sequence') isInsideSequence = true;
         topBlock = topBlock.getSurroundParent();
     }

@@ -1,10 +1,14 @@
-Blockly.Blocks['simple_note'] = {
+/**
+ * Bloque de tipo acorde Mutator escala principal
+ * Predefinido - Mayor o menor
+ */
+Blockly.Blocks['chord_mt'] = {
     init: function () {
         this.itemCount_ = 0; // Starts with 0 option slots
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
-        this.setColour(20);
+        this.setColour(0);
         this.setMutator(new Blockly.Mutator(['options_item']));
     },
     mutationToDom: function () {
@@ -60,11 +64,13 @@ Blockly.Blocks['simple_note'] = {
         }
     },
     updateShape_: function () {
-        // Alwasy keep the base "note" field
+        // Always keep the base fields
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
-                .appendField(Blockly.Msg['SIMPLE_NOTE_LABEL'] || "nota", "NOTE_LABEL")
-                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note");
+                .appendField("acorde")
+                .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note")
+                .appendField("tipo")
+                .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
         }
 
         // Add options inputs
@@ -85,33 +91,9 @@ Blockly.Blocks['simple_note'] = {
     }
 };
 
-// Mutator Container Block
-Blockly.Blocks['options_container'] = {
-    init: function () {
-        this.setColour(120);
-        this.appendDummyInput()
-            .appendField('opciones');
-        this.appendStatementInput('STACK');
-        this.setTooltip('Permite añadir, quitar o cambiar el orden de las opciones del bloque.');
-        this.contextMenu = false;
-    }
-};
-
-// Mutator Item Block
-Blockly.Blocks['options_item'] = {
-    init: function () {
-        this.setColour(120);
-        this.appendDummyInput()
-            .appendField('opción');
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
-        this.setTooltip('Añade un nuevo ajuste o característica sonora al bloque.');
-        this.contextMenu = false;
-    }
-};
-
-Blockly.JavaScript['simple_note'] = function (block) {
+Blockly.JavaScript['chord_mt'] = function (block) {
     const note = block.getFieldValue('note');
+    const chordType = block.getFieldValue('chord_type');
     let dur = 1;
     let waveShape = '';
 
@@ -122,10 +104,8 @@ Blockly.JavaScript['simple_note'] = function (block) {
             Blockly.JavaScript.ORDER_NONE) || 'null';
     }
 
-    // Reconstruimos el string JSON gigante como si viniera de un solo bloque options
     var optionsCode = '{' + elements.join(', ') + '}';
 
-    // Inicializamos un objeto de opciones vacío por defecto
     let options = {};
     if (optionsCode && optionsCode !== "''" && optionsCode !== "null" && optionsCode !== "{}") {
         try {
@@ -135,23 +115,18 @@ Blockly.JavaScript['simple_note'] = function (block) {
         }
     }
 
-    let isPoly = false;
     let code = ``;
 
-    // Si la opción "kind" existe, usamos PolySynth en vez de Synth normal.
-    if (options.kind !== undefined && options.kind !== null) {
-        isPoly = true;
-        code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
-    } else {
-        code += `const synth` + num + ` = new Tone.Synth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
-    }
+    // Chord is inherently polyphonic
+    code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
-    // 1. Configuramos el oscilador si está presente
+    // 1. Configuramos el oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
+    // 2. Configuramos el envelope
     // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
@@ -175,65 +150,47 @@ Blockly.JavaScript['simple_note'] = function (block) {
         dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
-    // 4. Verificamos si hay volumen
+    // 3. Verificamos volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Finalmente hacemos que suene
-    // Check if we are inside a chord block
+    // Calculamos las frecuencias del acorde
+    code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
+
+    // Major chord: root, major 3rd, perfect 5th (ratios roughly 1, 1.2599, 1.4983 in equal temperament)
+    // Minor chord: root, minor 3rd, perfect 5th (ratios roughly 1, 1.1892, 1.4983)
+    if (chordType === 'major') {
+        code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.25992, baseFreq${num} * 1.4983];\n`;
+    } else {
+        code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.1892, baseFreq${num} * 1.4983];\n`;
+    }
+
+    // Disparamos el acorde
+    const isLive = Blockly.JavaScript.isLiveMode;
+    if (isLive) {
+        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(freqs${num}, time${volumeParam}); }, timeDur);\n`;
+    } else {
+        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
+    }
+
+    // Check if we are inside a sequence block
     let topBlock = block.getSurroundParent();
-    let isInsideChord = false;
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type === 'chord' || topBlock.type === 'chord_ed') {
-            isInsideChord = true;
-        }
         if (topBlock.type === 'sequence') {
             isInsideSequence = true;
+            break;
         }
         topBlock = topBlock.getSurroundParent();
     }
 
-    const isLive = Blockly.JavaScript.isLiveMode;
-    if (isInsideChord) {
-        code += `  chordNotesObj.push('${note}');\n`;
-    } else {
-        if (isPoly) {
-            code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
-            if (options.kind === 'harm') {
-                const notes = `[baseFreq${num}, baseFreq${num} * 2, baseFreq${num} * 3, baseFreq${num} * 4]`;
-                if (isLive) {
-                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;
-                } else {
-                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
-                }
-            } else { // inharmonic
-                const notes = `[baseFreq${num}, baseFreq${num} * 2.76, baseFreq${num} * 5.40, baseFreq${num} * 8.93]`;
-                if (isLive) {
-                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(${notes}, time${volumeParam}); }, timeDur);\n`;
-                } else {
-                    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(${notes}, ${dur}, time${volumeParam}); }, timeDur);\n`;
-                }
-            }
-        } else {
-            if (isLive) {
-                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack('${note}', time${volumeParam}); }, timeDur);\n`;
-            } else {
-                code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time${volumeParam}); }, timeDur);\n`;
-            }
-        }
-
-        if (isInsideSequence) {
-            code += `  timeDur += ` + dur + `;\n`;
-        }
+    if (isInsideSequence) {
+        code += `  timeDur += ` + dur + `;\n`;
     }
 
     num++;
     return code;
 }
-
-const simple_note_dur = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="dur">1</field></shadow></value></block>';
-const simple_note_vol = '<block type="simple_note"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="vol">1</field></shadow></value></block>';
