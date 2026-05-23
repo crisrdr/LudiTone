@@ -11,7 +11,7 @@ Blockly.Blocks['effect_lowpassfilter'] = {
                 f.setTooltip(`Velocidad del LFO que modula el filtro (Hz).
 Valores bajos (< 1): cambio muy lento
 Valores altos (> 4): cambio rápido`); return f;
-            })(new Blockly.FieldNumber(1, 0))), "FREQUENCY");
+            })(new Blockly.FieldNumber(1, 0, 1000))), "FREQUENCY");
 
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -20,7 +20,7 @@ Valores altos (> 4): cambio rápido`); return f;
                 f.setTooltip(`Frecuencia central del filtro en Hz.
 Valores bajos (< 200): sonido oscuro
 Valores altos (> 1000): sonido brillante`); return f;
-            })(new Blockly.FieldNumber(200, 0))), "BASEFREQUENCY");
+            })(new Blockly.FieldNumber(200, 0, 1500))), "BASEFREQUENCY");
 
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -29,7 +29,7 @@ Valores altos (> 1000): sonido brillante`); return f;
                 f.setTooltip(`Rango de barrido del filtro en octavas.
 Valores bajos (< 1): efecto sutil
 Valores altos (> 4): efecto muy pronunciado`); return f;
-            })(new Blockly.FieldNumber(2.6, 0))), "OCTAVES");
+            })(new Blockly.FieldNumber(2.6, 0, 15))), "OCTAVES");
 
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -51,10 +51,10 @@ Valores altos (> 4): efecto muy pronunciado`); return f;
 };
 
 Blockly.JavaScript['effect_lowpassfilter'] = function (block) {
-    let frequency    = block.getFieldValue('FREQUENCY');
+    let frequency = block.getFieldValue('FREQUENCY');
     let baseFrequency = block.getFieldValue('BASEFREQUENCY');
-    let octaves       = block.getFieldValue('OCTAVES');
-    let wet           = block.getFieldValue('WET');
+    let octaves = block.getFieldValue('OCTAVES');
+    let wet = block.getFieldValue('WET');
 
     let code = ``;
 
