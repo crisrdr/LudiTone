@@ -122,6 +122,32 @@ Blockly.Blocks['note_mt_oc'] = {
         if (savedOctave !== null && this.getField('octave')) {
             this.setFieldValue(savedOctave, 'octave');
         }
+    },
+    onchange: function (e) {
+        if (!this.workspace || this.workspace.isDragging()) return;
+
+        let topBlock = this.getSurroundParent();
+        let isInsideChord = false;
+        while (topBlock) {
+            if (topBlock.type && topBlock.type.includes('chord')) {
+                isInsideChord = true;
+                break;
+            }
+            topBlock = topBlock.getSurroundParent();
+        }
+
+        if (isInsideChord) {
+            if (this.mutator) {
+                if (this.mutator.setVisible) {
+                    this.mutator.setVisible(false);
+                }
+                this.setMutator(null);
+            }
+        } else {
+            if (!this.mutator) {
+                this.setMutator(new Blockly.Mutator(['options_item']));
+            }
+        }
     }
 };
 

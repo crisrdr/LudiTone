@@ -24,6 +24,30 @@ Blockly.Blocks['chord_mt_ed'] = {
         this.setMutator(new Blockly.Mutator(['options_item']));
         this.setTooltip('Agrupa varias notas para forzar que suenen juntas al mismo tiempo (creando un acorde).');
     },
+
+    // Expulsar bloques que no sean notas que intenten entrar en el NOTES
+    onchange: function (e) {
+        if (!this.workspace || this.workspace.isDragging()) return;
+        if (e.type !== Blockly.Events.BLOCK_MOVE) return;
+        var stmt = this.getInputTargetBlock('NOTES');
+        while (stmt) {
+            var next = stmt.getNextBlock();
+            if (!stmt.type.startsWith('note_') && !stmt.type.startsWith('semitone_')) {
+                Blockly.Events.disable();
+                try {
+                    stmt.unplug(true);
+                    stmt.moveBy(30, 30);
+                } finally {
+                    Blockly.Events.enable();
+                }
+                if (typeof showBlockWarning === 'function') {
+                    showBlockWarning('⚠️ Solo se admiten bloques "nota" o "semitono" dentro de las notas del acorde.');
+                }
+            }
+            stmt = next;
+        }
+    },
+    
     mutationToDom: function () {
         var container = Blockly.utils.xml.createElement('mutation');
         container.setAttribute('options', this.optionCount_);

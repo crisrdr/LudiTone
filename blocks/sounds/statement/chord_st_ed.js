@@ -18,6 +18,47 @@ Blockly.Blocks['chord_st_ed'] = {
         this.setNextStatement(true, null);
         this.setColour(0);
         this.setTooltip('Agrupa varias notas para forzar que suenen juntas al mismo tiempo (creando un acorde).');
+    },
+
+    // Expulsar bloques que no sean options2 que intenten entrar en el OPTIONS
+    // y bloques que no sean nota o semitono dentro de las notas del acorde
+    onchange: function (e) {
+        if (!this.workspace || this.workspace.isDragging()) return;
+        if (e.type !== Blockly.Events.BLOCK_MOVE) return;
+        var stmt = this.getInputTargetBlock('OPTIONS');
+        while (stmt) {
+            var next = stmt.getNextBlock();
+            if (!stmt.type.startsWith('opt_st_')) {
+                Blockly.Events.disable();
+                try {
+                    stmt.unplug(true);
+                    stmt.moveBy(30, 30);
+                } finally {
+                    Blockly.Events.enable();
+                }
+                if (typeof showBlockWarning === 'function') {
+                    showBlockWarning('⚠️ Solo se admiten bloques "opciones caja" dentro de las opciones del acorde.');
+                }
+            }
+            stmt = next;
+        }
+        stmt = this.getInputTargetBlock('NOTES');
+        while (stmt) {
+            var next = stmt.getNextBlock();
+            if (!stmt.type.startsWith('note_') && !stmt.type.startsWith('semitone_')) {
+                Blockly.Events.disable();
+                try {
+                    stmt.unplug(true);
+                    stmt.moveBy(30, 30);
+                } finally {
+                    Blockly.Events.enable();
+                }
+                if (typeof showBlockWarning === 'function') {
+                    showBlockWarning('⚠️ Solo se admiten bloques "nota" o "semitono" dentro de las notas del acorde.');
+                }
+            }
+            stmt = next;
+        }        
     }
 };
 

@@ -10,15 +10,38 @@ Blockly.Blocks['chord_st'] = {
             .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note")
             .appendField("tipo")
             .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
-            
+
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")
             .appendField("opciones");
-            
+
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
         this.setColour(0);
         this.setTooltip("Reproduce varias notas a la vez. Puedes encajarle opciones en su parte inferior.");
+    },
+
+    // Expulsar bloques que no sean options2 que intenten entrar en el OPTIONS
+    onchange: function (e) {
+        if (!this.workspace || this.workspace.isDragging()) return;
+        if (e.type !== Blockly.Events.BLOCK_MOVE) return;
+        var stmt = this.getInputTargetBlock('OPTIONS');
+        while (stmt) {
+            var next = stmt.getNextBlock();
+            if (!stmt.type.startsWith('opt_st_')) {
+                Blockly.Events.disable();
+                try {
+                    stmt.unplug(true);
+                    stmt.moveBy(30, 30);
+                } finally {
+                    Blockly.Events.enable();
+                }
+                if (typeof showBlockWarning === 'function') {
+                    showBlockWarning('⚠️ Solo se admiten bloques "opciones caja" dentro de las opciones del acorde.');
+                }
+            }
+            stmt = next;
+        }
     }
 };
 
@@ -30,15 +53,15 @@ Blockly.JavaScript['chord_st'] = function (block) {
 
     // Options object to be populated by the statements
     let options = {};
-    
+
     // Evaluate the statements directly into JS string, then run it against `options`
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
             let fn = new Function('options', optionsCode);
             fn(options);
-        } catch (e) { 
-            console.error("Error evaluating options2 blocks: ", e); 
+        } catch (e) {
+            console.error("Error evaluating options2 blocks: ", e);
         }
     }
 

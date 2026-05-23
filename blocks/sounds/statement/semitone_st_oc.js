@@ -22,6 +22,29 @@ Blockly.Blocks['semitone_st_oc'] = {
         this.setNextStatement(true, null);
         this.setColour(20);
         this.setTooltip("Reproduce una nota con semitono a elegir, especificando la octava (1-7). Puedes encajarle opciones adicionales dentro de la caja.");
+    },
+
+    // Expulsar bloques que no sean options2 que intenten entrar en el OPTIONS
+    onchange: function (e) {
+        if (!this.workspace || this.workspace.isDragging()) return;
+        if (e.type !== Blockly.Events.BLOCK_MOVE) return;
+        var stmt = this.getInputTargetBlock('OPTIONS');
+        while (stmt) {
+            var next = stmt.getNextBlock();
+            if (!stmt.type.startsWith('opt_st_')) {
+                Blockly.Events.disable();
+                try {
+                    stmt.unplug(true);
+                    stmt.moveBy(30, 30);
+                } finally {
+                    Blockly.Events.enable();
+                }
+                if (typeof showBlockWarning === 'function') {
+                    showBlockWarning('⚠️ Solo se admiten bloques "opciones caja" dentro de las opciones de la nota.');
+                }
+            }
+            stmt = next;
+        }
     }
 };
 
