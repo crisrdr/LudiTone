@@ -1,7 +1,7 @@
 /**
  * Contenedor de creación de acorde Mutator
  */
-Blockly.Blocks['chord_mt_ed'] = {
+Blockly.Blocks['chord_mt_ed_container'] = {
     init: function () {
         this.setColour(0);
         this.appendDummyInput()
@@ -14,7 +14,7 @@ Blockly.Blocks['chord_mt_ed'] = {
     }
 };
 
-Blockly.Blocks['chord_ed'] = {
+Blockly.Blocks['chord_mt_ed'] = {
     init: function () {
         this.optionCount_ = 0; // Starts with 0 option slots
         this.updateShape_();
@@ -34,7 +34,7 @@ Blockly.Blocks['chord_ed'] = {
         this.updateShape_();
     },
     decompose: function (workspace) {
-        var containerBlock = workspace.newBlock('chord_mt_ed');
+        var containerBlock = workspace.newBlock('chord_mt_ed_container');
         containerBlock.initSvg();
 
         var connection = containerBlock.getInput('OPTIONS').connection;
@@ -131,7 +131,7 @@ Blockly.Blocks['chord_ed'] = {
     }
 };
 
-Blockly.JavaScript['chord_ed'] = function (block) {
+Blockly.JavaScript['chord_mt_ed'] = function (block) {
     let dur = 1;
     let waveShape = '';
 

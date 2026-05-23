@@ -217,7 +217,7 @@ Blockly.JavaScript['semitone_mt'] = function (block) {
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type === 'chord_mt' || topBlock.type === 'chord_ed') {
+        if (topBlock.type.includes('chord')) {
             isInsideChord = true;
         }
         if (topBlock.type === 'sequence') {

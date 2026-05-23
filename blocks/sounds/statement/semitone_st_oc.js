@@ -92,7 +92,7 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
     let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord_mt')) isInsideChord = true;
+        if (topBlock.type.includes('chord')) isInsideChord = true;
         if (topBlock.type === 'sequence') isInsideSequence = true;
         topBlock = topBlock.getSurroundParent();
     }
