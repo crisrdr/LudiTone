@@ -538,7 +538,7 @@ const toolboxSound = {
             { kind: 'block', type: 'semitone_mt_oc' },
             { kind: 'block', type: 'chord_mt' },
             { kind: 'block', type: 'chord_mt_oc' },
-            { kind: 'block', type: 'chord__mt_ed' }
+            { kind: 'block', type: 'chord_mt_ed' }
           ]
         },
         {
