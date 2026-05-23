@@ -139,5 +139,3 @@ Blockly.JavaScript['note_st'] = function (block) {
     num++;
     return code;
 }
-
-const note_st_dur = '<block type="note_st"><statement name="OPTIONS"><block type="opt2_duration"><field name="dur">1</field></block></statement></block>';

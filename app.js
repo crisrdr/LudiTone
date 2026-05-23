@@ -334,8 +334,8 @@ const toolboxBasic = {
         { kind: 'block', type: 'note_mt' },
         { kind: 'block', blockxml: note_mt_vol },
         { kind: 'block', blockxml: note_mt_dur },
-        { kind: 'block', type: 'opt_volume' },
-        { kind: 'block', type: 'opt_duration' }
+        { kind: 'block', type: 'opt_mt_volume' },
+        { kind: 'block', type: 'opt_mt_duration' }
       ]
     }
   ]
@@ -377,17 +377,17 @@ const toolboxIntermediate = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            { kind: 'block', type: 'opt_duration' },
-            { kind: 'block', type: 'opt_volume' },
-            { kind: 'block', type: 'opt_wave_shape' }
+            { kind: 'block', type: 'opt_mt_duration' },
+            { kind: 'block', type: 'opt_mt_volume' },
+            { kind: 'block', type: 'opt_mt_wave_shape' }
           ]
         },
         {
           kind: "category", name: "Opciones caja", colour: "160",
           contents: [
-            { kind: 'block', type: 'opt2_duration' },
-            { kind: 'block', type: 'opt2_volume' },
-            { kind: 'block', type: 'opt2_wave_shape' }
+            { kind: 'block', type: 'opt_st_duration' },
+            { kind: 'block', type: 'opt_st_volume' },
+            { kind: 'block', type: 'opt_st_wave_shape' }
           ]
         }
       ]
@@ -433,29 +433,29 @@ const toolboxAdvanced = {
         {
           kind: "category", name: "Opciones puzzle", colour: "120",
           contents: [
-            { kind: 'block', type: 'opt_duration' },
-            { kind: 'block', type: 'opt_volume' },
-            { kind: 'block', type: 'opt_wave_shape' },
-            { kind: 'block', type: 'opt_kind' },
-            { kind: 'block', type: 'opt_attack' },
-            { kind: 'block', type: 'opt_decay' },
-            { kind: 'block', type: 'opt_sustain' },
-            { kind: 'block', type: 'opt_release' },
-            { kind: 'block', type: 'opt_adsr' }
+            { kind: 'block', type: 'opt_mt_duration' },
+            { kind: 'block', type: 'opt_mt_volume' },
+            { kind: 'block', type: 'opt_mt_wave_shape' },
+            { kind: 'block', type: 'opt_mt_kind' },
+            { kind: 'block', type: 'opt_mt_attack' },
+            { kind: 'block', type: 'opt_mt_decay' },
+            { kind: 'block', type: 'opt_mt_sustain' },
+            { kind: 'block', type: 'opt_mt_release' },
+            { kind: 'block', type: 'opt_mt_adsr' }
           ]
         },
         {
           kind: "category", name: "Opciones caja", colour: "160",
           contents: [
-            { kind: 'block', type: 'opt2_duration' },
-            { kind: 'block', type: 'opt2_volume' },
-            { kind: 'block', type: 'opt2_wave_shape' },
-            { kind: 'block', type: 'opt2_kind' },
-            { kind: 'block', type: 'opt2_attack' },
-            { kind: 'block', type: 'opt2_decay' },
-            { kind: 'block', type: 'opt2_sustain' },
-            { kind: 'block', type: 'opt2_release' },
-            { kind: 'block', type: 'opt2_adsr' }
+            { kind: 'block', type: 'opt_st_duration' },
+            { kind: 'block', type: 'opt_st_volume' },
+            { kind: 'block', type: 'opt_st_wave_shape' },
+            { kind: 'block', type: 'opt_st_kind' },
+            { kind: 'block', type: 'opt_st_attack' },
+            { kind: 'block', type: 'opt_st_decay' },
+            { kind: 'block', type: 'opt_st_sustain' },
+            { kind: 'block', type: 'opt_st_release' },
+            { kind: 'block', type: 'opt_st_adsr' }
           ]
         }
       ]
@@ -561,29 +561,29 @@ const toolboxSound = {
         {
           kind: "category", name: "Opciones Puzzle", colour: "120",
           contents: [
-            { kind: 'block', type: 'opt_duration' },
-            { kind: 'block', type: 'opt_volume' },
-            { kind: 'block', type: 'opt_wave_shape' },
-            { kind: 'block', type: 'opt_kind' },
-            { kind: 'block', type: 'opt_attack' },
-            { kind: 'block', type: 'opt_decay' },
-            { kind: 'block', type: 'opt_sustain' },
-            { kind: 'block', type: 'opt_release' },
-            { kind: 'block', type: 'opt_adsr' }
+            { kind: 'block', type: 'opt_mt_duration' },
+            { kind: 'block', type: 'opt_mt_volume' },
+            { kind: 'block', type: 'opt_mt_wave_shape' },
+            { kind: 'block', type: 'opt_mt_kind' },
+            { kind: 'block', type: 'opt_mt_attack' },
+            { kind: 'block', type: 'opt_mt_decay' },
+            { kind: 'block', type: 'opt_mt_sustain' },
+            { kind: 'block', type: 'opt_mt_release' },
+            { kind: 'block', type: 'opt_mt_adsr' }
           ]
         },
         {
           kind: "category", name: "Opciones Cajón", colour: "160",
           contents: [
-            { kind: 'block', type: 'opt2_duration' },
-            { kind: 'block', type: 'opt2_volume' },
-            { kind: 'block', type: 'opt2_wave_shape' },
-            { kind: 'block', type: 'opt2_kind' },
-            { kind: 'block', type: 'opt2_attack' },
-            { kind: 'block', type: 'opt2_decay' },
-            { kind: 'block', type: 'opt2_sustain' },
-            { kind: 'block', type: 'opt2_release' },
-            { kind: 'block', type: 'opt2_adsr' }
+            { kind: 'block', type: 'opt_st_duration' },
+            { kind: 'block', type: 'opt_st_volume' },
+            { kind: 'block', type: 'opt_st_wave_shape' },
+            { kind: 'block', type: 'opt_st_kind' },
+            { kind: 'block', type: 'opt_st_attack' },
+            { kind: 'block', type: 'opt_st_decay' },
+            { kind: 'block', type: 'opt_st_sustain' },
+            { kind: 'block', type: 'opt_st_release' },
+            { kind: 'block', type: 'opt_st_adsr' }
           ]
         }
       ]
@@ -706,39 +706,39 @@ const toolboxFree = {
           contents: [
             {
               kind: 'block',
-              type: 'opt_duration'
+              type: 'opt_mt_duration'
             },
             {
               kind: 'block',
-              type: 'opt_wave_shape'
+              type: 'opt_mt_wave_shape'
             },
             {
               kind: 'block',
-              type: 'opt_attack'
+              type: 'opt_mt_attack'
             },
             {
               kind: 'block',
-              type: 'opt_decay'
+              type: 'opt_mt_decay'
             },
             {
               kind: 'block',
-              type: 'opt_sustain'
+              type: 'opt_mt_sustain'
             },
             {
               kind: 'block',
-              type: 'opt_release'
+              type: 'opt_mt_release'
             },
             {
               kind: 'block',
-              type: 'opt_volume'
+              type: 'opt_mt_volume'
             },
             {
               kind: 'block',
-              type: 'opt_kind'
+              type: 'opt_mt_kind'
             },
             {
               kind: 'block',
-              type: 'opt_adsr'
+              type: 'opt_mt_adsr'
             }
           ]
         },
@@ -749,39 +749,39 @@ const toolboxFree = {
           contents: [
             {
               kind: 'block',
-              type: 'opt2_duration'
+              type: 'opt_st_duration'
             },
             {
               kind: 'block',
-              type: 'opt2_wave_shape'
+              type: 'opt_st_wave_shape'
             },
             {
               kind: 'block',
-              type: 'opt2_attack'
+              type: 'opt_st_attack'
             },
             {
               kind: 'block',
-              type: 'opt2_decay'
+              type: 'opt_st_decay'
             },
             {
               kind: 'block',
-              type: 'opt2_sustain'
+              type: 'opt_st_sustain'
             },
             {
               kind: 'block',
-              type: 'opt2_release'
+              type: 'opt_st_release'
             },
             {
               kind: 'block',
-              type: 'opt2_volume'
+              type: 'opt_st_volume'
             },
             {
               kind: 'block',
-              type: 'opt2_kind'
+              type: 'opt_st_kind'
             },
             {
               kind: 'block',
-              type: 'opt2_adsr'
+              type: 'opt_st_adsr'
             }
           ]
         }

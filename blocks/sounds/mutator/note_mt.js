@@ -238,5 +238,5 @@ Blockly.JavaScript['note_mt'] = function (block) {
     return code;
 }
 
-const note_mt_dur = '<block type="note_mt"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_duration"><field name="dur">1</field></shadow></value></block>';
-const note_mt_vol = '<block type="note_mt"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_volume"><field name="vol">1</field></shadow></value></block>';
+const note_mt_dur = '<block type="note_mt"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_mt_duration"><field name="dur">1</field></shadow></value></block>';
+const note_mt_vol = '<block type="note_mt"><mutation items="1"></mutation><value name="ADD0"><shadow type="opt_mt_volume"><field name="vol">1</field></shadow></value></block>';

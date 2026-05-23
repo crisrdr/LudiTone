@@ -154,5 +154,3 @@ Blockly.JavaScript['semitone_st'] = function (block) {
     num++;
     return code;
 };
-
-const semitone_st_dur = '<block type="semitone_st"><statement name="OPTIONS"><block type="opt2_duration"><field name="dur">1</field></block></statement></block>';
