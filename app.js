@@ -11,6 +11,7 @@ let seqNum = 0; //it controls the sequence loop variables.
 const liveBTN = document.getElementById("live-btn");
 let isLiveMode = false;
 let liveTimeout = null;
+const feedbackLink = "https://forms.cloud.microsoft/e/giJmU1f55C";
 
 // Registry of all active synths/effects — populated at runtime by generated code
 let activeSynths = [];
@@ -171,11 +172,11 @@ async function liveUpdate() {
 }
 
 feedbackBTN.addEventListener("click", () => {
-  window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
+  window.open(feedbackLink, "_blank");
 });
 
 feedbackHomeBTN.addEventListener("click", () => {
-  window.open("https://pollunit.com/polls/5iqv6q7foca5ktf2g1hg0w", "_blank");
+  window.open(feedbackLink, "_blank");
 });
 
 // --- FUNCIONALIDAD DE BLOQUES PERSONALIZADOS (MACROS) ---
