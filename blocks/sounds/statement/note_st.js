@@ -88,19 +88,14 @@ Blockly.JavaScript['note_st'] = function (block) {
     }
 
     // 3. Configuramos la duración
-    if (options.dur !== undefined) {
-        dur = options.dur;
+    const sustainDur = options.dur !== undefined ? options.dur : 1;
+    if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
+        const a = options.attack !== undefined ? options.attack : 0.005;
+        const d = options.decay !== undefined ? options.decay : 0.1;
+        const r = options.release !== undefined ? options.release : 1;
+        dur = a + d + sustainDur + r;
     } else {
-        // Si hay envolvente pero no duración explícita, adaptamos la duración
-        // para que de tiempo a que ocurra el ataque y el decaimiento.
-        if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
-            const a = options.attack !== undefined ? options.attack : 0.005;
-            const d = options.decay !== undefined ? options.decay : 0.1;
-            const r = options.release !== undefined ? options.release : 1;
-            dur = a + d + r;
-        } else {
-            dur = 1; // Duración estándar de 1 segundo
-        }
+        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
     // 4. Verificamos si hay volumen
