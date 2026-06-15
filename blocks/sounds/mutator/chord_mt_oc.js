@@ -5,7 +5,7 @@
 
 Blockly.Blocks['chord_mt_oc'] = {
     init: function () {
-        this.itemCount_ = 0; // Starts with 0 option slots
+        this.itemCount_ = 0; // empieza con 0 opciones
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -65,14 +65,14 @@ Blockly.Blocks['chord_mt_oc'] = {
         }
     },
     updateShape_: function () {
-        // Save current values if the fields exist to prevent resetting to C4
+        // guarda los valores para evitar reseteo 
         var savedNote = this.getFieldValue('note');
         var savedOctave = this.getFieldValue('octave');
         var savedChordType = this.getFieldValue('chord_type');
 
         const notes = [["c", "c"], ["d", "d"], ["e", "e"], ["f", "f"], ["g", "g"], ["a", "a"], ["b", "b"]];
 
-        // Always keep the base fields
+        // mantener los campos base
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
                 .appendField("acorde")
@@ -83,7 +83,7 @@ Blockly.Blocks['chord_mt_oc'] = {
                 .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
         }
 
-        // Add options inputs
+        // Añadimos dinámicamente las opciones
         for (var i = 0; i < this.itemCount_; i++) {
             if (!this.getInput('ADD' + i)) {
                 var input = this.appendValueInput('ADD' + i)
@@ -93,13 +93,13 @@ Blockly.Blocks['chord_mt_oc'] = {
             }
         }
 
-        // Remove deleted inputs
+        // quitamos las opciones eliminadas
         while (this.getInput('ADD' + i)) {
             this.removeInput('ADD' + i);
             i++;
         }
 
-        // Restore saved values
+        // Restauramos los valores guardados
         if (savedNote !== null && this.getField('note')) {
             this.setFieldValue(savedNote, 'note');
         }
@@ -140,16 +140,16 @@ Blockly.JavaScript['chord_mt_oc'] = function (block) {
 
     let code = ``;
 
-    // Chord is inherently polyphonic
+    // El acorde es polifónico por naturaleza
     code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
-    // 1. Configuramos el oscilador
+    // configuración del oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope
+    // configuración del envelope
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -160,7 +160,7 @@ Blockly.JavaScript['chord_mt_oc'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -171,13 +171,13 @@ Blockly.JavaScript['chord_mt_oc'] = function (block) {
         dur = sustainDur;
     }
 
-    // 4. Verificamos volumen
+    // volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Calculamos las frecuencias del acorde
+    // calculamos las frecuencias del acorde
     code += `  const baseFreq${num} = Tone.Frequency('${note}').toFrequency();\n`;
 
     if (chordType === 'major') {
@@ -194,7 +194,7 @@ Blockly.JavaScript['chord_mt_oc'] = function (block) {
         code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     }
 
-    // Check if we are inside a sequence block
+    // comprobamos si está dentro de un bloque sequence
     let topBlock = block.getSurroundParent();
     let isInsideSequence = false;
 

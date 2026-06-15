@@ -3,7 +3,7 @@
  */
 Blockly.Blocks['note_mt'] = {
     init: function () {
-        this.itemCount_ = 0; // Starts with 0 option slots
+        this.itemCount_ = 0; // empieza con 0 opciones
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -63,14 +63,14 @@ Blockly.Blocks['note_mt'] = {
         }
     },
     updateShape_: function () {
-        // Alwasy keep the base "note" field
+        // siempre mantiene el campo "nota"
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
                 .appendField(Blockly.Msg['SIMPLE_NOTE_LABEL'] || "nota", "NOTE_LABEL")
                 .appendField(new Blockly.FieldDropdown([["c4", "c4"], ["d4", "d4"], ["e4", "e4"], ["f4", "f4"], ["g4", "g4"], ["a4", "a4"], ["b4", "b4"]]), "note");
         }
 
-        // Add options inputs
+        // añade dinámicamente las opciones
         for (var i = 0; i < this.itemCount_; i++) {
             if (!this.getInput('ADD' + i)) {
                 var input = this.appendValueInput('ADD' + i)
@@ -80,7 +80,7 @@ Blockly.Blocks['note_mt'] = {
             }
         }
 
-        // Remove deleted inputs
+        // quita las opciones eliminadas
         while (this.getInput('ADD' + i)) {
             this.removeInput('ADD' + i);
             i++;
@@ -114,7 +114,7 @@ Blockly.Blocks['note_mt'] = {
     }
 };
 
-// Mutator Container Block
+// Bloque contenedor del mutator
 Blockly.Blocks['options_container'] = {
     init: function () {
         this.setColour(120);
@@ -126,7 +126,7 @@ Blockly.Blocks['options_container'] = {
     }
 };
 
-// Mutator Item Block
+// Bloque item del mutator
 Blockly.Blocks['options_item'] = {
     init: function () {
         this.setColour(120);
@@ -144,17 +144,17 @@ Blockly.JavaScript['note_mt'] = function (block) {
     let dur = 1;
     let waveShape = '';
 
-    // Recolectamos todas las opciones añadidas
+    // cogemos las opciones
     var elements = new Array(block.itemCount_);
     for (var i = 0; i < block.itemCount_; i++) {
         elements[i] = Blockly.JavaScript.valueToCode(block, 'ADD' + i,
             Blockly.JavaScript.ORDER_NONE) || 'null';
     }
 
-    // Reconstruimos el string JSON gigante como si viniera de un solo bloque options
+    // reconstruimos el string JSON
     var optionsCode = '{' + elements.join(', ') + '}';
 
-    // Inicializamos un objeto de opciones vacío por defecto
+    // inicializamos objeto de opciones por defecto
     let options = {};
     if (optionsCode && optionsCode !== "''" && optionsCode !== "null" && optionsCode !== "{}") {
         try {
@@ -175,13 +175,13 @@ Blockly.JavaScript['note_mt'] = function (block) {
         code += `const synth` + num + ` = new Tone.Synth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
     }
 
-    // 1. Configuramos el oscilador si está presente
+    // configuración del oscilador si está presente
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // configuración del envelope
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -192,7 +192,7 @@ Blockly.JavaScript['note_mt'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
@@ -204,14 +204,12 @@ Blockly.JavaScript['note_mt'] = function (block) {
         dur = sustainDur; // Sin envolvente: la duración total es la del sustain
     }
 
-    // 4. Verificamos si hay volumen
+    // volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Finalmente hacemos que suene
-    // Check if we are inside a chord block
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;

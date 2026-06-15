@@ -2,15 +2,27 @@ Blockly.Blocks['effect_reverb'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("Reverb");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Caida").appendField(((function(f){ f.setTooltip(`Tiempo de Caída (s):
-Tiempo que tarda la reverberación en silenciarse.`); return f; })(new Blockly.FieldNumber(1.5, 0.1, 10))), "DECAY");
+            .appendField("Caida").appendField(((
+                function(f){
+                    f.setTooltip(`Tiempo de Caída (s):
+                                    tiempo que tarda la reverberación en silenciarse.`); 
+                    return f; 
+                })(new Blockly.FieldNumber(1.5, 0.1, 10))), "DECAY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Pre-Retardo").appendField(((function(f){ f.setTooltip(`Pre-Retardo (s):
-Tiempo de espera antes de que el eco empiece a sonar.`); return f; })(new Blockly.FieldNumber(0.01, 0, 1))), "PREDELAY");
+            .appendField("Pre-Retardo").appendField(((
+                function(f){
+                    f.setTooltip(`Pre-Retardo (s):
+                                    tiempo de espera antes de que el eco empiece a sonar.`);
+                     return f; 
+                    })(new Blockly.FieldNumber(0.01, 0, 1))), "PREDELAY");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
-0 = Señal limpia original
-1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((
+                function(f){ 
+                    f.setTooltip(`Nivel de efecto (0 a 1):
+                                    0 = Señal limpia original
+                                        1 = Efecto al 100%`); 
+                    return f; 
+                })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -22,7 +34,7 @@ Blockly.JavaScript['effect_reverb'] = function (block) {
     let decay = block.getFieldValue('DECAY');
     let predelay = block.getFieldValue('PREDELAY');
     let wet = block.getFieldValue('WET');
-    let myNum = num++; // unique ID
+    let myNum = num++; // ID único
 
     let effectOptions = `{decay: ${decay}, preDelay: ${predelay}, wet: ${wet}}`;
     let code = `var prev_dest_${myNum} = typeof current_dest !== 'undefined' ? current_dest : Tone.Destination;\n`;

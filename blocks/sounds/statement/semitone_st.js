@@ -56,10 +56,9 @@ Blockly.Blocks['semitone_st'] = {
 };
 
 Blockly.JavaScript['semitone_st'] = function (block) {
-    let baseNote = block.getFieldValue('note'); // e.g., 'c4'
-    let accidental = block.getFieldValue('accidental'); // e.g., '#' or 'b' or ''
+    let baseNote = block.getFieldValue('note');
+    let accidental = block.getFieldValue('accidental');
 
-    // Construct the actual Tone.js note string: 'c#4' or 'cb4' or 'c4'
     let pitchClass = baseNote.charAt(0);
     let octave = baseNote.charAt(1);
     const note = pitchClass + accidental + octave;
@@ -67,14 +66,12 @@ Blockly.JavaScript['semitone_st'] = function (block) {
     let dur = 1;
     let waveShape = '';
 
-    // Options object to be populated by the statements
+    // opciones
     let options = {};
 
-    // Evaluate the statements directly into JS string, then run it against `options`
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
-            // Evaluates something like: "options.dur = 1;\noptions.oscillator = 'sine';\n"
             let fn = new Function('options', optionsCode);
             fn(options);
         } catch (e) {
@@ -97,7 +94,7 @@ Blockly.JavaScript['semitone_st'] = function (block) {
         code += `  synth` + num + `.set({ oscillator: { type: '${waveShape}' } });\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // envolvente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -108,8 +105,7 @@ Blockly.JavaScript['semitone_st'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
+    // duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -117,7 +113,7 @@ Blockly.JavaScript['semitone_st'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
     let volumeParam = '';
@@ -125,7 +121,7 @@ Blockly.JavaScript['semitone_st'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Check if we are inside a chord block
+    // eventos acorde y secuencia
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;

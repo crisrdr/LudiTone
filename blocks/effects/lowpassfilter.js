@@ -9,8 +9,8 @@ Blockly.Blocks['effect_lowpassfilter'] = {
             .appendField("Frecuencia")
             .appendField(((function (f) {
                 f.setTooltip(`Velocidad del LFO que modula el filtro (Hz).
-Valores bajos (< 1): cambio muy lento
-Valores altos (> 4): cambio rápido`); return f;
+                                Valores bajos (< 1): cambio muy lento
+                                Valores altos (> 4): cambio rápido`); return f;
             })(new Blockly.FieldNumber(1, 0, 1000))), "FREQUENCY");
 
         this.appendDummyInput()
@@ -18,8 +18,8 @@ Valores altos (> 4): cambio rápido`); return f;
             .appendField("Frecuencia base (Hz)")
             .appendField(((function (f) {
                 f.setTooltip(`Frecuencia central del filtro en Hz.
-Valores bajos (< 200): sonido oscuro
-Valores altos (> 1000): sonido brillante`); return f;
+                                Valores bajos (< 200): sonido oscuro
+                                Valores altos (> 1000): sonido brillante`); return f;
             })(new Blockly.FieldNumber(200, 0, 1500))), "BASEFREQUENCY");
 
         this.appendDummyInput()
@@ -27,8 +27,8 @@ Valores altos (> 1000): sonido brillante`); return f;
             .appendField("Octavas")
             .appendField(((function (f) {
                 f.setTooltip(`Rango de barrido del filtro en octavas.
-Valores bajos (< 1): efecto sutil
-Valores altos (> 4): efecto muy pronunciado`); return f;
+                                Valores bajos (< 1): efecto sutil
+                                Valores altos (> 4): efecto muy pronunciado`); return f;
             })(new Blockly.FieldNumber(2.6, 0, 15))), "OCTAVES");
 
         this.appendDummyInput()
@@ -36,8 +36,8 @@ Valores altos (> 4): efecto muy pronunciado`); return f;
             .appendField("Nivel de efecto (Wet)")
             .appendField(((function (f) {
                 f.setTooltip(`Nivel de efecto (0 a 1):
-0 = Señal limpia original
-1 = Efecto al 100%`); return f;
+                                0 = Señal limpia original
+                                1 = Efecto al 100%`); return f;
             })(new Blockly.FieldNumber(1, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
@@ -59,17 +59,17 @@ Blockly.JavaScript['effect_lowpassfilter'] = function (block) {
     let code = ``;
 
     let myNum = num;
-    num++; // Increment global counter to ensure unique IDs
+    num++; // Incrementa contador global para asegurar IDs únicos
 
     let effectOptions = `{
-  frequency: ${frequency},
-  type: "sine",
-  depth: 1,
-  baseFrequency: ${baseFrequency},
-  octaves: ${octaves},
-  filter: { type: "lowpass", rolloff: -12, Q: 1 },
-  wet: ${wet}
-}`;
+                            frequency: ${frequency},
+                            type: "sine",
+                            depth: 1,
+                            baseFrequency: ${baseFrequency},
+                            octaves: ${octaves},
+                            filter: { type: "lowpass", rolloff: -12, Q: 1 },
+                            wet: ${wet}
+                        }`;
 
     code += `// --- Start Effect Wrapper ---\n`;
 

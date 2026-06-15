@@ -16,7 +16,7 @@ Blockly.Blocks['chord_mt_ed_container'] = {
 
 Blockly.Blocks['chord_mt_ed'] = {
     init: function () {
-        this.optionCount_ = 0; // Starts with 0 option slots
+        this.optionCount_ = 0; // Empieza con 0 opciones
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -120,7 +120,7 @@ Blockly.Blocks['chord_mt_ed'] = {
             }
         }
         
-        // Add dynamically options
+        // Añadimos dinámicamente las opciones
         for (var i = 0; i < this.optionCount_; i++) {
             if (!this.getInput('OPT' + i)) {
                 let input = this.appendValueInput('OPT' + i)
@@ -145,7 +145,7 @@ Blockly.Blocks['chord_mt_ed'] = {
             i_remove++;
         }
 
-        // Always make sure the NOTES statement wrapper is at the bottom
+        // conector NOTES siempre abajo
         if (!this.getInput('NOTES')) {
             this.appendStatementInput('NOTES')
                 .setCheck(null);
@@ -183,16 +183,13 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
     let code = ``;
 
     let myNum = num;
-    num++; // Immediately increment so nested blocks use subsequent numbers.
+    num++; // Incremento inmediato para que los bloques anidados usen números subsiguientes.
 
     code += `// --- Start Chord Wrapper ---\n`;
     code += `const chordNotes_${myNum} = [];\n`;
     code += `var chordNotesObj = chordNotes_${myNum};\n`;
     
-    // Convert enclosed notes. We need to pass down context.
-    // However, since we're using block.getSurroundParent() in children, 
-    // the children already know they are inside a chord block!
-    // So we don't even need 'var inChord = true' anymore in the generated code.
+    // Recolectamos las notas del acorde
     let notesCode = Blockly.JavaScript.statementToCode(block, 'NOTES');
     code += notesCode;
     
@@ -204,7 +201,7 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
         code += `  synth${myNum}.set({ oscillator: { type: '${waveShape}' } });\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // configuración del envelope (Attack, Decay, Sustain, Release)
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -215,7 +212,7 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
         code += `  synth${myNum}.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // configuración de la duración
     // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
@@ -245,7 +242,7 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
     }
     code += `  }\n`;
 
-    // Check if we are inside a sequence block
+    // comprobamos si está dentro de un bloque sequence
     let topBlock = block.getSurroundParent();
     let isInsideSequence = false;
 

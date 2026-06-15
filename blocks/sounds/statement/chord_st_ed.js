@@ -65,11 +65,9 @@ Blockly.Blocks['chord_st_ed'] = {
 Blockly.JavaScript['chord_st_ed'] = function (block) {
     let dur = 1;
     let waveShape = '';
-
-    // Options object to be populated by the statements
     let options = {};
     
-    // Evaluate the statements directly into JS string, then run it against `options`
+    //recoger opciones
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
@@ -83,13 +81,13 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
     let code = ``;
 
     let myNum = num;
-    num++; // Immediately increment so nested blocks use subsequent numbers.
+    num++;
 
     code += `// --- Start Chord Wrapper ---\n`;
     code += `const chordNotes_${myNum} = [];\n`;
     code += `var chordNotesObj = chordNotes_${myNum};\n`;
     
-    // Convert enclosed notes. We need to pass down context.
+    // recolectar notas 
     let notesCode = Blockly.JavaScript.statementToCode(block, 'NOTES');
     code += notesCode;
     
@@ -101,7 +99,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
         code += `  synth${myNum}.set({ oscillator: { type: '${waveShape}' } });\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // configuración envolvente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -112,8 +110,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
         code += `  synth${myNum}.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
+    // calculamos la duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -121,7 +118,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
     let volumeParam = '';
@@ -129,7 +126,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Usar directamente el array recolectado
+    // uso de array recolectado
     code += `  const freqs${myNum} = chordNotes_${myNum}.map(n => Tone.Frequency(n).toFrequency());\n`;
 
     code += `  if (freqs${myNum}.length > 0) {\n`;
@@ -141,7 +138,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
     }
     code += `  }\n`;
 
-    // Check if we are inside a sequence block
+    // eventos
     let topBlock = block.getSurroundParent();
     let isInsideSequence = false;
 

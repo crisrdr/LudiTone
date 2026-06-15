@@ -44,14 +44,12 @@ Blockly.JavaScript['note_st'] = function (block) {
     let dur = 1;
     let waveShape = '';
 
-    // Options object to be populated by the statements
+    // recolección de opciones
     let options = {};
 
-    // Evaluate the statements directly into JS string, then run it against `options`
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
-            // Evaluates something like: "options.dur = 1;\noptions.oscillator = 'sine';\n"
             let fn = new Function('options', optionsCode);
             fn(options);
         } catch (e) {
@@ -62,7 +60,7 @@ Blockly.JavaScript['note_st'] = function (block) {
     let isPoly = false;
     let code = ``;
 
-    // Si la opción "kind" existe, usamos PolySynth en vez de Synth normal.
+    // comprobación polyphonic
     if (options.kind !== undefined && options.kind !== null) {
         isPoly = true;
         code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
@@ -70,13 +68,13 @@ Blockly.JavaScript['note_st'] = function (block) {
         code += `const synth` + num + ` = new Tone.Synth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
     }
 
-    // 1. Configuramos el oscilador si está presente
+    // oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // envolvente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -87,7 +85,7 @@ Blockly.JavaScript['note_st'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -95,17 +93,17 @@ Blockly.JavaScript['note_st'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
-    // 4. Verificamos si hay volumen
+    // volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Finalmente hacemos que suene
-    // Check if we are inside a chord block
+    // disparamos
+    // comprobación de si está dentro de un acorde
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;
