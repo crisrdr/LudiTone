@@ -2,9 +2,13 @@ Blockly.Blocks['effect_midsideeffect'] = {
     init: function () {
         this.appendDummyInput().setAlign(Blockly.ALIGN_LEFT).appendField("MidSideEffect (Base)");
         this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Nivel de efecto (Wet)").appendField(((function(f){ f.setTooltip(`Nivel de efecto (0 a 1):
-0 = Señal limpia original
-1 = Efecto al 100%`); return f; })(new Blockly.FieldNumber(1, 0, 1))), "WET");
+            .appendField("Nivel de efecto (Wet)").appendField(((
+                function(f){ 
+                    f.setTooltip(`Nivel de efecto (0 a 1):
+                                    0 = Señal limpia original
+                                    1 = Efecto al 100%`); 
+                    return f; 
+                })(new Blockly.FieldNumber(1, 0, 1))), "WET");
         this.appendStatementInput('STATEMENTS').setCheck(null);
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -14,7 +18,7 @@ Blockly.Blocks['effect_midsideeffect'] = {
 
 Blockly.JavaScript['effect_midsideeffect'] = function (block) {
     let wet = block.getFieldValue('WET');
-    let myNum = num++; // unique ID
+    let myNum = num++; // ID único
 
     let effectOptions = `{wet: ${wet}}`;
     let code = `var prev_dest_${myNum} = typeof current_dest !== 'undefined' ? current_dest : Tone.Destination;\n`;

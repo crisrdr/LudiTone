@@ -56,11 +56,9 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
     const chordType = block.getFieldValue('chord_type');
     let dur = 1;
     let waveShape = '';
-
-    // Options object to be populated by the statements
     let options = {};
 
-    // Evaluate the statements directly into JS string, then run it against `options`
+    //recoger opciones
     let optionsCode = Blockly.JavaScript.statementToCode(block, 'OPTIONS');
     if (optionsCode && optionsCode.trim() !== '') {
         try {
@@ -73,16 +71,16 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
 
     let code = ``;
 
-    // Chord is inherently polyphonic
+    // polyphonic
     code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
-    // 1. Configuramos el oscilador
+    // oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope
+    // envolvente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -93,7 +91,7 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -104,7 +102,7 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
         dur = sustainDur;
     }
 
-    // 4. Verificamos volumen
+    // volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
@@ -119,7 +117,7 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
         code += `  const freqs${num} = [baseFreq${num}, baseFreq${num} * 1.1892, baseFreq${num} * 1.4983];\n`;
     }
 
-    // Disparamos el acorde
+    // disparamos acorde
     const isLive = Blockly.JavaScript.isLiveMode;
     if (isLive) {
         code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(freqs${num}, time${volumeParam}); }, timeDur);\n`;
@@ -127,7 +125,7 @@ Blockly.JavaScript['chord_st_oc'] = function (block) {
         code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     }
 
-    // Check if we are inside a sequence block
+    // eventos
     let topBlock = block.getSurroundParent();
     let isInsideSequence = false;
 

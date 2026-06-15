@@ -1,0 +1,47 @@
+flowchart TB
+    classDef presentation fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px;
+    classDef programming fill:#ecfdf5,stroke:#10b981,stroke-width:2px;
+    classDef logic fill:#fff7ed,stroke:#f97316,stroke-width:2px;
+    classDef audio fill:#eff6ff,stroke:#3b82f6,stroke-width:2px;
+
+    subgraph CapaPres ["Capa de Presentación (HTML5 & CSS3)"]
+        A["index.html (Interfaz y Controles)"]
+        B["Hojas de estilo (/styles/)"]
+        C["Diálogos Modales (Creación de Bloques)"]
+    end
+
+    subgraph CapaProg ["Capa de Programación Visual (Blockly)"]
+        D["Lienzo de Trabajo (Workspace)"]
+        E["Definición de Bloques (/blocks/)"]
+        F["Generadores de Código JavaScript"]
+        G["Validaciones Dinámicas (onchange)"]
+    end
+
+    subgraph CapaLog ["Capa de Lógica (app.js)"]
+        H["Control de Estado e Interfaz (Play/Stop)"]
+        I["Compilador y Eval (Modo Normal y Live)"]
+        J["Persistencia (Local Storage)"]
+    end
+
+    subgraph CapaAud ["Capa de Síntesis de Audio (Tone.js)"]
+        K["Tone.Transport (Línea de tiempo / Reloj)"]
+        L["Sintetizadores (Synth & PolySynth)"]
+        M["Nodos de Efecto (/blocks/effects/)"]
+        N["Tone.Destination (Salida de Audio)"]
+    end
+
+    %% Relaciones
+    A -->|"Inicia reproducción / parada"| H
+    D -->|"Serializa estado del lienzo (XML)"| J
+    F -->|"Genera cadena de código JS"| I
+    G -->|"Valida jerarquías y conectores"| D
+    I -->|"Programa y evalúa eventos"| K
+    I -->|"Instancia osciladores y envolventes"| L
+    L -->|"Enruta audio a través de efectos"| M
+    M -->|"Envía señal analógica final"| N
+
+    class A,B,C presentation;
+    class D,E,F,G programming;
+    class H,I,J logic;
+    class K,L,M,N audio;
+

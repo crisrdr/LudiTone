@@ -65,7 +65,7 @@ Blockly.Blocks['semitone_mt_oc'] = {
         }
     },
     updateShape_: function () {
-        // Save current values if the fields exist to prevent resetting to C4
+        // guardamos los valores introducidos
         var savedNote = this.getFieldValue('note');
         var savedAccidental = this.getFieldValue('accidental');
         var savedOctave = this.getFieldValue('octave');
@@ -88,7 +88,7 @@ Blockly.Blocks['semitone_mt_oc'] = {
             }
         }
 
-        // Add options inputs
+        // añadir los inputs de las opciones
         for (var i = 0; i < this.itemCount_; i++) {
             if (!this.getInput('ADD' + i)) {
                 var input = this.appendValueInput('ADD' + i)
@@ -115,13 +115,13 @@ Blockly.Blocks['semitone_mt_oc'] = {
             }
         }
 
-        // Remove deleted inputs
+        // quitamos los inputs eliminados
         while (this.getInput('ADD' + i)) {
             this.removeInput('ADD' + i);
             i++;
         }
 
-        // Restore saved values
+        // restauramos los valores
         if (savedNote !== null && this.getField('note')) {
             this.setFieldValue(savedNote, 'note');
         }
@@ -200,7 +200,7 @@ Blockly.JavaScript['semitone_mt_oc'] = function (block) {
         code += `  synth` + num + `.set({oscillator: {type: '${options.oscillator}'}});\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // configuración del envelope
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -211,7 +211,7 @@ Blockly.JavaScript['semitone_mt_oc'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
@@ -227,7 +227,7 @@ Blockly.JavaScript['semitone_mt_oc'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Scheduling
+    //programación de eventos
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;

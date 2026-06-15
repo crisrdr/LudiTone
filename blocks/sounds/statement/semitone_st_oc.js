@@ -82,7 +82,7 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
         code += `  synth` + num + `.set({oscillator: {type: '${options.oscillator}'}});\n`;
     }
 
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // envolvente
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -93,8 +93,7 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
-    // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
+    // duración
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
         const a = options.attack !== undefined ? options.attack : 0.005;
@@ -102,14 +101,14 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // Scheduling
+    // eventos
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
     let isInsideSequence = false;

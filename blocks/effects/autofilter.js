@@ -6,8 +6,8 @@ Blockly.Blocks['effect_autofilter'] = {
 
         let freqField = new Blockly.FieldTextInput("4n");
         freqField.setTooltip(`Valores rápidos: 16n, 8n
-Valores lentos: 4n, 2n, 1m
-O números (ej: 5)`);
+                                        Valores lentos: 4n, 2n, 1m
+                                        O números (ej: 5)`);
 
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -19,8 +19,8 @@ O números (ej: 5)`);
             .appendField("Profundidad")
             .appendField(((function (f) {
                 f.setTooltip(`Profundidad (0 a 1):
-0 = Efecto sutil
-1 = Efecto muy extremo`); return f;
+                                0 = Efecto sutil
+                                1 = Efecto muy extremo`); return f;
             })(new Blockly.FieldNumber(1, 0, 1))), "DEPTH");
 
         this.appendDummyInput()
@@ -28,8 +28,8 @@ O números (ej: 5)`);
             .appendField("Nivel de efecto (Wet)")
             .appendField(((function (f) {
                 f.setTooltip(`Nivel de efecto (0 a 1):
-0 = Señal limpia original
-1 = Efecto al 100%`); return f;
+                                0 = Señal limpia original
+                                1 = Efecto al 100%`); return f;
             })(new Blockly.FieldNumber(1, 0, 1))), "WET");
 
         this.appendStatementInput('STATEMENTS')
@@ -50,7 +50,7 @@ Blockly.JavaScript['effect_autofilter'] = function (block) {
     let code = ``;
 
     let myNum = num;
-    num++; // Increment global counter to ensure unique IDs
+    num++; // Incrementa contador global para asegurar IDs únicos
 
     let effectOptions = `{frequency: "${frequency}", depth: ${depth}, wet: ${wet}}`;
 

@@ -4,7 +4,7 @@
  */
 Blockly.Blocks['chord_mt'] = {
     init: function () {
-        this.itemCount_ = 0; // Starts with 0 option slots
+        this.itemCount_ = 0; // empieza con 0 opciones
         this.updateShape_();
         this.setPreviousStatement(true);
         this.setNextStatement(true, null);
@@ -64,7 +64,7 @@ Blockly.Blocks['chord_mt'] = {
         }
     },
     updateShape_: function () {
-        // Always keep the base fields
+        // mantiene los campos base
         if (!this.getInput('BASE')) {
             this.appendDummyInput('BASE')
                 .appendField("acorde")
@@ -73,7 +73,7 @@ Blockly.Blocks['chord_mt'] = {
                 .appendField(new Blockly.FieldDropdown([["mayor", "major"], ["menor", "minor"]]), "chord_type");
         }
 
-        // Add options inputs
+        // añade dinámicamente las opciones
         for (var i = 0; i < this.itemCount_; i++) {
             if (!this.getInput('ADD' + i)) {
                 var input = this.appendValueInput('ADD' + i)
@@ -83,7 +83,7 @@ Blockly.Blocks['chord_mt'] = {
             }
         }
 
-        // Remove deleted inputs
+        // quitamos las opciones eliminadas
         while (this.getInput('ADD' + i)) {
             this.removeInput('ADD' + i);
             i++;
@@ -117,17 +117,16 @@ Blockly.JavaScript['chord_mt'] = function (block) {
 
     let code = ``;
 
-    // Chord is inherently polyphonic
+    // el acorde es polifónico por naturaleza
     code += `const synth` + num + ` = new Tone.PolySynth().connect(typeof current_dest !== 'undefined' ? current_dest : Tone.Destination);\n`;
 
-    // 1. Configuramos el oscilador
+    // configuración del oscilador
     if (options.oscillator) {
         waveShape = options.oscillator;
         code += `  synth` + num + `.set({oscillator: {type: '${waveShape}'}});\n`;
     }
 
-    // 2. Configuramos el envelope
-    // 2. Configuramos el envelope (Attack, Decay, Sustain, Release) de forma independiente
+    // configuración del envelope (Attack, Decay, Sustain, Release)
     let envParts = [];
     if (options.attack !== undefined) envParts.push(`attack: ${options.attack}`);
     if (options.decay !== undefined) envParts.push(`decay: ${options.decay}`);
@@ -138,7 +137,7 @@ Blockly.JavaScript['chord_mt'] = function (block) {
         code += `  synth` + num + `.set({envelope: {` + envParts.join(', ') + `}});\n`;
     }
 
-    // 3. Configuramos la duración
+    // duración
     // 'dur' representa la duración del sustain. La duración total es A+D+sustain+R.
     const sustainDur = options.dur !== undefined ? options.dur : 1;
     if (options.attack !== undefined || options.decay !== undefined || options.release !== undefined) {
@@ -147,10 +146,10 @@ Blockly.JavaScript['chord_mt'] = function (block) {
         const r = options.release !== undefined ? options.release : 1;
         dur = a + d + sustainDur + r;
     } else {
-        dur = sustainDur; // Sin envolvente: la duración total es la del sustain
+        dur = sustainDur;
     }
 
-    // 3. Verificamos volumen
+    // volumen
     let volumeParam = '';
     if (options.volume !== undefined) {
         volumeParam = `, ${options.volume}`;
@@ -175,7 +174,7 @@ Blockly.JavaScript['chord_mt'] = function (block) {
         code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     }
 
-    // Check if we are inside a sequence block
+    // comprobamos si está dentro de un bloque sequence
     let topBlock = block.getSurroundParent();
     let isInsideSequence = false;
 

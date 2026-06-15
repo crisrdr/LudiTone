@@ -1,7 +1,7 @@
 Blockly.Blocks['sequence'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField("secuenciar esto")
+            .appendField(Blockly.Msg['SEQUENCE_LABEL'] || "secuenciar esto")
             .appendField(new Blockly.FieldNumber(1, 1, 30, 1), "TIMES")
             .appendField("veces");
         this.appendStatementInput("DO")
@@ -12,7 +12,7 @@ Blockly.Blocks['sequence'] = {
         this.setTooltip("Actúa como un hilo musical: hace sonar las notas una tras otra en orden. No admite bloques de tipo 'repetir' en su interior.");
     },
 
-    // Expulsar bloques 'loop' que intenten entrar en el DO
+    // Expulsar bloque 'loop'
     onchange: function (e) {
         if (!this.workspace || this.workspace.isDragging()) return;
         if (e.type !== Blockly.Events.BLOCK_MOVE) return;

@@ -5,18 +5,18 @@ const stopBTN = document.getElementById("stop-btn");
 const feedbackBTN = document.getElementById("feedback-btn");
 const feedbackHomeBTN = document.getElementById("feedback-home-btn");
 const clearBTN = document.getElementById("clear-btn");
-let timeDur = 0; //it controls the duration of the notes
-let num = 0; //it controls the number of synths on a given play.
-let seqNum = 0; //it controls the sequence loop variables.
+let timeDur = 0; // control duración notas
+let num = 0; // control número de synths 
+let seqNum = 0; // control variables loop 
 const liveBTN = document.getElementById("live-btn");
 let isLiveMode = false;
 let liveTimeout = null;
 const feedbackLink = "https://forms.cloud.microsoft/e/giJmU1f55C";
 
-// Registry of all active synths/effects — populated at runtime by generated code
+// registro de synths/effects
 let activeSynths = [];
 
-// Muestra un mensaje temporal cuando un bloque no se puede colocar
+// aviso de colocación
 let _blockWarningTimer = null;
 function showBlockWarning(message) {
   const toast = document.getElementById('block-warning-toast');
@@ -30,7 +30,7 @@ function showBlockWarning(message) {
   }, 2500);
 }
 
-// Stops the transport and immediately silences every active synth/effect
+// para transport y silencio de todos los bloques
 function stopAll() {
   Tone.Transport.stop();
   Tone.Transport.cancel(0);
@@ -40,20 +40,20 @@ function stopAll() {
       if (typeof node.triggerRelease === 'function') node.triggerRelease(0);
       node.disconnect();
       node.dispose();
-    } catch (e) { /* already disposed */ }
+    } catch (e) { /* ya se ha liberado */ }
   });
   activeSynths = [];
 }
 
-// Generate JavaScript code and run it
+// Generar código JavaScript
 async function runCode(isLiveUpdate = false) {
 
-  // convert workspace to text code
+  // convertir workspace a texto
   Blockly.JavaScript.addReservedWords('code');
-  Blockly.JavaScript.isLiveMode = isLiveMode; // <--- Inyectamos la flag aquí
+  Blockly.JavaScript.isLiveMode = isLiveMode; 
   const code = Blockly.JavaScript.workspaceToCode(workspace);
 
-  // Prepend helpers so generated code can self-register synths/effects
+  // Inyectamos helpers para que el código generado se registre solo
   const preamble =
     `let current_dest = Tone.Destination;\n` +
     `function _reg(node){ 
@@ -72,8 +72,7 @@ async function runCode(isLiveUpdate = false) {
       return node; 
     }\n`;
 
-  // Wrap every `new Tone.XxxSynth/Effect(...)` so it auto-registers
-  // El regex ahora es más general para evitar que se escape nada
+  // Envolver cada tonesynth para que se registre automáticamente
   const instrumentedCode = code.replace(
     /new\s+(Tone\.[A-Z][A-Za-z]+(?:\([^)]*\))?)/g,
     '_reg(new $1)'
@@ -82,7 +81,7 @@ async function runCode(isLiveUpdate = false) {
   wrapCode = preamble + instrumentedCode;
 
   console.log(wrapCode);
-  // evaluate code
+  // evaluar código
   try {
     await Tone.start(); // Hacemos doble check al contexto de audio con un gesto
     eval(wrapCode);
@@ -97,7 +96,7 @@ async function runCode(isLiveUpdate = false) {
 }
 
 playBTN.addEventListener("click", () => {
-  if (isLiveMode) return; // Prevent manual play if live mode is on
+  if (isLiveMode) return; // Bloquea el play manual si el modo live está activo
   stopAll();
   timeDur = 0;
   num = 0;
@@ -106,7 +105,7 @@ playBTN.addEventListener("click", () => {
 })
 
 stopBTN.addEventListener("click", () => {
-  if (isLiveMode) return; // Prevent manual stop if live mode is on
+  if (isLiveMode) return; // Bloquea el stop manual si el modo live está activo
   stopAll();
 })
 
@@ -118,7 +117,7 @@ liveBTN.addEventListener("click", () => {
     playBTN.disabled = true;
     stopBTN.disabled = true;
 
-    // Al activar, empezamos a sonar de inmediato
+    // Al activar, empieza a sonar de inmediato
     stopAll();
     timeDur = 0;
     num = 0;
@@ -135,7 +134,7 @@ liveBTN.addEventListener("click", () => {
   }
 });
 
-// Función para actualizaciones en caliente (Live Coding)
+// Función para actualizaciones live
 async function liveUpdate() {
   if (!isLiveMode) return;
 
@@ -144,10 +143,10 @@ async function liveUpdate() {
   liveTimeout = setTimeout(async () => {
     console.log("Live Update Triggered...");
 
-    // 1. Cancelamos eventos futuros pero mantenemos el transporte corriendo
+    // cancelamos eventos futuros pero dejamos el transporte corriendo
     Tone.Transport.cancel(Tone.Transport.seconds + 0.1);
 
-    // 2. Liberamos sintetizadores antiguos
+    // Liberamos sintetizadores antiguos
     activeSynths.forEach(node => {
       try {
         if (typeof node.releaseAll === 'function') node.releaseAll(0.1);
@@ -158,14 +157,13 @@ async function liveUpdate() {
     });
     activeSynths = [];
 
-    // 3. Reseteamos contadores para el nuevo código
-    // No reseteamos seqNum porque las secuencias dependen del tiempo global
+    // Reseteamos contadores para el nuevo código
     num = 0;
 
-    // 4. Importante: El código nuevo debe empezar a programarse desde NOW
+    // El código nuevo debe empezar a programarse desde ahora
     timeDur = Tone.Transport.seconds + 0.15; // Un pequeño margen para el procesado
 
-    // 5. Ejecutar código sin reiniciar el transporte
+    // Ejecutar código sin reiniciar el transporte
     await runCode(true);
 
   }, 600); // Debounce de 600ms
@@ -199,7 +197,7 @@ function removeCustomBlock(id) {
 }
 
 function registerCustomBlockDef(blockData) {
-  // 1. Definimos el bloque visualmente, incluyendo menú contextual
+  // definimos el bloque visualmente
   Blockly.Blocks[blockData.id] = {
     init: function () {
       this.appendDummyInput().appendField(blockData.name);
@@ -277,7 +275,7 @@ function registerCustomBlockDef(blockData) {
     }
   };
 
-  // 2. Definimos su generador en JavaScript
+  // definimos su generador en JavaScript
   Blockly.JavaScript[blockData.id] = function (block) {
     const headless = new Blockly.Workspace();
     try {
@@ -294,7 +292,7 @@ function registerCustomBlockDef(blockData) {
   };
 }
 
-// Registramos en cuanto arranque el script
+// Registramos al arrancar
 customUserBlocks.forEach(registerCustomBlockDef);
 
 function applyCustomBlocksTo(toolboxDef, levelName) {
@@ -886,9 +884,8 @@ function colorizeBubbles() {
   }, 100);
 }
 
-// Nivel selector logic
+// selector de nivel
 function selectLevel(levelName) {
-  // Save current level's trashcan contents
   if (currentLevel && workspace.trashcan) {
     trashcanContentsPerLevel[currentLevel] = [...workspace.trashcan.contents_];
     if (typeof workspace.trashcan.closeFlyout === 'function') {
@@ -911,7 +908,7 @@ function selectLevel(levelName) {
   // Inyectamos los custom blocks filtrados por nivel
   const dynamicToolbox = applyCustomBlocksTo(selectedToolbox, levelName);
 
-  // Disable events so workspace.clear() doesn't send cleared blocks to next level's trashcan
+  // Desactivamos eventos para que workspace.clear() no envíe bloques a la papelera
   Blockly.Events.disable();
 
   workspace.clear();
@@ -920,6 +917,7 @@ function selectLevel(levelName) {
 
   // --- CONFIGURACIÓN DE ETIQUETAS DINÁMICAS ---
   Blockly.Msg['SIMPLE_NOTE_LABEL'] = (levelName === 'basic') ? 'sonido' : 'nota';
+  Blockly.Msg['SEQUENCE_LABEL'] = (levelName === 'intermediate') ? 'uno detrás de otro' : 'secuenciar esto';
 
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
@@ -938,19 +936,14 @@ function selectLevel(levelName) {
     document.getElementById('create-block-btn').style.display = (levelName === 'sound') ? 'inline-block' : 'none';
     liveBTN.style.display = (levelName === 'free') ? 'inline-block' : 'none';
 
-    // Reset live mode when entering/exiting a level
+    // reset modo live 
     isLiveMode = false;
     liveBTN.textContent = "Modo Live: OFF";
     liveBTN.classList.remove("live-active");
     playBTN.disabled = false;
     stopBTN.disabled = false;
 
-    // Etiqueta dinámica de nota para el modo "Crear Sonido"
-    if (levelName === 'sound') {
-      Blockly.Msg['SIMPLE_NOTE_LABEL'] = 'nota';
-    }
-
-    // Cerrar el flyout al entrar en el nivel (menú lateral recogido por defecto)
+    // Cerrar el flyout al entrar en el nivel
     setTimeout(() => {
       const toolbox = workspace.getToolbox();
       if (toolbox) {
@@ -965,7 +958,7 @@ function selectLevel(levelName) {
     }, 50);
   }
 
-  // 1. Cargar bloques guardados para ESTE nivel específico
+  // Cargar bloques guardados para este nivel específico
   const savedXml = localStorage.getItem('blocklyMusicParams_' + currentLevel);
   if (savedXml) {
     try {
@@ -976,10 +969,10 @@ function selectLevel(levelName) {
     }
   }
 
-  // Re-enable events after workspace loading is done
+  // reactivamos eventos
   Blockly.Events.enable();
 
-  // Restore the new level's trashcan contents
+  // Restauramos la papelera
   if (workspace.trashcan) {
     workspace.trashcan.contents_ = trashcanContentsPerLevel[levelName] || [];
   }
@@ -990,12 +983,12 @@ function selectLevel(levelName) {
   document.getElementById('startup-menu').style.pointerEvents = 'none';
   setTimeout(() => {
     document.getElementById('startup-menu').style.display = 'none';
-  }, 400); // Wait for transition
+  }, 400); 
 }
 
-// 2. Guardar bloques automáticamente ante cualquier cambio estructural
+// Guardar bloques automáticamente ante cualquier cambio estructural
 workspace.addChangeListener((e) => {
-  if (isLoadingLevel || !currentLevel) return; // Evitar sobreescribir al cambiar de interfaz
+  if (isLoadingLevel || !currentLevel) return; 
 
   if (e.type !== Blockly.Events.UI && e.type !== Blockly.Events.THEME_CHANGE) {
     const xml = Blockly.Xml.workspaceToDom(workspace);
@@ -1009,7 +1002,7 @@ workspace.addChangeListener((e) => {
   }
 });
 
-// 3. Evento para limpiar el área del nivel actual
+// Evento para limpiar el área del nivel actual
 clearBTN.addEventListener('click', () => {
   if (!currentLevel) return;
   if (window.confirm("¿Estás seguro de que quieres borrar todos los bloques de este nivel? Esta acción no se puede deshacer.")) {
@@ -1020,7 +1013,7 @@ clearBTN.addEventListener('click', () => {
   }
 });
 
-// Modal elements
+// elementos del modal
 const modal = document.getElementById('custom-block-modal');
 const modalTitle = modal.querySelector('h2');
 const nameInput = document.getElementById('block-name-input');
@@ -1030,9 +1023,9 @@ const btnCancel = document.getElementById('cancel-block-btn');
 const btnSave = document.getElementById('save-block-btn');
 
 let pendingBlockSelection = null;
-let pendingEditBlockId = null; // null = crear modo, string = editar modo
+let pendingEditBlockId = null; 
 
-// Synchronize color input and text display
+// Sincronizamos entrada de color con la pantalla
 colorInput.addEventListener('input', (e) => {
   hexDisplay.textContent = e.target.value;
 });
@@ -1053,7 +1046,7 @@ function openModalForEdit(blockData) {
   modal.style.display = 'flex';
 }
 
-// 4. Crear macro de bloque del usuario
+// Crear macro de bloques
 document.getElementById('create-block-btn').addEventListener('click', () => {
   let selected = Blockly.selected;
   if (!selected) {
@@ -1066,7 +1059,6 @@ document.getElementById('create-block-btn').addEventListener('click', () => {
   colorInput.value = '#8b5cf6';
   hexDisplay.textContent = '#8b5cf6';
   modalTitle.textContent = 'Crear Nuevo Bloque';
-  // Sin pre-selección: libre y crear sonido son siempre automáticos
   document.querySelectorAll('.level-checkbox').forEach(cb => { cb.checked = false; });
   modal.style.display = 'flex';
 });
@@ -1155,7 +1147,7 @@ document.getElementById('btn-sound').addEventListener('click', () => selectLevel
 
 document.getElementById('btn-menu').addEventListener('click', () => {
   document.getElementById('startup-menu').style.display = 'flex';
-  // Small timeout to allow display:flex to apply before animating opacity
+  // timeout para que se muestre antes de la animación
   setTimeout(() => {
     document.getElementById('startup-menu').style.opacity = '1';
     document.getElementById('startup-menu').style.pointerEvents = 'all';

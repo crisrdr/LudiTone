@@ -1,0 +1,48 @@
+flowchart TD
+    classDef block fill:#faf5ff,stroke:#a855f7,stroke-width:2px;
+    classDef seqBlock fill:#eff6ff,stroke:#3b82f6,stroke-width:2px;
+    classDef timeNode fill:#f0fdf4,stroke:#16a34a,stroke-width:2px;
+    classDef linkLine stroke:#64748b,stroke-width:1px,stroke-dasharray: 3 3;
+
+    %% Bloques Blockly
+    subgraph Bloques ["Estructura en Workspace (Secuenciada)"]
+        direction TB
+        SEQ["Secuenciar esto (sequence)"]
+        B1["Nota C4<br>(Duración = 1.0s)"]
+        B2["Wait<br>(Tiempo = 0.5s)"]
+        B3["Nota E4<br>(Duración = 2.0s)"]
+        
+        SEQ -.->|Contiene| B1
+        B1 --> B2
+        B2 --> B3
+    end
+
+    %% Generación de Acumulador
+    subgraph Acumulador ["Evolución de timeDur"]
+        direction TB
+        A1["timeDur inicial = 0.0s"]
+        A2["Planifica Nota C4 a 0.0s<br>timeDur += 1.0s (Valor = 1.0s)"]
+        A3["Suma silencio de Wait<br>timeDur += 0.5s (Valor = 1.5s)"]
+        A4["Planifica Nota E4 a 1.5s<br>timeDur += 2.0s (Valor = 3.5s)"]
+    end
+
+    %% Línea de tiempo real
+    subgraph Timeline ["Línea de Tiempo de Tone.Transport (Segundos)"]
+        direction LR
+        T0["0.0 s<br>(Disparo C4)"] -->|1.0s de sonido| T10["1.0 s<br>(Silencio C4)"]
+        T10 -->|0.5s de espera| T15["1.5 s<br>(Disparo E4)"]
+        T3["3.5 s<br>(Silencio E4)"]
+        T15 -->|2.0s de sonido| T3
+    end
+
+    %% Conexiones lógicas
+    B1 --> A2
+    B2 --> A3
+    B3 --> A4
+
+    A2 -.-> T0
+    A4 -.-> T15
+
+    class B1,B2,B3 block;
+    class SEQ seqBlock;
+    class T0,T10,T15,T3 timeNode;

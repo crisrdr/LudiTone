@@ -3,12 +3,12 @@ Blockly.Blocks['loop'] = {
         this.setPreviousStatement(true);
         this.setNextStatement(true);
 
-        // Validador: acepta '∞' (infinito) o un entero positivo; rechaza cualquier otra cosa
+        // validador de repeticiones
         var repsValidator = function (value) {
             var trimmed = (value || '').trim();
             if (trimmed === '' || trimmed === '∞' || trimmed === 'inf' || trimmed === 'Infinity') return '∞';
             var n = parseInt(trimmed, 10);
-            if (isNaN(n) || n < 1) return null; // null = rechazar, conservar valor anterior
+            if (isNaN(n) || n < 1) return null;
             return String(n);
         };
 
@@ -25,7 +25,7 @@ Blockly.Blocks['loop'] = {
         this.setTooltip("Repite los bloques internos. Pon '∞' para infinito o un número de veces. No admite bloques de tipo 'secuenciar' en su interior.");
     },
 
-    // Expulsar bloques 'sequence' que intenten entrar en el DO
+    // expulsar bloque 'sequence' 
     onchange: function (e) {
         if (!this.workspace || this.workspace.isDragging()) return;
         if (e.type !== Blockly.Events.BLOCK_MOVE) return;
