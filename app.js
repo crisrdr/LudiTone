@@ -920,6 +920,7 @@ function selectLevel(levelName) {
 
   // --- CONFIGURACIÓN DE ETIQUETAS DINÁMICAS ---
   Blockly.Msg['SIMPLE_NOTE_LABEL'] = (levelName === 'basic') ? 'sonido' : 'nota';
+  Blockly.Msg['SEQUENCE_LABEL'] = (levelName === 'intermediate') ? 'uno detrás de otro' : 'secuenciar esto';
 
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
@@ -944,11 +945,6 @@ function selectLevel(levelName) {
     liveBTN.classList.remove("live-active");
     playBTN.disabled = false;
     stopBTN.disabled = false;
-
-    // Etiqueta dinámica de nota para el modo "Crear Sonido"
-    if (levelName === 'sound') {
-      Blockly.Msg['SIMPLE_NOTE_LABEL'] = 'nota';
-    }
 
     // Cerrar el flyout al entrar en el nivel (menú lateral recogido por defecto)
     setTimeout(() => {
