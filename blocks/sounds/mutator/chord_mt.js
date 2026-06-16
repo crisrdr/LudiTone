@@ -167,12 +167,7 @@ Blockly.JavaScript['chord_mt'] = function (block) {
     }
 
     // Disparamos el acorde
-    const isLive = Blockly.JavaScript.isLiveMode;
-    if (isLive) {
-        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttack(freqs${num}, time${volumeParam}); }, timeDur);\n`;
-    } else {
-        code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
-    }
+    code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
 
     code += `  timeDur += ` + dur + `;\n`;
 

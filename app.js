@@ -61,8 +61,43 @@ async function runCode(isLiveUpdate = false) {
       blockCode = blockCode[0];
     }
     if (blockCode) {
-      const initialTime = isLiveUpdate ? 'Tone.Transport.seconds + 0.15' : '0';
-      codeParts.push(`\n// --- Grupo de bloques ${idx + 1} ---\ntimeDur = ${initialTime};\n${blockCode}`);
+      const descendants = block.getDescendants(false);
+      const hasInternalLoop = descendants.some(d => d.type === 'loop' || d.type === 'repeat');
+      const startTime = isLiveUpdate ? 'Tone.Transport.seconds + 0.15' : '0';
+
+      if (isLiveMode && !hasInternalLoop) {
+        const runCodeBlock = `
+// --- Grupo de bloques ${idx + 1} (Loop Automático) ---
+(function() {
+  var events = [];
+  var localTimeDur = 0;
+  
+  var originalSchedule = Tone.Transport.schedule;
+  Tone.Transport.schedule = function(callback, offset) {
+    events.push({ callback: callback, offset: offset });
+  };
+  
+  (function() {
+    var timeDur = 0;
+    ${blockCode}
+    localTimeDur = timeDur;
+  })();
+  
+  Tone.Transport.schedule = originalSchedule;
+  
+  if (localTimeDur > 0 && events.length > 0) {
+    Tone.Transport.scheduleRepeat(function(loopCallbackTime) {
+      events.forEach(function(ev) {
+        ev.callback(loopCallbackTime + ev.offset);
+      });
+    }, localTimeDur, ${startTime});
+  }
+})();
+`;
+        codeParts.push(runCodeBlock);
+      } else {
+        codeParts.push(`\n// --- Grupo de bloques ${idx + 1} ---\ntimeDur = ${startTime};\n${blockCode}`);
+      }
     }
   });
 
@@ -74,17 +109,6 @@ async function runCode(isLiveUpdate = false) {
     `let current_dest = Tone.Destination;\n` +
     `function _reg(node){ 
       activeSynths.push(node); 
-      // Si estamos en modo live, forzamos un sustain infinito por defecto 
-      if (${isLiveMode}) {
-        try {
-          if (node.envelope && node.envelope.sustain !== undefined) {
-             node.envelope.sustain = 1.0;
-          } else if (typeof node.set === 'function') {
-             // Esto sirve para PolySynth y otros nodos complejos
-             node.set({ envelope: { sustain: 1.0 } });
-          }
-        } catch(e) { /* Algunos nodos no tienen envolvente */ }
-      }
       return node; 
     }\n`;
 

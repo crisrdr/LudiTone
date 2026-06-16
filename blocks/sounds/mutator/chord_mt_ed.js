@@ -234,12 +234,7 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
 
     code += `  if (freqs${myNum}.length > 0) {\n`;
     // Disparamos el acorde
-    const isLive = Blockly.JavaScript.isLiveMode;
-    if (isLive) {
-        code += `  Tone.Transport.schedule((time) => { synth${myNum}.triggerAttack(freqs${myNum}, time${volumeParam}); }, timeDur);\n`;
-    } else {
-        code += `  Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
-    }
+    code += `  Tone.Transport.schedule((time) => { synth${myNum}.triggerAttackRelease(freqs${myNum}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     code += `  }\n`;
 
     code += `  timeDur += ` + dur + `;\n`;
