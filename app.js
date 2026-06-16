@@ -15,6 +15,7 @@ const feedbackLink = "https://forms.cloud.microsoft/e/giJmU1f55C";
 
 // registro de synths/effects
 let activeSynths = [];
+let activeLoops = {};
 
 // aviso de colocación
 let _blockWarningTimer = null;
@@ -43,6 +44,14 @@ function stopAll() {
     } catch (e) { /* ya se ha liberado */ }
   });
   activeSynths = [];
+
+  // Detener y limpiar todos los bucles globales activos
+  Object.keys(activeLoops).forEach(id => {
+    try {
+      Tone.Transport.clear(activeLoops[id].id);
+    } catch (e) {}
+  });
+  activeLoops = {};
 }
 
 // Generar código JavaScript
@@ -53,6 +62,27 @@ async function runCode(isLiveUpdate = false) {
   Blockly.JavaScript.isLiveMode = isLiveMode;
   Blockly.JavaScript.init(workspace);
   const topBlocks = workspace.getTopBlocks(true);
+  const currentTopBlockIds = new Set(topBlocks.map(b => b.id));
+
+  // Limpiar cualquier bucle que ya no esté en el lienzo
+  Object.keys(activeLoops).forEach(id => {
+    if (!currentTopBlockIds.has(id)) {
+      try {
+        Tone.Transport.clear(activeLoops[id].id);
+      } catch (e) {}
+      // Liberar sus synths asociados de forma inmediata
+      if (activeLoops[id].synths) {
+        activeLoops[id].synths.forEach(s => {
+          try {
+            if (typeof s.releaseAll === 'function') s.releaseAll(0.1);
+            s.dispose();
+          } catch(e) {}
+        });
+      }
+      delete activeLoops[id];
+    }
+  });
+
   let codeParts = [];
 
   topBlocks.forEach((block, idx) => {
@@ -61,36 +91,69 @@ async function runCode(isLiveUpdate = false) {
       blockCode = blockCode[0];
     }
     if (blockCode) {
-      const descendants = block.getDescendants(false);
-      const hasInternalLoop = descendants.some(d => d.type === 'loop' || d.type === 'repeat');
-      const startTime = isLiveUpdate ? 'Tone.Transport.seconds + 0.15' : '0';
+      let startTime;
+      const oldLoop = activeLoops[block.id];
+      if (isLiveMode && oldLoop) {
+        // Calcular inicio del siguiente ciclo de forma precisa
+        const transportTime = Tone.Transport.seconds;
+        let nextCycleStart = oldLoop.start + Math.ceil((transportTime - oldLoop.start) / oldLoop.duration) * oldLoop.duration;
+        while (nextCycleStart < transportTime + 0.1) {
+          nextCycleStart += oldLoop.duration;
+        }
+        startTime = nextCycleStart;
 
-      if (isLiveMode && !hasInternalLoop) {
+        // Limpiar el bucle viejo del transporte
+        try {
+          Tone.Transport.clear(oldLoop.id);
+        } catch(e) {}
+
+        // Programar la liberación diferida de los synths del ciclo anterior
+        const delayMs = (nextCycleStart - transportTime) * 1000 + 500;
+        const synthsToDispose = oldLoop.synths || [];
+        setTimeout(() => {
+          synthsToDispose.forEach(s => {
+            try {
+              if (typeof s.releaseAll === 'function') s.releaseAll(0.1);
+              s.dispose();
+            } catch(e) {}
+          });
+        }, Math.max(0, delayMs));
+
+        delete activeLoops[block.id];
+      } else {
+        startTime = isLiveUpdate ? (Tone.Transport.seconds + 0.15) : 0;
+      }
+
+      if (isLiveMode) {
         const runCodeBlock = `
 // --- Grupo de bloques ${idx + 1} (Loop Automático) ---
 (function() {
   var events = [];
   var localTimeDur = 0;
+  var start = ${startTime};
+  
+  tempSynths = []; // reset capture array
   
   var originalSchedule = Tone.Transport.schedule;
-  Tone.Transport.schedule = function(callback, offset) {
-    events.push({ callback: callback, offset: offset });
+  Tone.Transport.schedule = function(callback, absoluteTime) {
+    events.push({ callback: callback, offset: absoluteTime - start });
   };
   
   (function() {
-    var timeDur = 0;
+    var timeDur = start;
     ${blockCode}
-    localTimeDur = timeDur;
+    localTimeDur = timeDur - start;
   })();
   
   Tone.Transport.schedule = originalSchedule;
   
   if (localTimeDur > 0 && events.length > 0) {
-    Tone.Transport.scheduleRepeat(function(loopCallbackTime) {
+    var loopId = Tone.Transport.scheduleRepeat(function(loopCallbackTime) {
       events.forEach(function(ev) {
         ev.callback(loopCallbackTime + ev.offset);
       });
-    }, localTimeDur, ${startTime});
+    }, localTimeDur, start);
+    _regLoop("${block.id}", loopId, start, localTimeDur, [...tempSynths]);
   }
 })();
 `;
@@ -107,9 +170,14 @@ async function runCode(isLiveUpdate = false) {
   // Inyectamos helpers para que el código generado se registre solo
   const preamble =
     `let current_dest = Tone.Destination;\n` +
+    `let tempSynths = [];\n` +
     `function _reg(node){ 
+      tempSynths.push(node);
       activeSynths.push(node); 
       return node; 
+    }\n` +
+    `function _regLoop(blockId, id, start, duration, synths){
+      activeLoops[blockId] = { id: id, start: start, duration: duration, synths: synths };
     }\n`;
 
   // Envolver cada tonesynth para que se registre automáticamente
@@ -183,25 +251,8 @@ async function liveUpdate() {
   liveTimeout = setTimeout(async () => {
     console.log("Live Update Triggered...");
 
-    // cancelamos eventos futuros pero dejamos el transporte corriendo
-    Tone.Transport.cancel(Tone.Transport.seconds + 0.1);
-
-    // Liberamos sintetizadores antiguos
-    activeSynths.forEach(node => {
-      try {
-        if (typeof node.releaseAll === 'function') node.releaseAll(0.1);
-        setTimeout(() => {
-          try { node.dispose(); } catch (e) { }
-        }, 200);
-      } catch (e) { /* already disposed */ }
-    });
-    activeSynths = [];
-
     // Reseteamos contadores para el nuevo código
     num = 0;
-
-    // El código nuevo debe empezar a programarse desde ahora
-    timeDur = Tone.Transport.seconds + 0.15; // Un pequeño margen para el procesado
 
     // Ejecutar código sin reiniciar el transporte
     await runCode(true);
