@@ -194,21 +194,7 @@ Blockly.JavaScript['chord_mt_oc'] = function (block) {
         code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease(freqs${num}, ${dur}, time${volumeParam}); }, timeDur);\n`;
     }
 
-    // comprobamos si está dentro de un bloque sequence
-    let topBlock = block.getSurroundParent();
-    let isInsideSequence = false;
-
-    while (topBlock) {
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
-            break;
-        }
-        topBlock = topBlock.getSurroundParent();
-    }
-
-    if (isInsideSequence) {
-        code += `  timeDur += ` + dur + `;\n`;
-    }
+    code += `  timeDur += ` + dur + `;\n`;
 
     num++;
     return code;

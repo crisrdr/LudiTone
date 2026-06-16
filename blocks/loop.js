@@ -13,26 +13,26 @@ Blockly.Blocks['loop'] = {
         };
 
         this.appendDummyInput()
-            .appendField('repetir todo')
+            .appendField('repetir con ritmo')
             .appendField(new Blockly.FieldTextInput('∞', repsValidator), 'reps')
             .appendField('veces a velocidad')
-            .appendField(new Blockly.FieldDropdown([["lento", "2n"], ["medio", "4n"], ["rápido", "8n"]]), "times");
+            .appendField(new Blockly.FieldDropdown([["muy lento","2n"],["lento", "4n"], ["medio", "8n"], ["rápido", "16n"], ["muy rápido","32n"]]), "times");
         this.appendStatementInput('DO')
             .appendField('hacer');
         this.appendDummyInput()
             .appendField('fin');
         this.setColour(120);
-        this.setTooltip("Repite los bloques internos. Pon '∞' para infinito o un número de veces. No admite bloques de tipo 'secuenciar' en su interior.");
+        this.setTooltip("Repite los bloques internos a la velocidad seleccionada. Pon '∞' para infinito o un número de veces. No admite bloques de tipo 'repetir esto' en su interior.");
     },
 
-    // expulsar bloque 'sequence' 
+    // expulsar bloque 'repeat' 
     onchange: function (e) {
         if (!this.workspace || this.workspace.isDragging()) return;
         if (e.type !== Blockly.Events.BLOCK_MOVE) return;
         var stmt = this.getInputTargetBlock('DO');
         while (stmt) {
             var next = stmt.getNextBlock();
-            if (stmt.type === 'sequence') {
+            if (stmt.type === 'repeat') {
                 Blockly.Events.disable();
                 try {
                     stmt.unplug(true);
@@ -41,7 +41,7 @@ Blockly.Blocks['loop'] = {
                     Blockly.Events.enable();
                 }
                 if (typeof showBlockWarning === 'function') {
-                    showBlockWarning('⚠️ Los bloques "repetir" y "secuenciar" no pueden anidarse.');
+                    showBlockWarning('⚠️ Los bloques "repetir con ritmo" y "repetir esto" no pueden anidarse.');
                 }
             }
             stmt = next;
@@ -50,10 +50,10 @@ Blockly.Blocks['loop'] = {
 };
 
 Blockly.JavaScript['loop'] = function (block) {
-    const times    = block.getFieldValue('times');
-    const repsRaw  = (block.getFieldValue('reps') || '∞').trim();
+    const times = block.getFieldValue('times');
+    const repsRaw = (block.getFieldValue('reps') || '∞').trim();
     const infinite = (repsRaw === '∞' || repsRaw === '');
-    const reps     = infinite ? null : parseInt(repsRaw, 10);
+    const reps = infinite ? null : parseInt(repsRaw, 10);
     let loopId = num++;
 
     let innerCode = Blockly.JavaScript.statementToCode(block, 'DO');

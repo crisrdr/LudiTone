@@ -88,7 +88,7 @@ Blockly.Blocks['note_mt'] = {
     },
     onchange: function (e) {
         if (!this.workspace || this.workspace.isDragging()) return;
-        
+
         let topBlock = this.getSurroundParent();
         let isInsideChord = false;
         while (topBlock) {
@@ -212,14 +212,11 @@ Blockly.JavaScript['note_mt'] = function (block) {
 
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
-    let isInsideSequence = false;
 
     while (topBlock) {
         if (topBlock.type.includes('chord')) {
             isInsideChord = true;
-        }
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
+            break;
         }
         topBlock = topBlock.getSurroundParent();
     }
@@ -253,9 +250,7 @@ Blockly.JavaScript['note_mt'] = function (block) {
             }
         }
 
-        if (isInsideSequence) {
-            code += `  timeDur += ` + dur + `;\n`;
-        }
+        code += `  timeDur += ` + dur + `;\n`;
     }
 
     num++;

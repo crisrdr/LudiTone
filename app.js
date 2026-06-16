@@ -48,10 +48,26 @@ function stopAll() {
 // Generar código JavaScript
 async function runCode(isLiveUpdate = false) {
 
-  // convertir workspace a texto
+  // compilar cada grupo de bloques de forma independiente
   Blockly.JavaScript.addReservedWords('code');
-  Blockly.JavaScript.isLiveMode = isLiveMode; 
-  const code = Blockly.JavaScript.workspaceToCode(workspace);
+  Blockly.JavaScript.isLiveMode = isLiveMode;
+  Blockly.JavaScript.init(workspace);
+  const topBlocks = workspace.getTopBlocks(true);
+  let codeParts = [];
+
+  topBlocks.forEach((block, idx) => {
+    let blockCode = Blockly.JavaScript.blockToCode(block);
+    if (Array.isArray(blockCode)) {
+      blockCode = blockCode[0];
+    }
+    if (blockCode) {
+      const initialTime = isLiveUpdate ? 'Tone.Transport.seconds + 0.15' : '0';
+      codeParts.push(`\n// --- Grupo de bloques ${idx + 1} ---\ntimeDur = ${initialTime};\n${blockCode}`);
+    }
+  });
+
+  let code = codeParts.join('\n');
+  code = Blockly.JavaScript.finish(code);
 
   // Inyectamos helpers para que el código generado se registre solo
   const preamble =
@@ -346,8 +362,8 @@ const toolboxIntermediate = {
     {
       kind: "category", name: "Control", colour: "212",
       contents: [
+        { kind: 'block', type: 'repeat' },
         { kind: 'block', type: 'loop' },
-        { kind: 'block', type: 'sequence' },
         { kind: 'block', type: 'wait', fields: { NUM: 1 } }
       ]
     },
@@ -400,8 +416,8 @@ const toolboxAdvanced = {
     {
       kind: "category", name: "Control", colour: "212",
       contents: [
+        { kind: 'block', type: 'repeat' },
         { kind: 'block', type: 'loop' },
-        { kind: 'block', type: 'sequence' },
         { kind: 'block', type: 'wait', fields: { NUM: 1 } }
       ]
     },
@@ -601,11 +617,11 @@ const toolboxFree = {
       contents: [
         {
           "kind": 'block',
-          "type": 'loop',
+          "type": 'repeat',
         },
         {
           "kind": 'block',
-          "type": 'sequence',
+          "type": 'loop',
         },
         {
           "kind": "block",
@@ -917,8 +933,7 @@ function selectLevel(levelName) {
 
   // --- CONFIGURACIÓN DE ETIQUETAS DINÁMICAS ---
   Blockly.Msg['SIMPLE_NOTE_LABEL'] = (levelName === 'basic') ? 'sonido' : 'nota';
-  Blockly.Msg['SEQUENCE_LABEL'] = (levelName === 'intermediate') ? 'uno detrás de otro' : 'secuenciar esto';
-
+  
   if (levelName === 'basic') {
     document.body.classList.add('basic-mode');
     document.getElementById('create-block-btn').style.display = 'none';
@@ -983,12 +998,12 @@ function selectLevel(levelName) {
   document.getElementById('startup-menu').style.pointerEvents = 'none';
   setTimeout(() => {
     document.getElementById('startup-menu').style.display = 'none';
-  }, 400); 
+  }, 400);
 }
 
 // Guardar bloques automáticamente ante cualquier cambio estructural
 workspace.addChangeListener((e) => {
-  if (isLoadingLevel || !currentLevel) return; 
+  if (isLoadingLevel || !currentLevel) return;
 
   if (e.type !== Blockly.Events.UI && e.type !== Blockly.Events.THEME_CHANGE) {
     const xml = Blockly.Xml.workspaceToDom(workspace);
@@ -1023,7 +1038,7 @@ const btnCancel = document.getElementById('cancel-block-btn');
 const btnSave = document.getElementById('save-block-btn');
 
 let pendingBlockSelection = null;
-let pendingEditBlockId = null; 
+let pendingEditBlockId = null;
 
 // Sincronizamos entrada de color con la pantalla
 colorInput.addEventListener('input', (e) => {

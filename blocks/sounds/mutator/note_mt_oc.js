@@ -219,14 +219,14 @@ Blockly.JavaScript['note_mt_oc'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // comprobamos si está dentro de un bloque sequence
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
-    let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) isInsideChord = true;
-        if (topBlock.type === 'sequence') isInsideSequence = true;
+        if (topBlock.type.includes('chord')) {
+            isInsideChord = true;
+            break;
+        }
         topBlock = topBlock.getSurroundParent();
     }
 
@@ -258,7 +258,7 @@ Blockly.JavaScript['note_mt_oc'] = function (block) {
                 code += `  Tone.Transport.schedule((time) => { synth${num}.triggerAttackRelease('${note}', ${dur}, time${volumeParam}); }, timeDur);\n`;
             }
         }
-        if (isInsideSequence) code += `  timeDur += ${dur};\n`;
+        code += `  timeDur += ${dur};\n`;
     }
 
     num++;

@@ -1,7 +1,7 @@
-Blockly.Blocks['sequence'] = {
+Blockly.Blocks['repeat'] = {
     init: function () {
         this.appendDummyInput()
-            .appendField(Blockly.Msg['SEQUENCE_LABEL'] || "secuenciar esto")
+            .appendField("repetir esto")
             .appendField(new Blockly.FieldNumber(1, 1, 30, 1), "TIMES")
             .appendField("veces");
         this.appendStatementInput("DO")
@@ -9,7 +9,7 @@ Blockly.Blocks['sequence'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(212);
-        this.setTooltip("Actúa como un hilo musical: hace sonar las notas una tras otra en orden. No admite bloques de tipo 'repetir' en su interior.");
+        this.setTooltip("Repite las notas de su interior secuencialmente. No admite bloques de tipo 'repetir con ritmo' en su interior.");
     },
 
     // Expulsar bloque 'loop'
@@ -28,7 +28,7 @@ Blockly.Blocks['sequence'] = {
                     Blockly.Events.enable();
                 }
                 if (typeof showBlockWarning === 'function') {
-                    showBlockWarning('⚠️ Los bloques "repetir" y "secuenciar" no pueden anidarse.');
+                    showBlockWarning('⚠️ Los bloques "repetir esto" y "repetir con ritmo" no pueden anidarse.');
                 }
             }
             stmt = next;
@@ -36,7 +36,7 @@ Blockly.Blocks['sequence'] = {
     }
 };
 
-Blockly.JavaScript['sequence'] = function (block) {
+Blockly.JavaScript['repeat'] = function (block) {
     let code = ``;
 
     let branchCode = Blockly.JavaScript.statementToCode(block, 'DO');

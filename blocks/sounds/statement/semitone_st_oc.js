@@ -108,14 +108,14 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // eventos
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
-    let isInsideSequence = false;
 
     while (topBlock) {
-        if (topBlock.type.includes('chord')) isInsideChord = true;
-        if (topBlock.type === 'sequence') isInsideSequence = true;
+        if (topBlock.type.includes('chord')) {
+            isInsideChord = true;
+            break;
+        }
         topBlock = topBlock.getSurroundParent();
     }
 
@@ -148,9 +148,7 @@ Blockly.JavaScript['semitone_st_oc'] = function (block) {
             }
         }
 
-        if (isInsideSequence) {
-            code += `  timeDur += ` + dur + `;\n`;
-        }
+        code += `  timeDur += ` + dur + `;\n`;
     }
     num++;
     return code;

@@ -242,21 +242,7 @@ Blockly.JavaScript['chord_mt_ed'] = function (block) {
     }
     code += `  }\n`;
 
-    // comprobamos si está dentro de un bloque sequence
-    let topBlock = block.getSurroundParent();
-    let isInsideSequence = false;
-
-    while (topBlock) {
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
-            break;
-        }
-        topBlock = topBlock.getSurroundParent();
-    }
-
-    if (isInsideSequence) {
-        code += `  timeDur += ` + dur + `;\n`;
-    }
+    code += `  timeDur += ` + dur + `;\n`;
 
     code += `// --- End Chord Wrapper ---\n`;
 

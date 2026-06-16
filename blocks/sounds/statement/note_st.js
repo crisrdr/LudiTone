@@ -102,18 +102,14 @@ Blockly.JavaScript['note_st'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // disparamos
     // comprobación de si está dentro de un acorde
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
-    let isInsideSequence = false;
 
     while (topBlock) {
         if (topBlock.type.includes('chord')) {
             isInsideChord = true;
-        }
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
+            break;
         }
         topBlock = topBlock.getSurroundParent();
     }
@@ -147,9 +143,7 @@ Blockly.JavaScript['note_st'] = function (block) {
             }
         }
 
-        if (isInsideSequence) {
-            code += `  timeDur += ` + dur + `;\n`;
-        }
+        code += `  timeDur += ` + dur + `;\n`;
     }
 
     num++;

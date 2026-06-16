@@ -121,17 +121,13 @@ Blockly.JavaScript['semitone_st'] = function (block) {
         volumeParam = `, ${options.volume}`;
     }
 
-    // eventos acorde y secuencia
     let topBlock = block.getSurroundParent();
     let isInsideChord = false;
-    let isInsideSequence = false;
 
     while (topBlock) {
         if (topBlock.type.includes('chord')) {
             isInsideChord = true;
-        }
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
+            break;
         }
         topBlock = topBlock.getSurroundParent();
     }
@@ -165,9 +161,7 @@ Blockly.JavaScript['semitone_st'] = function (block) {
             }
         }
 
-        if (isInsideSequence) {
-            code += `  timeDur += ` + dur + `;\n`;
-        }
+        code += `  timeDur += ` + dur + `;\n`;
     }
 
     num++;

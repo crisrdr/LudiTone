@@ -138,21 +138,7 @@ Blockly.JavaScript['chord_st_ed'] = function (block) {
     }
     code += `  }\n`;
 
-    // eventos
-    let topBlock = block.getSurroundParent();
-    let isInsideSequence = false;
-
-    while (topBlock) {
-        if (topBlock.type === 'sequence') {
-            isInsideSequence = true;
-            break;
-        }
-        topBlock = topBlock.getSurroundParent();
-    }
-
-    if (isInsideSequence) {
-        code += `  timeDur += ` + dur + `;\n`;
-    }
+    code += `  timeDur += ` + dur + `;\n`;
 
     code += `// --- End Chord Wrapper ---\n`;
 
