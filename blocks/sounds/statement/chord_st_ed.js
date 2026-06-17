@@ -5,7 +5,7 @@ Blockly.Blocks['chord_st_ed'] = {
     init: function () {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_LEFT)
-            .appendField("acorde");
+            .appendField("acorde libre");
             
         this.appendStatementInput('OPTIONS')
             .setCheck("options2")

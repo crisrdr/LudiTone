@@ -112,7 +112,7 @@ Blockly.Blocks['chord_mt_ed'] = {
             if (!this.getInput('BASE_DUMMY')) {
                 this.appendDummyInput('BASE_DUMMY')
                     .setAlign(Blockly.ALIGN_LEFT)
-                    .appendField("acorde");
+                    .appendField("acorde libre");
             }
         } else {
             if (this.getInput('BASE_DUMMY')) {
