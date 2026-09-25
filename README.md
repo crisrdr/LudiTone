@@ -2,7 +2,7 @@
 
 Aplicación web educativa que combina programación visual por bloques y síntesis de audio en tiempo real para la enseñanza de música.
 
-> Trabajo de Fin de Grado · Grado en Ingeniería Informática · Universidad Autónoma de Madrid · 2025–2026
+> Trabajo de Fin de Grado · Grado en Ingeniería Informática · Universidad Autónoma de Madrid · 2026–2027
 
 🔗 **[crisrdr.github.io/LudiTone](https://crisrdr.github.io/LudiTone/)**
 
@@ -52,4 +52,4 @@ Consulta los términos en [gnu.org/licenses/gpl-3.0](https://www.gnu.org/license
 ## Autoría
 
 **Cristina Rodríguez de los Ríos Medina**  
-Universidad Autónoma de Madrid · 2025–2026
+Universidad Autónoma de Madrid · 2026–2027
